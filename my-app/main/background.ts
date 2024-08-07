@@ -45,18 +45,22 @@ const startServer = (): Promise<void> => {
   }
 
   const mainWindow = createWindow('main', {
-    width: 1000,
-    height: 600,
+    title: "ТД-ЭЛ Сервер",
+    width: 1920,
+    height: 1080,
+    autoHideMenuBar: true,      // Скрываем меню окна
+    frame: false,
+    titleBarStyle: "hidden",
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
     },
   })
 
   if (isProd) {
-    await mainWindow.loadURL('app://./home')
+    await mainWindow.loadURL('app://./LoginPage/LoginPage')
   } else {
     const port = process.argv[2]
-    await mainWindow.loadURL(`http://localhost:${port}/home`)
+    await mainWindow.loadURL(`http://localhost:${port}/LoginPage/LoginPage`)
     mainWindow.webContents.openDevTools()
   }
 })()

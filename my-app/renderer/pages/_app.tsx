@@ -1,22 +1,22 @@
-import React from 'react'
-import Head from 'next/head'
-import { AppProps } from 'next/app'
-import { AppCacheProvider } from '@mui/material-nextjs/v14-pagesRouter'
-import { ThemeProvider } from '@mui/material/styles'
-import CssBaseline from '@mui/material/CssBaseline'
-import theme from '../lib/theme'
+// pages/_app.tsx
+import Layout from '../components/Layout'
+import { AppProps } from "next/app";
+import '../styles/globals.css'
+import { useRouter } from 'next/router'
+import Navbar from '../components/Navbar';
 
-export default function MyApp(props: AppProps) {
-  const { Component, pageProps } = props
+const MyApp = ({ Component, pageProps }: AppProps) => {
+  const router = useRouter()
+  const hideNavbar = ['/LoginPage/LoginPage'].includes(router.pathname)
   return (
-    <AppCacheProvider {...props}>
-      <Head>
-        <meta name="viewport" content="initial-scale=1, width=device-width" />
-      </Head>
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
+    <Layout>
+      <main>
+        {!hideNavbar && <Navbar />}
         <Component {...pageProps} />
-      </ThemeProvider>
-    </AppCacheProvider>
+      </main>
+    </Layout>
   )
 }
+
+export default MyApp;
+
