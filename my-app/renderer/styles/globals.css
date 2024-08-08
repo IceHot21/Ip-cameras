@@ -15,6 +15,16 @@
     font-family: 'RussianRailGProExtended', sans-serif;
   }
 }
+/* 
+body {
+
+  overflow: hidden;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+} */
 
 @layer components {
   .btn-blue {
