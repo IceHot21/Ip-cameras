@@ -2,9 +2,17 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+    font-family: 'RussianRailGProExtended';
+    src: url('/fonts/RussianRail_G_Pro_Extend.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+}
+
 @layer base {
   body {
-    margin: 0 !important;
+    margin: 0;
+    font-family: 'RussianRailGProExtended', sans-serif;
   }
 }
 
@@ -16,4 +24,5 @@
 
 *
 {
+  font-family: 'RussianRailGProExtended', sans-serif !important;
 }

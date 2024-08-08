@@ -3,7 +3,7 @@ import LPStyles from './LoginPage.module.css';
 import { FC, useState, useEffect } from "react";
 import { motion, AnimatePresence } from 'framer-motion';
 import { Box, FormControl, IconButton, Input, InputAdornment, InputLabel, TextField } from '@mui/material';
-import { Visibility, VisibilityOff } from '@mui/icons-material'
+import { Visibility, VisibilityOff } from '@mui/icons-material';
 import AtisLogo from '../../components/AtisLogo';
 
 const LoginPage: FC = () => {
@@ -11,6 +11,14 @@ const LoginPage: FC = () => {
   const [stage, setStage] = useState(0); // Управляет стадиями анимации
   const [showPassword, setShowPassword] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
+
+  const validateFrom = () => {
+    // Логика валидации
+  };
+
+  const guestButt = () => {
+    router.push('/Translation/Translation');
+  };
 
   const handleFocus = () => {
     setIsFocused(true);
@@ -22,18 +30,6 @@ const LoginPage: FC = () => {
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
-  const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
-    event.preventDefault();
-  };
-
-  const validateFrom = () => {
-    // Логика валидации
-  };
-
-  const guestButt = () => {
-    router.push('/Translation/Translation');
-  };
-
   useEffect(() => {
     if (stage === 0) {
       setStage(1);
@@ -42,12 +38,16 @@ const LoginPage: FC = () => {
 
   const handleLogoAnimationComplete = () => {
     if (stage === 1) {
-      setStage(2); // Переход на стадию исчезновения логотипа
+      setStage(2); // Переход на стадию исчезновения
     }
   };
 
   const handleLogoFadeOutComplete = () => {
     setStage(3); // Переход к стадии показа формы
+  };
+
+  const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
   };
 
   return (
@@ -57,10 +57,10 @@ const LoginPage: FC = () => {
           {stage === 1 && (
             <motion.div
               key="logo"
-              className={LPStyles.logoContainer}
-              initial={{ opacity: 0, scale: 0.8 }}
+              className={LPStyles.logoContainer1}
+              initial={{ opacity: 0, scale: 0.5 }}
               animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 1.7, ease: "easeOut" }}
+              transition={{ duration: 6, ease: "easeOut" }}
               onAnimationComplete={handleLogoAnimationComplete}
             >
               <AtisLogo />
@@ -72,10 +72,10 @@ const LoginPage: FC = () => {
           {stage === 2 && (
             <motion.div
               key="logoFadeOut"
-              className={LPStyles.logoContainer}
-              initial={{ opacity: 1, scale: 1 }}
-              animate={{ opacity: 0, scale: 0.8 }} // Анимация исчезновения с уменьшением масштаба
-              transition={{ delay: 0.7, duration: 1.5, ease: "easeOut" }}
+              className={LPStyles.logoContainer1}
+              initial={false} // Начинаем анимацию с текущего состояния
+              animate={{ opacity: 0, scale: 0.8 }} // Исчезновение
+              transition={{ duration: 1.5, ease: "easeOut" }}
               onAnimationComplete={handleLogoFadeOutComplete}
             >
               <AtisLogo />
@@ -88,10 +88,10 @@ const LoginPage: FC = () => {
             className={LPStyles.formContainer}
             initial={{ opacity: 0, y: 0 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1.5, ease: "easeOut" }}
+            transition={{ duration: 2, ease: "easeOut" }}
           >
             <motion.div
-              className={LPStyles.logoContainer}
+              className={LPStyles.logoContainer2}
               initial={{ opacity: 0, y: 0 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1.5, ease: "easeOut" }}
@@ -122,13 +122,7 @@ const LoginPage: FC = () => {
                     />
                   </Box>
 
-                  <Box className={LPStyles.passwordText} sx={{ m: 1, width: 'auto !important' }}>
-                    <TextField
-                      id="password-input"
-                      label="Введите пароль"
-                      type={showPassword ? 'text' : 'password'}
-                      variant="standard"
-                      sx={{
+                  <FormControl sx={{ m: 1, width: 'auto ',
                         '& .MuiInput-underline:after': {
                           borderBottomColor: isFocused ? 'green' : 'inherit',
                         },
@@ -138,47 +132,49 @@ const LoginPage: FC = () => {
                         '& .MuiInputBase-input': {
                           color: isFocused ? 'black' : 'inherit',
                         },
-                      }}
+                      }} 
                       onFocus={handleFocus}
                       onBlur={handleBlur}
-                      InputProps={{
-                        endAdornment: (
-                          <InputAdornment position="end">
-                            <IconButton
-                              aria-label="toggle password visibility"
-                              onClick={handleClickShowPassword}
-                              edge="end"
-                              sx={{
-                                marginRight: '-12px', // Дополнительный отступ для выравнивания
-                              }}
-                            >
-                              {showPassword ? <VisibilityOff /> : <Visibility />}
-                            </IconButton>
-                          </InputAdornment>
-                        ),
-                      }}
+                      variant="standard">
+                    <InputLabel htmlFor="standard-adornment-password">Введите пароль</InputLabel>
+                    <Input
+                      id="standard-adornment-password"
+                      type={showPassword ? 'text' : 'password'}
+                      endAdornment={
+                        <InputAdornment position="end">
+                          <IconButton
+                            aria-label="toggle password visibility"
+                            onClick={handleClickShowPassword}
+                            onMouseDown={handleMouseDownPassword}
+                          >
+                            {showPassword ? <VisibilityOff /> : <Visibility />}
+                          </IconButton>
+                        </InputAdornment>
+                      }
                     />
-                  </Box>
+                  </FormControl>
                 </div>
               </form>
-              <motion.button
-                className={LPStyles.button}
-                type="button"
-                onClick={validateFrom}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                Вход
-              </motion.button>
-              <motion.button
-                className={LPStyles.button}
-                type="button"
-                onClick={guestButt}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                Войти как гость
-              </motion.button>
+              <div className={LPStyles.Buttons}>
+                <motion.button
+                  className={LPStyles.button1}
+                  type="button"
+                  onClick={validateFrom}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  Вход
+                </motion.button>
+                <motion.button
+                  className={LPStyles.button2}
+                  type="button"
+                  onClick={guestButt}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  Войти как гость
+                </motion.button>
+              </div>
             </div>
           </motion.div>
         )}
