@@ -1,0 +1,87 @@
+.navbar {
+  position: relative;
+  height: 40px;
+  background-color: #333;
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  z-index: -1;
+}
+
+.menuToggle {
+  outline: none;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  position: absolute;
+  left: 15px;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: transform 0.3s ease;
+}
+
+.menuToggle:hover {
+  transform: scale(1.1);
+}
+
+.menuList {
+  padding: 10px;
+  margin: 0;
+  list-style: none;
+  position: absolute;
+  top: 60px;
+  width: 200px;
+  border-radius: 10px;
+  z-index: 1;
+}
+
+.menuItem {
+  margin-bottom: 10px;
+  padding: 12px;
+  cursor: pointer;
+  border: 1px solid #555;
+  border-radius: 8px;
+  text-align: center;
+  background: #555;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.menuItem:hover {
+  background-color: #666;
+  transform: translateY(-2px);
+}
+
+.menuItem:last-child {
+  margin-bottom: 0;
+}
+
+.logoutButton {
+  margin-left: auto;
+  padding: 8px 16px;
+  background-color: transparent;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 24px;
+  transition: background-color 0.3s ease;
+}
+
+.logoutButton:hover {
+  background-color: #d32f2f;
+}
