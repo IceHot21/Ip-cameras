@@ -4,6 +4,9 @@ import { AppService } from './app.service.js';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { createDatabase } from 'typeorm-extension';
+import { User } from './user/user.entity.js';
+import { AuthModule } from './auth/auth.module';
+import { Connection } from 'typeorm';
 
 @Module({
   imports: [
@@ -18,7 +21,7 @@ import { createDatabase } from 'typeorm-extension';
           username: configService.get('DB_USERNAME', 'postgres'),
           password: configService.get('DB_PASSWORD', 'Dd7560848!'),
           database: configService.get('DB_DATABASE', 'ip_cameras_db'),
-          entities: [__dirname + '/**/*.entity{.ts,.js}'],
+          entities: [User],
           migrations: [__dirname + '/migrations/*{.ts,.js}'],
           synchronize: false,
         };
@@ -30,8 +33,15 @@ import { createDatabase } from 'typeorm-extension';
       },
       inject: [ConfigService],
     }),
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule {
+  constructor(private connection: Connection) {}
+
+  async onModuleInit() {
+    await this.connection.runMigrations();
+  }
+}
