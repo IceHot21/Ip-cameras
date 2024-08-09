@@ -1,4 +1,4 @@
-import { FC, useState, useRef } from "react";
+import { FC, useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/router";
 import NStyles from "../styles/Navbar.module.css";
@@ -143,6 +143,20 @@ const Navbar: FC = () => {
     },
   };
 
+  // Обработка закрытия меню при нажатии вне него
+  useEffect(() => {
+    const handleOutsideClick = (event) => {
+      if (containerRef.current && !containerRef.current.contains(event.target)) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleOutsideClick);
+    return () => {
+      document.removeEventListener("mousedown", handleOutsideClick);
+    };
+  }, [containerRef]);
+
   return (
     <motion.nav
       initial={false}
@@ -151,9 +165,6 @@ const Navbar: FC = () => {
       ref={containerRef}
       className={NStyles.navbar}
     >
-      {/* Фоновая анимация для меню */}
-      <motion.div className={NStyles.background} variants={sidebar} />
-
       {/* Анимация появления/исчезновения меню */}
       <AnimatePresence>
         {isOpen && <Navigation onMenuItemClick={toggleMenu} />}

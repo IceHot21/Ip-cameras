@@ -13,6 +13,8 @@
   body {
     margin: 0;
     font-family: 'RussianRailGProExtended', sans-serif;
+    height: 100vh;
+    background: #efefef;
   }
 }
 /* 
