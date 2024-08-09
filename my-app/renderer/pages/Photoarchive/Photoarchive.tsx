@@ -1,117 +1,119 @@
-import { FC } from "react"
-import PStyles from "./Photoarchive.module.css"
-
-//TODO: Нужны ли тут onCLick на все кнопки 
+import { FC, useState } from "react";
+import { BiCaretLeft, BiCaretRight, BiDownload, BiZoomIn, BiZoomOut, BiX } from "react-icons/bi";
+import { BsAspectRatio, BsArrowDownUp, BsFunnelFill, BsListTask, BsGrid3X3GapFill  } from "react-icons/bs";
+import { motion } from "framer-motion";
+import PStyles from "./Photoarchive.module.css";
+import ModalView from "../../components/ModalView";
+import ModalSort from "../../components/ModalSort";
+import ModalFilt from "../../components/ModalFilt";
 
 const Photoarchive: FC = () => {
+  const [isModalViewOpen, setIsModalViewOpen] = useState(false);
+  const [isModalSortOpen, setIsModalSortOpen] = useState(false);
+  const [isModalFiltOpen, setIsModalFiltOpen] = useState(false);
 
-    const prevNavigation = () => {
-        //логика для кнопки назад
-    }
+  const prevNavigation = () => {
+    // логика для кнопки назад
+  };
 
-    const nextNavigation = () => {
-        //логика для кнопки вперед
-    }
+  const nextNavigation = () => {
+    // логика для кнопки вперед
+  };
 
-    const savePhoto = () => {
-        //логика для кнопки сохранить фото
-    }
+  const savePhoto = () => {
+    // логика для кнопки сохранить фото
+  };
 
-    const zoomIn = () => {
-        //логика для кнопки приближения
-    }
+  const zoomIn = () => {
+    // логика для кнопки приближения
+  };
 
-    const zoomOut = () => {
-        //логика для кнопки отдаления
-    }
+  const zoomOut = () => {
+    // логика для кнопки отдаления
+  };
 
-    const beginPhoto = () => {
-        //логика для кнопки масштаба фото
-    }
+  const beginPhoto = () => {
+    // логика для кнопки масштаба фото
+  };
 
+  return (
+    <div>
+      <motion.div
+        className={PStyles.Archive}
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
+        <label>
+          Архив за 22.05.2023, 10:50:22 - 23.05.2023, 10:50:22
+        </label>
 
-    return (
-        <div>
-            <div className={PStyles.modal}>
-                <div className={PStyles.header}>
-                    <label>Имя Фото</label>
-                    <i className="bi bi-x-lg"></i>
-                </div>
-                <div className={PStyles.photoContainer}></div>
-                <div className={PStyles.navigButt}>
-                    <div className={PStyles.prevButt} title="Назад">
-                        <i className="bi bi-caret-left-fill" onClick={prevNavigation}></i>
-                    </div>
-                    <div className={PStyles.nextButt} title="Вперед">
-                        <i className="bi bi-caret-right-fill" onClick={nextNavigation}></i>
-                    </div>
-                </div>
-                <div className={PStyles.zoomContainer}>
-                    <i className="bi bi-download" onClick={savePhoto}></i>
-                    <i className="bi bi-zoom-in" onClick={zoomIn}></i>
-                    <i className="bi bi-zoom-out" onClick={zoomOut}></i>
-                    <i className="bi bi-aspect-ratio" onClick={beginPhoto}></i>
-                </div>
-            </div>
-            <div className={PStyles.Archive}>
-                <label>Архив за 22.05.2023, 10:50:22 - 23.05.2023, 10:50:22</label>
-
-                <div className={PStyles.iconSort}>
-                    <i className="bi bi-arrow-down-up"></i>
-                    <i className="bi bi-grid-3x3-gap-fill"></i>
-                    <i className="bi bi-funnel-fill"></i>
-                </div>
-
-                <div className={PStyles.sortModal}>
-                    <div className={PStyles.headerSort}>
-                        <i className="bi bi-x-lg"></i>
-                    </div>
-                    <div className={PStyles.selectSort1}>
-                        <select>
-                            <option value="date">Дата и время</option>
-                            <option value="name">Наименование</option>
-                        </select>
-                    </div>
-                    <div className={PStyles.selectSort2}>
-                        <select>
-                            <option value="down">По убыванию</option>
-                            <option value="up">По возрастанию</option>
-                        </select>
-                    </div>
-                    <button>Ok</button>
-                </div>
-
-                <div className={PStyles.viewModal}>
-                    <div className={PStyles.headerView}>
-                        <i className="bi bi-x-lg"></i>
-                    </div>
-                    <div className={PStyles.viewButton}>
-                        <button><i className="bi bi-list-task"></i><span>Список</span></button>
-                        <button><i className="bi bi-grid-3x3-gap-fill"></i><span>Плитка</span></button>
-                    </div>
-                </div>
-
-                <div className={PStyles.filtModal}>
-                    <div className={PStyles.headerFilt}>
-                        <i className="bi bi-x-lg"></i>
-                    </div>
-                    <div className={PStyles.filtContainer}>
-                        <span>Выберите период:</span>
-                        <div className={PStyles.data}>
-                            <input type="datetime-local" className={PStyles.datatime}></input>
-                            <input type="datetime-local" className={PStyles.datatime}></input>
-                        </div>
-                        <span>Выберите тип помещений:</span>
-                        <div className={PStyles.placeTab}></div>
-                        <div className="'filt">
-                            <button className="btn btn-lg btn-success">Применить</button>
-                            <button className="btn btn-lg btn-success">Сброс фильтра</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <div className={PStyles.iconSort}>
+          <BsArrowDownUp onClick={() => setIsModalSortOpen(true)}/>
+          <BsGrid3X3GapFill  onClick={() => setIsModalViewOpen(true)} />
+          <BsFunnelFill onClick={() => setIsModalFiltOpen(true)} />
         </div>
-    )
-}
 
-export default Photoarchive
+        <div className={PStyles.sortModal}>
+          <div className={PStyles.headerSort}>
+            <BiX />
+          </div>
+          <div className={PStyles.selectSort1}>
+            <select>
+              <option value="date">Дата и время</option>
+              <option value="name">Наименование</option>
+            </select>
+          </div>
+          <div className={PStyles.selectSort2}>
+            <select>
+              <option value="down">По убыванию</option>
+              <option value="up">По возрастанию</option>
+            </select>
+          </div>
+          <button>Ok</button>
+        </div>
+
+        <div className={PStyles.viewModal}>
+          <div className={PStyles.headerView}>
+            <BiX />
+          </div>
+          <div className={PStyles.viewButton}>
+            <button>
+              <BsListTask />
+              <span>Список</span>
+            </button>
+            <button>
+              <BsGrid3X3GapFill  />
+              <span>Плитка</span>
+            </button>
+          </div>
+        </div>
+
+        <div className={PStyles.filtModal}>
+          <div className={PStyles.headerFilt}>
+            <BiX />
+          </div>
+          <div className={PStyles.filtContainer}>
+            <span>Выберите период:</span>
+            <div className={PStyles.data}>
+              <input type="datetime-local" className={PStyles.datatime}></input>
+              <input type="datetime-local" className={PStyles.datatime}></input>
+            </div>
+            <span>Выберите тип помещений:</span>
+            <div className={PStyles.placeTab}></div>
+            <div className={PStyles.filt}>
+              <button className="btn btn-lg btn-success">Применить</button>
+              <button className="btn btn-lg btn-success">Сброс фильтра</button>
+            </div>
+          </div>
+        </div>
+      </motion.div>
+
+      <ModalView open={isModalViewOpen} onClose={() => setIsModalViewOpen(false)} />
+      <ModalSort open={isModalSortOpen} onClose={() => setIsModalSortOpen(false)} />
+      <ModalFilt open={isModalFiltOpen} onClose={() => setIsModalFiltOpen(false)} />
+    </div>
+  );
+};
+
+export default Photoarchive;

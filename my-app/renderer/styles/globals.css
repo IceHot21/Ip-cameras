@@ -13,6 +13,8 @@
   body {
     margin: 0;
     font-family: 'RussianRailGProExtended', sans-serif;
+    height: 100vh;
+    background: #efefef;
   }
 }
 /* 
@@ -35,4 +37,19 @@ body {
 *
 {
   font-family: 'RussianRailGProExtended', sans-serif !important;
+}
+
+.custom-calendar {
+  background-color: #f0f0f0;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+}
+.custom-popper {
+  z-index: 9999;
+}
+.react-datepicker__day--selected {
+  background-color: #4caf50;
+}
+.react-datepicker__time-container .react-datepicker__time {
+  background-color: #e0f7fa;
 }
