@@ -3,6 +3,7 @@ import { BiX, BiGrid } from "react-icons/bi";
 import { BsListTask } from "react-icons/bs";
 import { motion, AnimatePresence } from "framer-motion";
 import MStyles from "../styles/Modal.module.css";
+import "react-datepicker/dist/react-datepicker.css";
 
 interface ModalViewProps {
   open: boolean;
@@ -10,7 +11,6 @@ interface ModalViewProps {
 }
 
 const ModalView: FC<ModalViewProps> = ({ open, onClose }) => {
-  if (!open) return null;
 
   return (
     <AnimatePresence>

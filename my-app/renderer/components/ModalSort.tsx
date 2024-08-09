@@ -10,8 +10,6 @@ interface ModalSortProps {
 }
 
 const ModalSort: FC<ModalSortProps> = ({ open, onClose }) => {
-  if (!open) return null;
-
   const [sortCriteria, setSortCriteria] = useState("date");
   const [sortOrder, setSortOrder] = useState("down");
   const [isFocused, setIsFocused] = useState(false);

@@ -1,23 +1,43 @@
 import { FC, useState } from "react";
-import { BiX } from "react-icons/bi";
-import { motion, AnimatePresence } from "framer-motion";
-import MStyles from "../styles/Modal.module.css";
-import DatePicker from "react-datepicker";
+import { BiCalendar } from "react-icons/bi";
+import DatePicker, { registerLocale } from "react-datepicker";
+import ru from "date-fns/locale/ru";
 import "react-datepicker/dist/react-datepicker.css";
-import { Button, TextField } from "@mui/material";
+import { TextField, IconButton, Button } from "@mui/material";
+import MStyles from "../styles/Modal.module.css"
+import { motion, AnimatePresence } from "framer-motion";
+import { BiX } from "react-icons/bi";
+
 
 interface ModalFiltProps {
   open: boolean;
   onClose: () => void;
 }
+// Регистрируем локализацию
+registerLocale("ru", ru);
+
+const CustomInput = ({ value, onClick }: any) => (
+  <IconButton onClick={onClick} style={{ padding: 0 }}>
+    <TextField
+      variant="outlined"
+      value={value}
+      placeholder="Выберите дату и время"
+      InputProps={{
+        endAdornment: (
+          <BiCalendar style={{ cursor: "pointer", color: "#4CAF50" }} />
+        ),
+      }}
+      fullWidth
+    />
+  </IconButton>
+);
 
 const ModalFilt: FC<ModalFiltProps> = ({ open, onClose }) => {
-  const [startDate, setStartDate] = useState<Date | null>(null);
-  const [endDate, setEndDate] = useState<Date | null>(null);
+  const [startDate, setStartDate] = useState<Date | null>(new Date());
+  const [endDate, setEndDate] = useState<Date | null>(new Date());
 
   const handleApply = () => {
     console.log("Start Date:", startDate, "End Date:", endDate);
-    alert(`Start Date: ${startDate}, End Date: ${endDate}`);
   };
 
   const handleReset = () => {
@@ -47,39 +67,52 @@ const ModalFilt: FC<ModalFiltProps> = ({ open, onClose }) => {
               <BiX onClick={onClose} className={MStyles.closeIcon} />
             </div>
             <div className={MStyles.filtContent}>
-              <span className={MStyles.filtText}>Выберите период:</span>
-              <div className={MStyles.dateRange}>
-                <DatePicker
-                  selected={startDate}
-                  onChange={(date) => setStartDate(date)}
-                  selectsStart
-                  startDate={startDate}
-                  endDate={endDate}
-                  dateFormat="dd/MM/yyyy"
-                  customInput={<TextField variant="standard" fullWidth />}
-                />
-                <DatePicker
-                  selected={endDate}
-                  onChange={(date) => setEndDate(date)}
-                  selectsEnd
-                  startDate={startDate}
-                  endDate={endDate}
-                  minDate={startDate}
-                  dateFormat="dd/MM/yyyy"
-                  customInput={<TextField variant="standard" fullWidth />}
-                />
-              </div>
-              <span className={MStyles.filtText}>Выберите тип помещений:</span>
-              <div className={MStyles.placeTab}></div>
-              <div className={MStyles.filtButtons}>
-                <Button variant="contained" color="primary" onClick={handleApply}>
-                  Применить
-                </Button>
-                <Button variant="contained" color="secondary" onClick={handleReset}>
-                  Сброс фильтра
-                </Button>
-              </div>
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 10 }}
+                transition={{ duration: 0.5, ease: "easeInOut" }}
+              >
+                <span className={MStyles.filtText}>Выберите период:</span>
+                <div className={MStyles.dateRange}>
+                  <DatePicker
+                    locale="ru"
+                    selected={startDate}
+                    onChange={(date: Date | null) => setEndDate(date)}
+                    showTimeSelect
+                    timeFormat="HH:mm"
+                    timeIntervals={1}
+                    dateFormat="dd.MM.yyyy HH:mm"
+                    customInput={<CustomInput />}
+                    calendarClassName="custom-calendar"
+                    popperClassName="custom-popper"
+                  />
+                  <DatePicker
+                    locale="ru"
+                    selected={endDate}
+                    onChange={(date: Date | null) => setEndDate(date)}
+                    showTimeSelect
+                    timeFormat="HH:mm"
+                    timeIntervals={1}
+                    dateFormat="dd.MM.yyyy HH:mm"
+                    customInput={<CustomInput />}
+                    calendarClassName="custom-calendar"
+                    popperClassName="custom-popper"
+                  />
+                </div>
+                <span className={MStyles.filtText}>Выберите тип помещений:</span>
+                <div className={MStyles.placeTab}></div>
+                <div className={MStyles.filtButtons}>
+                  <Button className={MStyles.okClick} onClick={handleApply}>
+                    Применить
+                  </Button>
+                  <Button className={MStyles.resetClick} onClick={handleReset}>
+                    Сброс фильтра
+                  </Button>
+                </div>
+              </motion.div>
             </div>
+
           </motion.div>
         </motion.div>
       )}
