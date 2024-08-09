@@ -6,7 +6,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { createDatabase } from 'typeorm-extension';
 import { User } from './user/user.entity.js';
 import { AuthModule } from './auth/auth.module';
-import { Connection } from 'typeorm';
+import { join } from 'path';
 
 @Module({
   imports: [
@@ -14,6 +14,7 @@ import { Connection } from 'typeorm';
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => {
+        console.log(join(__dirname, 'migrations', '*.js'));
         const options = {
           type: 'postgres' as const,
           host: configService.get('DB_HOST', 'localhost'),
@@ -22,12 +23,23 @@ import { Connection } from 'typeorm';
           password: configService.get('DB_PASSWORD', 'Dd7560848!'),
           database: configService.get('DB_DATABASE', 'ip_cameras_db'),
           entities: [User],
-          migrations: [__dirname + '/migrations/*{.ts,.js}'],
+          migrations: [
+            join(__dirname, 'migrations', '*.js'), // Используйте относительный путь
+          ],
           synchronize: false,
+          migrationsRun: true, // Автоматически запускать миграции
+          cli: {
+            migrationsDir: join(__dirname, 'migrations'), // Используйте относительный путь
+          },
         };
 
-        // Создаем базу данных, если она не существует
-        await createDatabase({ options });
+        try {
+          // Создаем базу данных, если она не существует
+          await createDatabase({ options, ifNotExist: true });
+        } catch (error) {
+          console.error('Error creating database:', error);
+          throw error;
+        }
 
         return options;
       },
@@ -38,10 +50,4 @@ import { Connection } from 'typeorm';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {
-  constructor(private connection: Connection) {}
-
-  async onModuleInit() {
-    await this.connection.runMigrations();
-  }
-}
+export class AppModule {}

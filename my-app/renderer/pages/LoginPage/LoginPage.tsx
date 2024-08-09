@@ -5,15 +5,30 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Box, FormControl, IconButton, Input, InputAdornment, InputLabel, TextField } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import AtisLogo from '../../components/AtisLogo';
+import { login } from '../api/auth';
+import Cookies from 'js-cookie';
 
 const LoginPage: FC = () => {
   const router = useRouter();
   const [stage, setStage] = useState(0); // Управляет стадиями анимации
   const [showPassword, setShowPassword] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
 
   const validateFrom = () => {
     // Логика валидации
+  };
+
+  const handleLogin = async () => {
+    try {
+      const data = await login(username, password);
+      console.log(data); // 'Login successful'
+      // Перенаправление на защищенную страницу
+      router.push('/Translation/Translation');
+    } catch (error) {
+      console.error('Login failed', error);
+    }
   };
 
   const guestButt = () => {
@@ -101,12 +116,7 @@ const LoginPage: FC = () => {
             <div className={LPStyles.loginPageBody}>
               <form>
                 <div className={LPStyles.users}>
-                  <Box className={LPStyles.loginText} sx={{ m: 1, width: 'auto !important' }}>
-                    <TextField
-                      id="input-with-sx"
-                      label="Введите ФИО"
-                      variant="standard"
-                      sx={{
+                <FormControl sx={{ m: 1, width: 'auto ',
                         '& .MuiInput-underline:after': {
                           borderBottomColor: isFocused ? 'green' : 'inherit',
                         },
@@ -116,11 +126,18 @@ const LoginPage: FC = () => {
                         '& .MuiInputBase-input': {
                           color: isFocused ? 'black' : 'inherit',
                         },
-                      }}
+                      }} 
                       onFocus={handleFocus}
                       onBlur={handleBlur}
+                      variant="standard">
+                    <InputLabel htmlFor="standard-adornment-password">Введите пароль</InputLabel>
+                    <Input
+                      id="standard-adornment-password"
+                      type= 'text'
+                      value={username}
+                      onChange={(e) => setUsername(e.target.value)}
                     />
-                  </Box>
+                  </FormControl>
 
                   <FormControl sx={{ m: 1, width: 'auto ',
                         '& .MuiInput-underline:after': {
@@ -151,6 +168,8 @@ const LoginPage: FC = () => {
                           </IconButton>
                         </InputAdornment>
                       }
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
                     />
                   </FormControl>
                 </div>
@@ -159,7 +178,7 @@ const LoginPage: FC = () => {
                 <motion.button
                   className={LPStyles.button1}
                   type="button"
-                  onClick={validateFrom}
+                  onClick={handleLogin}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                 >
