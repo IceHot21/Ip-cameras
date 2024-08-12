@@ -2,7 +2,7 @@ import { FC, useEffect, useState } from 'react';
 import CameraItem from './CameraItem';
 import AddCameraButton from './AddCameraButton';
 
-const CameraList:FC = () => {
+const CameraList: FC = () => {
   const [cameras, setCameras] = useState<any[]>([]);
 
   useEffect(() => {
@@ -38,8 +38,8 @@ const CameraList:FC = () => {
   return (
     <div>
       <AddCameraButton onClick={handleDiscoverCameras} />
-      {cameras.map(camera => (
-        <CameraItem key={camera.id} camera={camera} onAdd={handleAddCamera} />
+      {cameras.map((camera, index) => (
+        <CameraItem key={`${camera.id}-${index}`} camera={camera} onAdd={handleAddCamera} />
       ))}
     </div>
   );
