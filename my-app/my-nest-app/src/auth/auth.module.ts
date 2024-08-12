@@ -1,25 +1,35 @@
-import { Module } from '@nestjs/common';
-import { JwtModule } from '@nestjs/jwt';
+import { Module, forwardRef } from '@nestjs/common';
+import { AuthService } from './services/auth.service';
+import { UsersModule } from 'src/users/users.module';
+import { LocalStrategy } from './strategies/local.strategy';
 import { PassportModule } from '@nestjs/passport';
-import { AuthService } from './auth.service';
-import { AuthController } from './auth.controller';
-import { User } from '../user/user.entity';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { JwtRefreshStrategy } from './jwt.refresh_strategy';
-import { JwtStrategy } from './jwt.strategy';
-import { RolesGuard } from './roles/roles.guard';
+import { JwtModule } from '@nestjs/jwt';
+import { APP_GUARD } from '@nestjs/core';
+import { JwtStrategy } from './strategies/jwt.strategy';
+import * as dotenv from 'dotenv';
+import { PasswordService } from './services/password.service';
+import { JwtAuthGuard } from './guards/jwt-auth.guard';
+dotenv.config();
+if (!process.env.JWT_SECRET) {
+  throw new Error('JWT_SECRET is not defined');
+}
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User]),
-    PassportModule.register({ defaultStrategy: 'jwt' }),
+    forwardRef(() => UsersModule),
+    PassportModule,
     JwtModule.register({
-      secret: 'Dd7560848!',
-      signOptions: { expiresIn: '10s' },
+      secret: process.env.JWT_SECRET,
+      signOptions: { expiresIn: '60s' },
     }),
   ],
-  controllers: [AuthController],
-  providers: [AuthService, JwtStrategy, JwtRefreshStrategy, RolesGuard],
-  exports: [PassportModule, JwtModule],
+  providers: [
+    AuthService,
+    LocalStrategy,
+    PasswordService,
+    JwtStrategy,
+    { provide: APP_GUARD, useClass: JwtAuthGuard },
+  ],
+  exports: [AuthService, PasswordService],
 })
 export class AuthModule {}

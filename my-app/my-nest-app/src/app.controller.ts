@@ -1,16 +1,22 @@
-import { Controller, Get, Post } from '@nestjs/common';
-import { AppService } from './app.service.js';
+import { Controller, Get, Post, Request, UseGuards } from '@nestjs/common';
+import { LocalAuthGuard } from './auth/guards/local-auth.guard.js';
+import { AuthService } from './auth/services/auth.service.js';
+import { JwtAuthGuard } from './auth/guards/jwt-auth.guard.js';
 
-@Controller()
+@Controller('api')
 export class AppController {
-  constructor(private readonly appService: AppService) {}
-
-  @Get()
-  getHello(): string {
-    return this.appService.getHello();
+  constructor(private readonly authService: AuthService) {}
+  @UseGuards(JwtAuthGuard)
+  @Get('/protected')
+  getHello(@Request() req: any) {
+    return {
+      message: `This route is protected, but the user is ${req.user.name} has access`,
+      user: req.user,
+    };
   }
-  @Post()
-  postHello(): string {
-    return this.appService.postHello();
+  @UseGuards(LocalAuthGuard)
+  @Post('/login')
+  login(@Request() req: any) {
+    return this.authService.login(req.user);
   }
 }
