@@ -27,6 +27,7 @@ const CameraList: FC = () => {
   };
 
   const handleAddCamera = (rtspUrl: string, cameraName: string, cameraId: number) => {
+    console.log(cameraId, cameraName)
     const newCamera = { id: cameraId, rtspUrl, name: cameraName };
     const savedCameras = localStorage.getItem('cameras');
     let cameras = savedCameras ? JSON.parse(savedCameras) : [];
