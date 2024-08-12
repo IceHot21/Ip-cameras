@@ -7,6 +7,7 @@ import { TextField, IconButton, Button } from "@mui/material";
 import MStyles from "../styles/Modal.module.css"
 import { motion, AnimatePresence } from "framer-motion";
 import { BiX } from "react-icons/bi";
+import styled from 'styled-components';
 
 
 interface ModalFiltProps {
@@ -16,18 +17,41 @@ interface ModalFiltProps {
 // Регистрируем локализацию
 registerLocale("ru", ru);
 
+const StyledTextField = styled(TextField)`
+  & .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+    border-ccursor: "pointer" }}4CAF50; /* Цвет границы при фокусе */
+  }cursor: "pointer" }}
+
+  & .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
+    border-color: #4CAF50; /* Цвет границы при наведении */
+  }
+
+  & .MuiOutlinedInput-root.Mui-focused {
+    background-color: #F0F0F0; /* Фоновый цвет при фокусе */
+  }
+`;
+
 const CustomInput = ({ value, onClick }: any) => (
   <IconButton onClick={onClick} style={{ padding: 0 }}>
-    <TextField
+    <StyledTextField
       variant="outlined"
       value={value}
       placeholder="Выберите дату и время"
       InputProps={{
         endAdornment: (
-          <BiCalendar style={{ cursor: "pointer", color: "#4CAF50" }} />
+          <BiCalendar style={{ cursor: "pointer", color: "#4CAF50", fontSize:"20px" }} />
         ),
+        style: {
+          backgroundColor: "#F0F0F0",
+          borderRadius: "4px",
+        },
       }}
       fullWidth
+      style={{
+        width: "100%",
+      }}
+      disabled={false}
+      error={false}
     />
   </IconButton>
 );

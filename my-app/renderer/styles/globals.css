@@ -17,16 +17,6 @@
     background: #efefef;
   }
 }
-/* 
-body {
-
-  overflow: hidden;
-  padding: 0;
-  margin: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-} */
 
 @layer components {
   .btn-blue {
@@ -52,4 +42,10 @@ body {
 }
 .react-datepicker__time-container .react-datepicker__time {
   background-color: #e0f7fa;
+}
+.react-datepicker__input-container:hover,
+.react-datepicker__input-container:focus
+{
+  cursor: default !important;
+  background-color: transparent !important;
 }

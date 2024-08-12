@@ -11,6 +11,9 @@
     "esModuleInterop": true,
     "module": "ESNext",
     "moduleResolution": "node",
+    "typeRoots": [
+      "C:/Users/ATIS/Documents/GitHub/Ip-cameras/my-app/renderer/jsmpeg.d.ts"
+    ],
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve"
