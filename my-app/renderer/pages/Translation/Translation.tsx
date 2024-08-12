@@ -1,23 +1,72 @@
-import { FC } from "react"
-import TStyles from "./Transletion.module.css"
-import { pisya } from "../api/auth";
+import { FC, useEffect, useState } from 'react';
+import TStyles from './Transletion.module.css';
+import CameraList from '../../components/CameraList';
 
 const Translation:FC = () => {
-  const handleLogin = async () => {
-    try {
-      const data = await pisya();
-    } catch (error) {
-      console.error('Login failed', error);
+  const [cameras, setCameras] = useState<any[]>([]);
+
+  useEffect(() => {
+    const savedCameras = localStorage.getItem('cameras');
+    if (savedCameras) {
+      const cameras = JSON.parse(savedCameras);
+      setCameras(cameras);
+      cameras.forEach((camera: any) => {
+        startRtspStream(camera.rtspUrl, camera.id, camera.name);
+      });
+    }
+  }, []);
+
+  const startRtspStream = async (rtspUrl: string, id: number, cameraName: string) => {
+    const port = 9999 + id;
+    const response = await fetch('http://localhost:4200/ip/start-stream', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ rtspUrl, port })
+    });
+
+    if (response.ok) {
+      const canvas = document.createElement('canvas');
+      canvas.id = `canvas${id}`;
+      document.getElementById('canvases')?.appendChild(canvas);
+      // Дополнительная логика для отображения потока на canvas
+    }
+  };
+
+  const handleDeleteCamera = async (id: number) => {
+    const port = 9999 + id;
+    const response = await fetch('http://localhost:4200/ip/stop-stream', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ port })
+    });
+
+    if (response.ok) {
+      const savedCameras = localStorage.getItem('cameras');
+      if (savedCameras) {
+        const cameras = JSON.parse(savedCameras).filter((camera: any) => camera.id !== id);
+        localStorage.setItem('cameras', JSON.stringify(cameras));
+        setCameras(cameras);
+      }
     }
   };
 
   return (
     <div>
-      <button onClick={handleLogin}></button>
-        <div className={TStyles.canvasesContainer}></div>
+      <CameraList />
+      <div className={TStyles.canvasesContainer} id="canvases">
+        {cameras.map(camera => (
+          <div key={camera.id} className="canvas-container">
+            <canvas id={`canvas${camera.id}`}></canvas>
+            <button onClick={() => handleDeleteCamera(camera.id)}>Удалить камеру</button>
+          </div>
+        ))}
+      </div>
     </div>
-  )
-}
+  );
+};
 
-export default Translation
-
+export default Translation;

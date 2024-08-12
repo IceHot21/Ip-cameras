@@ -7,6 +7,9 @@ import { createDatabase } from 'typeorm-extension';
 import { User } from './user/user.entity.js';
 import { AuthModule } from './auth/auth.module';
 import { join } from 'path';
+import { IpController } from './ip-cameras/ip.controller.js';
+import { IpService } from './ip-cameras/ip.service.js';
+import { IpModule } from './ip-cameras/ip.module.js';
 
 @Module({
   imports: [
@@ -47,7 +50,7 @@ import { join } from 'path';
     }),
     AuthModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [AppController, IpController],
+  providers: [AppService, IpService],
 })
 export class AppModule {}
