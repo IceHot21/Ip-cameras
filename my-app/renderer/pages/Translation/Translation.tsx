@@ -1,7 +1,7 @@
 import { FC, useEffect, useState } from 'react';
 import TStyles from './Transletion.module.css';
 import CameraList from '../../components/CameraList';
-import { JSMpeg } from  '../../jsmpeg.min.js';
+import '../../jsmpeg.min.js';
 
 const Translation: FC = () => {
   const [cameras, setCameras] = useState<any[]>([]);

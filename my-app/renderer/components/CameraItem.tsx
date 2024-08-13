@@ -1,4 +1,5 @@
 import { FC, useState } from 'react';
+import '../jsmpeg.min.js';
 
 interface CameraItemProps {
   camera: any;
