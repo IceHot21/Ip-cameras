@@ -13,7 +13,7 @@ if (!process.env.JWT_SECRET) {
 console.log('process.env.JWT_SECRET - app.module', process.env.JWT_SECRET);
 
 @Module({
-  imports: [AuthModule],
+  imports: [],
   controllers: [AppController, IpController],
   providers: [AppService, IpService],
 })

@@ -1,7 +1,7 @@
 import { FC, useEffect, useState } from 'react';
 import CameraItem from './CameraItem';
 import AddCameraButton from './AddCameraButton';
-import '../jsmpeg.min.js';
+
 
 const CameraList: FC = () => {
   const [cameras, setCameras] = useState<any[]>([]);

@@ -1,9 +1,9 @@
 import { FC, useState } from 'react';
-import '../jsmpeg.min.js';
 
 interface CameraItemProps {
   camera: any;
   onAdd: (rtspUrl: string, cameraName: string, cameraId: number) => void;
+  startRtspStream: any;
 }
 
 const CameraItem:FC<CameraItemProps> = ({ camera, onAdd }) => {
@@ -12,6 +12,7 @@ const CameraItem:FC<CameraItemProps> = ({ camera, onAdd }) => {
   const handleAddCamera = () => {
     if (roomName) {
       const rtspUrl = `rtsp://admin:Dd7560848@${camera.address.match(/(?:http:\/\/)?(\d+\.\d+\.\d+\.\d+)/)[1]}`;
+      console.log(camera.address.match());
       onAdd(rtspUrl, roomName, camera.id);
     }
   };

@@ -1,7 +1,7 @@
 import { FC, useEffect, useState } from 'react';
 import TStyles from './Transletion.module.css';
 import CameraList from '../../components/CameraList';
-import '../../jsmpeg.min.js';
+import JSMpeg from '@cycjimmy/jsmpeg-player';
 
 const Translation: FC = () => {
   const [cameras, setCameras] = useState<any[]>([]);
@@ -10,7 +10,6 @@ const Translation: FC = () => {
     const savedCameras = localStorage.getItem('cameras');
     if (savedCameras) {
       const cameras = JSON.parse(savedCameras);
-      console.log(cameras)
       setCameras(cameras);
       cameras.forEach((camera: any, index: number) => {
         startRtspStream(camera.rtspUrl, index, camera.name);
@@ -28,24 +27,24 @@ const Translation: FC = () => {
         },
         body: JSON.stringify({ rtspUrl, port })
       });
-      console.log(rtspUrl,port);
+      console.log(rtspUrl, port);
       console.log(id);
       if (response.ok) {
         const canvas = document.createElement('canvas');
         canvas.id = `canvas${id}`;
         document.getElementById('canvases')?.appendChild(canvas);
-
+  
         // Используем jsmpeg для воспроизведения потока на canvas
         const url = `ws://localhost:${port}`;
-        new JSMpeg.Player(url, {
+        const player = new JSMpeg.Player(url, {
           canvas,
-          autoplay: false,
+          autoplay: true,
           onVideoDecode: async (decoder, time) => {
           },
           onSourceEstablished: () => console.log(`Источник установлен для порта ${port}`),
-          onSourceCompleted: () => console.log(`Источник завершен для порта ${port}`)
-      });
-
+          onSourceCompleted: () => console.log(`Источник завершен для порта ${port}`),
+          onError: (error) => console.error(`Error in JSMpeg player: ${error}`)
+        });
         console.log(`Stream started for camera ${cameraName} on canvas ${canvas.id}`);
       } else {
         console.error(`Failed to start stream for camera ${cameraName}`);
