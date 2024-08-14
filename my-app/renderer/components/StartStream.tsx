@@ -29,13 +29,18 @@ const StartStream: FC<StartStreamProps> = ({ rtspUrl, id, cameraName }) => {
       console.log(id);
       if (response.ok) {
         const canvasContainer = document.createElement('div');
-        canvasContainer.className = 'canvas-container';
+        canvasContainer.className = `canvas-container${port}`;
         canvasContainer.dataset.index = id.toString();
 
         const canvas = document.createElement('canvas');
         canvas.id = `canvas${id}`;
         canvas.style.width = '500px'; // Устанавливаем ширину canvas
         canvasContainer.appendChild(canvas);
+
+        const nameLabel = document.createElement('div');
+        nameLabel.className = `camera-name`;
+        nameLabel.textContent = cameraName;
+        nameLabel.style.zIndex = `${id} + 999`;
 
         const canvasesElement = document.getElementById('canvases');
         if (canvasesElement) {
