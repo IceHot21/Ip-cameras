@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import JSMpeg from '@cycjimmy/jsmpeg-player';
-import SSStyles from '../styles/SSStyles.module.css';
+import SSStyles from '../styles/StartStream.module.css';
 
 interface Camera {
   id: number;
@@ -9,11 +9,13 @@ interface Camera {
   rtspUrl: string;
 }
 
-const StreamPlayer = ({ rtspUrl, id, cameraName/* , onDelete, onStartRecording, onTakeScreenshot */ }) => {
+const StreamPlayer = ({ rtspUrl, id, cameraName, setCam }) => {
   const [port, setPort] = useState(9999 + id);
   const [streamStarted, setStreamStarted] = useState(false);
   const [error, setError] = useState(null);
   const [cameras, setCameras] = useState<Camera[]>([]);
+  const [players, setPlayers] = useState(null);
+
   useEffect(() => {
     const startStream = async () => {
       try {
@@ -51,8 +53,14 @@ const StreamPlayer = ({ rtspUrl, id, cameraName/* , onDelete, onStartRecording, 
         onSourceCompleted: () => console.log(`Источник завершен для порта ${port}`),
         onError: (error) => console.error(`Error in JSMpeg player: ${error}`)
       });
-
+      setPlayers(player);
+  
       console.log(`Stream started for camera ${cameraName} on canvas ${id}`);
+      return () => {
+        if (player) {
+          player.destroy()
+        }
+      }
     }
   }, [streamStarted, port, id]);
 
@@ -78,20 +86,13 @@ const StreamPlayer = ({ rtspUrl, id, cameraName/* , onDelete, onStartRecording, 
       return;
     }
 
-    if (JSMpeg.Player && JSMpeg.Player[port]) {
-      JSMpeg.Player[port].destroy();
-      delete JSMpeg.Player[port];
-    }
-
-    // Удалить канвас и камеру из DOM
-    const canvas = document.querySelector(`.canvas-container${port}`);
-    if (canvas) {
-      canvas.remove();
+    if (players && players.source && players.source.socket) {
+      /* players.destroy() */
     }
 
     newCameras = newCameras.filter((camera) => camera.id !== id);
     localStorage.setItem('cameras', JSON.stringify(newCameras));
-    setCameras(newCameras);
+    setCam(newCameras);
   };
 
   const handleStartRecording = () => {
@@ -103,13 +104,15 @@ const StreamPlayer = ({ rtspUrl, id, cameraName/* , onDelete, onStartRecording, 
   };
 
   return (
-    <div>
-      <div className={`canvas-container${port}`} >
-        <canvas id={`canvas${id}`} style={{ width: '500px' }} />
+    <div className={SSStyles.startContainer} style={{ width: '600px' }}>
+      <div className={`canvas-container${port}`}>
+        <canvas id={`canvas${id}`} style={{ width: '600px' }} />
         <div className="camera-name">{cameraName}</div>
-        <button onClick={handleDelete}>Удалить камеру</button>
-        <button onClick={handleStartRecording}>Старт записи</button>
-        <button onClick={handleTakeScreenshot}>Сделать скриншот</button>
+        <div className={SSStyles.buttonsContainer}>
+          <button onClick={handleDelete}>Удалить камеру</button>
+          <button onClick={handleStartRecording}>Старт записи</button>
+          <button onClick={handleTakeScreenshot}>Сделать скриншот</button>
+        </div>
         {error && <div style={{ color: 'red' }}>{error}</div>}
       </div>
     </div>

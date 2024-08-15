@@ -1,7 +1,7 @@
-import { FC, useEffect, useState } from 'react';
+import { FC, useEffect, useState, useRef } from 'react';
 import TStyles from './Transletion.module.css';
 import ListCamera from '../../components/ListCamera';
-import StartStream from '../../components/StartStream';
+import StreamPlayer from '../../components/StartStream'; // Импортируйте StreamPlayer
 import JSMpeg from '@cycjimmy/jsmpeg-player';
 
 interface Camera {
@@ -16,6 +16,8 @@ const Translation: FC = () => {
   const [isListCameraOpen, setIsListCameraOpen] = useState(false);
   const [selectedCameras, setSelectedCameras] = useState<Camera[]>([]);
   const [FlagLocal, setFlagLocal] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+  const canvasesContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const savedCameras = localStorage.getItem('cameras');
@@ -25,27 +27,17 @@ const Translation: FC = () => {
     }
   }, [FlagLocal]);
 
-
-
-  const handleStartRecording = (id: number) => {
-    console.log(`Start recording for camera with id ${id}`);
-    // Implement your recording logic here
-  };
-
-  const handleTakeScreenshot = (id: number) => {
-    console.log(`Take screenshot for camera with id ${id}`);
-    // Implement your screenshot logic here
-  };
-
   const handleCameraSelection = (cameras: Camera[]) => {
     setSelectedCameras(cameras);
     setIsListCameraOpen(false);
   };
 
+  const handleAddCamera = async () => {
+    setIsListCameraOpen(true);
+  };
+
   return (
     <div>
-      <button className={TStyles.plusSing} onClick={() => setIsListCameraOpen(true)}>+</button>
-
       <ListCamera
         open={isListCameraOpen}
         onClose={() => setIsListCameraOpen(false)}
@@ -54,18 +46,23 @@ const Translation: FC = () => {
       />
 
       {/* Отображение стримов для каждой выбранной камеры */}
-      <div id="canvases">
+      <div id="canvases" className={TStyles.canvasesContainer} /* ref={canvasesContainerRef} */>
         {cameras.map((camera) => (
-          <StartStream
+          <StreamPlayer
             key={camera.id}
             rtspUrl={camera.rtspUrl}
             id={camera.id}
             cameraName={camera.name ? camera.name : 'N/A'}
-/*             onDelete={handleDeleteCamera}
-            onStartRecording={handleStartRecording}
-            onTakeScreenshot={handleTakeScreenshot} */
+            setCam={setCameras}
           />
         ))}
+        <span
+          className={TStyles.plusSign}
+          onClick={handleAddCamera}
+          style={{ pointerEvents: isLoading ? 'none' : 'auto', cursor: isLoading ? 'default' : 'pointer' }}
+        >
+          {isLoading ? 'Подождите...' : '+'}
+        </span>
       </div>
     </div>
   );

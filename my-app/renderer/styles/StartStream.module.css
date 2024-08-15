@@ -1,0 +1,13 @@
+.buttonscontainer {
+    display: flex;
+    justify-content: center;
+}
+
+.buttonscontainer button {
+    width: 33.3%;
+}
+
+.startContainer {
+    border: 1px solid #ccc;
+    border-radius: 15px;
+}
