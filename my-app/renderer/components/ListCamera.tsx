@@ -21,6 +21,7 @@ const ListCamera: FC<ListCameraProps> = ({ open, onClose, onSelectCameras, FlagL
   useEffect(() => {
     if (open) {
       handleDiscoverCameras();
+      setSelectedCameras([]);
     }
   }, [open]);
 
@@ -39,32 +40,32 @@ const ListCamera: FC<ListCameraProps> = ({ open, onClose, onSelectCameras, FlagL
   };
 
   const handleCheckboxChange = (camera: Camera) => {
-    setSelectedCameras((prevSelectedCameras) =>
-      prevSelectedCameras.some((c) => c.id === camera.id)
-        ? prevSelectedCameras.filter((c) => c.id !== camera.id)
-        : [camera] // Устанавливаем только выбранную камеру
-    );
+    const isSelected = selectedCameras.includes(camera);
+    if (isSelected) {
+      setSelectedCameras(selectedCameras.filter((c) => c !== camera));
+    } else {
+      setSelectedCameras([...selectedCameras, camera]);
+    }
   };
 
   const handleStartStreams = () => {
     onSelectCameras(selectedCameras);
-    let FinalObjForCameras = []
-    selectedCameras.forEach((SerchedCamera, index) => 
-      {
-        const cameraName = SerchedCamera.name.split(/[^a-zA-Z0-9]/)[0];
-        const ipAddress = SerchedCamera.address.match(/(?:http:\/\/)?(\d+\.\d+\.\d+\.\d+)/)[1];
-        const rtspUrl = `rtsp://admin:Dd7560848@${ipAddress}`;
-        const savedCameras = localStorage.getItem('cameras');
-        let id = 0;
-        if(savedCameras.length != 0)
-        {
-          let newCameras = JSON.parse(savedCameras);
-          id = newCameras.length + 1;
-        }
-        const newCamera = { id, rtspUrl, name: cameraName };
-        FinalObjForCameras.push(newCamera);
-      })
-      localStorage.setItem('cameras', JSON.stringify(FinalObjForCameras));
+    const savedCameras = localStorage.getItem('cameras');
+    let camerasArray = [];
+
+    if (savedCameras.length != 0) {
+      camerasArray = JSON.parse(savedCameras);
+    }
+
+    selectedCameras.forEach((SerchedCamera, index) => {
+      const cameraName = SerchedCamera.name.split(/[^a-zA-Z0-9]/)[0];
+      const ipAddress = SerchedCamera.address.match(/(?:http:\/\/)?(\d+\.\d+\.\d+\.\d+)/)[1];
+      const rtspUrl = `rtsp://admin:Dd7560848@${ipAddress}`;
+      const newCamera = { id: camerasArray.length + 1, rtspUrl, name: cameraName };
+      camerasArray.push(newCamera);
+    })
+
+    localStorage.setItem('cameras', JSON.stringify(camerasArray));
     console.log(selectedCameras)
     FlagLocal()
   };
@@ -93,11 +94,7 @@ const ListCamera: FC<ListCameraProps> = ({ open, onClose, onSelectCameras, FlagL
                   <input type="text" placeholder="Введите название комнаты" />
                 </td>
                 <td>
-                  <input
-                    type="checkbox"
-                    onChange={() => handleCheckboxChange(camera)}
-                    checked={selectedCameras.some((c) => c.id === camera.id)}
-                  />
+                  <input type="checkbox" checked={selectedCameras.includes(camera)} onChange={() => handleCheckboxChange(camera)} />
                 </td>
               </tr>
             ))}

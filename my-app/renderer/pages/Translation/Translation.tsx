@@ -25,40 +25,16 @@ const Translation: FC = () => {
     }
   }, [FlagLocal]);
 
-  const handleDeleteCamera = async (id: number) => {
-    const savedCameras = localStorage.getItem('cameras');
-    if (!savedCameras) return;
-  
-    let newCameras: Camera[] = JSON.parse(savedCameras);
-    const camera = newCameras.find((camera) => camera.id === id);
-    if (!camera) return;
 
-    const port = 9999 + id;
-    const response = await fetch('http://localhost:4200/ip/stop-stream', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ port })
-    });
 
-    if (!response.ok) {
-      console.error(`Failed to stop stream: ${response.statusText}`);
-      return;
-    }
+  const handleStartRecording = (id: number) => {
+    console.log(`Start recording for camera with id ${id}`);
+    // Implement your recording logic here
+  };
 
-    if (JSMpeg.Players && JSMpeg.Players[port]) {
-      JSMpeg.Players[port].destroy();
-      delete JSMpeg.Players[port];
-    }
-
-    newCameras = newCameras.filter((camera) => camera.id !== id);
-    localStorage.setItem('cameras', JSON.stringify(newCameras));
-    const canvasContainer = document.querySelector(`.canvas-container[data-index="${id}"]`);
-    if (canvasContainer) {
-      canvasContainer.parentElement?.removeChild(canvasContainer);
-    }
-    setCameras(newCameras);
+  const handleTakeScreenshot = (id: number) => {
+    console.log(`Take screenshot for camera with id ${id}`);
+    // Implement your screenshot logic here
   };
 
   const handleCameraSelection = (cameras: Camera[]) => {
@@ -70,9 +46,9 @@ const Translation: FC = () => {
     <div>
       <button className={TStyles.plusSing} onClick={() => setIsListCameraOpen(true)}>+</button>
 
-      <ListCamera 
-        open={isListCameraOpen} 
-        onClose={() => setIsListCameraOpen(false)} 
+      <ListCamera
+        open={isListCameraOpen}
+        onClose={() => setIsListCameraOpen(false)}
         onSelectCameras={handleCameraSelection}
         FlagLocal={() => setFlagLocal(prev => !prev)}
       />
@@ -80,11 +56,15 @@ const Translation: FC = () => {
       {/* Отображение стримов для каждой выбранной камеры */}
       <div id="canvases">
         {cameras.map((camera) => (
-          <div key={camera.id}>
-            <h3>{camera.name ? camera.name : 'N/A'}</h3>
-            <StartStream rtspUrl={camera.rtspUrl} id={camera.id} cameraName={camera.name ? camera.name : 'N/A'} />
-            <button onClick={() => handleDeleteCamera(camera.id)}>Удалить камеру</button>
-          </div>
+          <StartStream
+            key={camera.id}
+            rtspUrl={camera.rtspUrl}
+            id={camera.id}
+            cameraName={camera.name ? camera.name : 'N/A'}
+/*             onDelete={handleDeleteCamera}
+            onStartRecording={handleStartRecording}
+            onTakeScreenshot={handleTakeScreenshot} */
+          />
         ))}
       </div>
     </div>
