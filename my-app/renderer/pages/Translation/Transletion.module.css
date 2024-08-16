@@ -8,10 +8,19 @@
 }
 
 .plusSign {
-    border: 1px solid #ccc;
     border-radius: 15px;
     display: flex;
     justify-content: center;
     align-items: center;
     font-size: 45px;
+    height: 100%;
+    width: 100%;
+}
+
+.listCameraPlaceholder{
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid #ccc;
+    border-radius: 15px;
 }

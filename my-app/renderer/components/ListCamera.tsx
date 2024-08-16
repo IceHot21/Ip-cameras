@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import LCStyles from '../styles/ListCamera.module.css';
 
 interface ListCameraProps {
@@ -14,28 +14,38 @@ interface Camera {
   address: string;
 }
 
-const ListCamera: FC<ListCameraProps> = ({ open, onClose, onSelectCameras, FlagLocal }) => {
+const ListCamera: React.FC<ListCameraProps> = ({
+  open,
+  onClose,
+  onSelectCameras,
+  FlagLocal,
+}) => {
   const [cameras, setCameras] = useState<Camera[]>([]);
   const [selectedCameras, setSelectedCameras] = useState<Camera[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (open) {
-      handleDiscoverCameras();
-      setSelectedCameras([]);
+      fetchCameras();
     }
   }, [open]);
 
-  const handleDiscoverCameras = async () => {
+  const fetchCameras = async () => {
+    setLoading(true);
+    setError(null);
     try {
       const response = await fetch('http://localhost:4200/ip/cameras-list');
       if (response.ok) {
         const discoveredCameras = await response.json();
         setCameras(discoveredCameras);
       } else {
-        console.error('Failed to discover cameras');
+        setError('Failed to discover cameras');
       }
-    } catch (error) {
-      console.error('Error discovering cameras:', error);
+    } catch (err) {
+      setError('Error discovering cameras: ' + err.message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -53,7 +63,7 @@ const ListCamera: FC<ListCameraProps> = ({ open, onClose, onSelectCameras, FlagL
     const savedCameras = localStorage.getItem('cameras');
     let camerasArray = [];
 
-    if (savedCameras.length != 0) {
+    if (savedCameras.length !== 0) {
       camerasArray = JSON.parse(savedCameras);
     }
 
@@ -63,47 +73,54 @@ const ListCamera: FC<ListCameraProps> = ({ open, onClose, onSelectCameras, FlagL
       const rtspUrl = `rtsp://admin:Dd7560848@${ipAddress}`;
       const newCamera = { id: camerasArray.length + 1, rtspUrl, name: cameraName };
       camerasArray.push(newCamera);
-    })
+    });
 
     localStorage.setItem('cameras', JSON.stringify(camerasArray));
-    console.log(selectedCameras)
-    FlagLocal()
+    console.log(selectedCameras);
+    FlagLocal();
   };
 
   if (!open) return null;
 
   return (
-    <div className={LCStyles.modalOverlay} onClick={onClose}>
-      <div className={LCStyles.modalContent} onClick={(e) => e.stopPropagation()}>
-        <button className={LCStyles.closeButton} onClick={onClose}>X</button>
-        <table className={LCStyles.tableContainer}>
-          <thead>
-            <tr>
-              <th>Название камеры</th>
-              <th>IP</th>
-              <th>Название комнаты</th>
-              <th>Выбрать</th>
-            </tr>
-          </thead>
-          <tbody>
-            {cameras.map((camera) => (
-              <tr key={camera.id}>
-                <td>{camera.name.split(/[^a-zA-Z0-9]/)[0]}</td>
-                <td>{camera.address ? camera.address.match(/(?:http:\/\/)?(\d+\.\d+\.\d+\.\d+)/)?.[1] : 'N/A'}</td>
-                <td>
-                  <input type="text" placeholder="Введите название комнаты" />
-                </td>
-                <td>
-                  <input type="checkbox" checked={selectedCameras.includes(camera)} onChange={() => handleCheckboxChange(camera)} />
-                </td>
+    <div className={LCStyles.container}>
+      {loading && <div className={LCStyles.loader}>Подождите...</div>}
+      {error && <div style={{ color: 'red' }}>{error}</div>}
+      {!loading && !error && (
+        <div className={LCStyles.tableContainer}>
+          <table>
+            <thead className={LCStyles.tableHeader}>
+              <tr>
+                <th>Название камеры</th>
+                <th>IP</th>
+                <th>Название комнаты</th>
+                <th>Выбрать</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-        <button className={LCStyles.startStreamButton} onClick={handleStartStreams}>
-          Запустить стримы
-        </button>
-      </div>
+            </thead>
+            <tbody>
+              {cameras.map((camera) => (
+                <tr key={camera.id}>
+                  <td>{camera.name.split(/[^a-zA-Z0-9]/)[0]}</td>
+                  <td>{camera.address ? camera.address.match(/(?:http:\/\/)?(\d+\.\d+\.\d+\.\d+)/)?.[1] : 'N/A'}</td>
+                  <td>
+                    <input type="text" placeholder="Введите название комнаты" />
+                  </td>
+                  <td>
+                    <input
+                      type="checkbox"
+                      checked={selectedCameras.includes(camera)}
+                      onChange={() => handleCheckboxChange(camera)}
+                    />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <button className={LCStyles.startStreamButton} onClick={handleStartStreams}>
+            Запустить стримы
+          </button>
+        </div>
+      )}
     </div>
   );
 };

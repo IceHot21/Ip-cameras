@@ -14,13 +14,15 @@
 .buttonsContainer button {
     padding: 10px;
     border: none;
-    border-left: 1px solid #eee;
-    border-right: 1px solid #eee;
     background-color: #888 !important;
     color: white;
     cursor: pointer;
     font-size: 14px;
     width: 32%;
+}
+
+.buttonsContainer button:hover{
+    transform: scale(1.1);
 }
 
 .startContainer {
@@ -32,7 +34,6 @@
     position: relative;
     margin: 10px;
     border-radius: 10px;
-    z-index: 1000;
 }
 
 .cameraName {
@@ -51,7 +52,7 @@
     width: 100%;
     border-top-right-radius: 10px;
     border-top-left-radius: 10px;
-    border: 1px solid #eee;
+    border-bottom: 1px solid #eee;
     background-color: #f9f9f978;
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
