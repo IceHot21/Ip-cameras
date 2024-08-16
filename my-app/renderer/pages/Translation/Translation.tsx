@@ -1,7 +1,7 @@
 import { FC, useEffect, useState, useRef } from 'react';
 import TStyles from './Transletion.module.css';
 import ListCamera from '../../components/ListCamera';
-import StreamPlayer from '../../components/StartStream'; // Импортируйте StreamPlayer
+import StreamPlayer from '../../components/StartStream'; 
 import JSMpeg from '@cycjimmy/jsmpeg-player';
 
 interface Camera {
@@ -46,7 +46,7 @@ const Translation: FC = () => {
       />
 
       {/* Отображение стримов для каждой выбранной камеры */}
-      <div id="canvases" className={TStyles.canvasesContainer} /* ref={canvasesContainerRef} */>
+      <div id="canvases" className={TStyles.canvasesContainer}>
         {cameras.map((camera) => (
           <StreamPlayer
             key={camera.id}

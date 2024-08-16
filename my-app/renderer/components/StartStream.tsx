@@ -138,10 +138,10 @@ const StreamPlayer = ({ rtspUrl, id, cameraName, setCam }) => {
   };
 
   return (
-    <div className={SSStyles.startContainer} style={{ width: '600px' }}>
-      <div className={`canvas-container${port}`}>
+    <div className={SSStyles.startContainer}>
+      <div className={`${SSStyles.canvasesContainer} canvas-container${port}`}>
+        <div className={`${SSStyles.cameraName} camera-name`}>{cameraName}</div>
         <canvas id={`canvas${id}`} style={{ width: '600px' }} />
-        <div className="camera-name">{cameraName}</div>
         <div className={SSStyles.buttonsContainer}>
           <button onClick={handleDelete}>Удалить камеру</button>
           <button onClick={isRecording ? handleStopRecording : handleStartRecording}>

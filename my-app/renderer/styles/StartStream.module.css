@@ -3,11 +3,57 @@
     justify-content: center;
 }
 
-.buttonscontainer button {
-    width: 33.3%;
+.buttonsContainer {
+    display: flex;
+    justify-content: space-between;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+    border-bottom: 1px solid #ccc;
+}
+
+.buttonsContainer button {
+    padding: 10px;
+    border: none;
+    border-left: 1px solid #eee;
+    border-right: 1px solid #eee;
+    background-color: #888 !important;
+    color: white;
+    cursor: pointer;
+    font-size: 14px;
+    width: 32%;
 }
 
 .startContainer {
     border: 1px solid #ccc;
     border-radius: 15px;
+}
+
+.canvasesContainer {
+    position: relative;
+    margin: 10px;
+    border-radius: 10px;
+    z-index: 1000;
+}
+
+.cameraName {
+    position: absolute;
+    background-color: rgba(255, 255, 255, 0.7);
+    padding: 5px;
+    font-weight: bold;
+    font-size: 14px;
+    color: black;
+    right: 0px;
+    border-top-right-radius: 10px;
+}
+
+.canvasesContainer canvas {
+    display: block;
+    width: 100%;
+    border-top-right-radius: 10px;
+    border-top-left-radius: 10px;
+    border: 1px solid #eee;
+    background-color: #f9f9f978;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    box-shadow: none;
 }
