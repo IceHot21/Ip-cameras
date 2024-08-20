@@ -45,6 +45,11 @@ const Room: FC<RoomProps> = ({ children, svgProps }) => {
               >
                 <div className={RStyles.indexText}>{index + 1}</div>
                 <SvgComponent {...svgProps} />
+                <div className={RStyles.gridOverlay}>
+                  {Array.from({ length: 100 }).map((_, i) => (
+                    <div key={i} className={RStyles.gridCell}></div>
+                  ))}
+                </div>
               </div>
             )
           ))}

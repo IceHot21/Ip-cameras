@@ -8,7 +8,7 @@ interface RoomProps {
   children: React.ReactNode;
   svgProps: any;
 }
-const Feeding:FC = () => {
+const Feeding: FC = () => {
   const [isListCameraOpen, setIsListCameraOpen] = useState(false);
   const [FlagLocal, setFlagLocal] = useState(true);
 
@@ -18,19 +18,19 @@ const Feeding:FC = () => {
   return (
     <div>
       <div className={FStyles.listContainer}>
-      <BsLayoutTextWindow 
-        className={FStyles.listIcon}
-        onClick={handleListCameraToogle}
-      />
+        <BsLayoutTextWindow
+          className={FStyles.listIcon}
+          onClick={handleListCameraToogle}
+        />
       </div>
       {isListCameraOpen && (
-              <ListCamera
-                open={isListCameraOpen}
-                onClose={() => setIsListCameraOpen(false)}
-                onSelectCameras={handleListCameraToogle}
-                FlagLocal={() => setFlagLocal(prev => !prev)}
-              />
-            )}
+        <ListCamera
+          open={isListCameraOpen}
+          onClose={() => setIsListCameraOpen(false)}
+          onSelectCameras={handleListCameraToogle}
+          FlagLocal={() => setFlagLocal(prev => !prev)}
+        />
+      )}
       <Room children={null} svgProps={{}} />
     </div>
   );

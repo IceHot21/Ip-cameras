@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import LCStyles from '../styles/ListCamera.module.css';
 import { BsFillCameraVideoFill } from "react-icons/bs";
+import { BiX } from "react-icons/bi";
+import { BiRevision } from "react-icons/bi";
 
 interface ListCameraProps {
   open: boolean;
@@ -23,11 +25,13 @@ const ListCamera: React.FC<ListCameraProps> = ({
 }) => {
   const [cameras, setCameras] = useState<Camera[]>([]);
   const [selectedCameras, setSelectedCameras] = useState<Camera[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
     if (open) {
+      setIsLoaded(true);
       fetchCameras();
     }
   }, [open]);
@@ -41,51 +45,49 @@ const ListCamera: React.FC<ListCameraProps> = ({
         const discoveredCameras = await response.json();
         setCameras(discoveredCameras);
       } else {
-        setError('Failed to discover cameras');
+        setError('Не удалось обнаружить камеры');
       }
     } catch (err) {
-      setError('Error discovering cameras: ' + err.message);
+      setError('Ошибка обнаружения камер: ' + err.message);
     } finally {
       setLoading(false);
     }
   };
 
-  const handleCheckboxChange = (camera: Camera) => {
+  const handleSelectCamera = (camera: Camera) => {
     const isSelected = selectedCameras.includes(camera);
     if (isSelected) {
-      setSelectedCameras(selectedCameras.filter((c) => c !== camera));
+      setSelectedCameras(selectedCameras.filter((c) => c.id !== camera.id));
     } else {
       setSelectedCameras([...selectedCameras, camera]);
     }
   };
 
-  const handleStartStreams = () => {
-    onSelectCameras(selectedCameras);
-    const savedCameras = localStorage.getItem('cameras');
-    let camerasArray = [];
-
-    if (savedCameras.length !== 0) {
-      camerasArray = JSON.parse(savedCameras);
+  const handleSelectAllCameras = () => {
+    if (selectedCameras.length === cameras.length) {
+      setSelectedCameras([]);
+    } else {
+      setSelectedCameras(cameras);
     }
+  };
 
-    selectedCameras.forEach((SerchedCamera, index) => {
-      const cameraName = SerchedCamera.name.split(/[^a-zA-Z0-9]/)[0];
-      const ipAddress = SerchedCamera.address.match(/(?:http:\/\/)?(\d+\.\d+\.\d+\.\d+)/)[1];
-      const rtspUrl = `rtsp://admin:Dd7560848@${ipAddress}`;
-      const newCamera = { id: camerasArray.length + 1, rtspUrl, name: cameraName };
-      camerasArray.push(newCamera);
-    });
-
-    localStorage.setItem('cameras', JSON.stringify(camerasArray));
-    console.log(selectedCameras);
-    FlagLocal();
+  const handleRefresh = () => {
+    fetchCameras();
   };
 
   if (!open) return null;
 
   return (
-    <div className={LCStyles.container}>
-      {error && <div style={{ color: 'red' }}>{error}</div>}
+    <div className={LCStyles.sidebar}>
+      <div className={LCStyles.buttonContainer}>
+        <button onClick={onClose} className={LCStyles.closeButton}><BiX/></button>
+        <button onClick={handleRefresh} className={LCStyles.refreshButton}><BiRevision /></button>
+      </div>
+      {isLoaded && loading && (
+        <div className={LCStyles.loadingTable}>
+          <p>Загрузка...</p>
+        </div>
+      )}
       {!loading && !error && (
         <div className={LCStyles.tableContainer}>
           <table>
@@ -101,11 +103,18 @@ const ListCamera: React.FC<ListCameraProps> = ({
                 <tr key={camera.id}>
                   <td>{camera.name.split(/[^a-zA-Z0-9]/)[0]}</td>
                   <td>{camera.address ? camera.address.match(/(?:http:\/\/)?(\d+\.\d+\.\d+\.\d+)/)?.[1] : 'N/A'}</td>
-                  <td><BsFillCameraVideoFill /></td>
+                  <td>
+                    <BsFillCameraVideoFill />
+                  </td>
                 </tr>
               ))}
             </tbody>
           </table>
+        </div>
+      )}
+      {error && (
+        <div>
+          <p>{error}</p>
         </div>
       )}
     </div>
