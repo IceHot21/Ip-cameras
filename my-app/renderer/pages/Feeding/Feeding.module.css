@@ -1,0 +1,13 @@
+.listIcon {
+    font-size: 34px;
+    cursor:pointer;
+}
+
+.listIcon:hover {
+    transform: scale(1.1);
+}
+.listContainer{
+    display:flex;
+    justify-content: flex-end;
+    padding: 35px;
+}

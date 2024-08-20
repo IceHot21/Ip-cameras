@@ -45,7 +45,7 @@ const MenuToggle = ({ toggle }) => (
 const Navigation = ({ onMenuItemClick }) => {
   const menuItems = [
     { name: "Главная", action: "/Feeding/Feeding", icon: <BiSolidHome size={24} />},
-    { name: "Трансляция", action: "/Translation/Translation", icon: <BiPlay size={24} /> },
+ /*    { name: "Трансляция", action: "/Translation/Translation", icon: <BiPlay size={24} /> }, */
     { name: "Видеоархив", action: "/Videoarchive/Videoarchive", icon: <BiCameraMovie size={24} /> },
     { name: "Фотоархив", action: "/Photoarchive/Photoarchive", icon: <BiCamera size={24} /> },
     { name: "Смена", action: "/LoginPage/LoginPage", icon: <BiRepeat size={24} /> },

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import LCStyles from '../styles/ListCamera.module.css';
+import { BsFillCameraVideoFill } from "react-icons/bs";
 
 interface ListCameraProps {
   open: boolean;
@@ -84,7 +85,6 @@ const ListCamera: React.FC<ListCameraProps> = ({
 
   return (
     <div className={LCStyles.container}>
-      {loading && <div className={LCStyles.loader}>Подождите...</div>}
       {error && <div style={{ color: 'red' }}>{error}</div>}
       {!loading && !error && (
         <div className={LCStyles.tableContainer}>
@@ -93,8 +93,7 @@ const ListCamera: React.FC<ListCameraProps> = ({
               <tr>
                 <th>Название камеры</th>
                 <th>IP</th>
-                <th>Название комнаты</th>
-                <th>Выбрать</th>
+                <th>Добавить</th>
               </tr>
             </thead>
             <tbody>
@@ -102,23 +101,11 @@ const ListCamera: React.FC<ListCameraProps> = ({
                 <tr key={camera.id}>
                   <td>{camera.name.split(/[^a-zA-Z0-9]/)[0]}</td>
                   <td>{camera.address ? camera.address.match(/(?:http:\/\/)?(\d+\.\d+\.\d+\.\d+)/)?.[1] : 'N/A'}</td>
-                  <td>
-                    <input type="text" placeholder="Введите название комнаты" />
-                  </td>
-                  <td>
-                    <input
-                      type="checkbox"
-                      checked={selectedCameras.includes(camera)}
-                      onChange={() => handleCheckboxChange(camera)}
-                    />
-                  </td>
+                  <td><BsFillCameraVideoFill /></td>
                 </tr>
               ))}
             </tbody>
           </table>
-          <button className={LCStyles.startStreamButton} onClick={handleStartStreams}>
-            Запустить стримы
-          </button>
         </div>
       )}
     </div>
