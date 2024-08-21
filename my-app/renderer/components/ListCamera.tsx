@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import LCStyles from '../styles/ListCamera.module.css';
 import { BsFillCameraVideoFill } from "react-icons/bs";
-import { BiX } from "react-icons/bi";
-import { BiRevision } from "react-icons/bi";
+import { BiX, BiRevision, BiSolidLayerPlus } from "react-icons/bi";
 
 interface ListCameraProps {
   open: boolean;
@@ -24,7 +23,6 @@ const ListCamera: React.FC<ListCameraProps> = ({
   FlagLocal,
 }) => {
   const [cameras, setCameras] = useState<Camera[]>([]);
-  const [selectedCameras, setSelectedCameras] = useState<Camera[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isLoaded, setIsLoaded] = useState(false);
@@ -54,34 +52,34 @@ const ListCamera: React.FC<ListCameraProps> = ({
     }
   };
 
-  const handleSelectCamera = (camera: Camera) => {
-    const isSelected = selectedCameras.includes(camera);
-    if (isSelected) {
-      setSelectedCameras(selectedCameras.filter((c) => c.id !== camera.id));
-    } else {
-      setSelectedCameras([...selectedCameras, camera]);
-    }
+  const handleDragStart = (e: React.DragEvent<HTMLTableCellElement>, camera: Camera) => {
+    e.dataTransfer.setData('camera', JSON.stringify(camera));
   };
 
-  const handleSelectAllCameras = () => {
-    if (selectedCameras.length === cameras.length) {
-      setSelectedCameras([]);
-    } else {
-      setSelectedCameras(cameras);
-    }
+  const removeCamera = (camera: Camera) => {
+    setCameras(cameras.filter((c) => c.id !== camera.id));
   };
 
-  const handleRefresh = () => {
-    fetchCameras();
+  const handleDrop = (e: React.DragEvent<HTMLTableCellElement>, camera: Camera) => {
+    e.preventDefault();
+    const droppedCamera: Camera = JSON.parse(e.dataTransfer.getData('camera'));
+    removeCamera(droppedCamera);
   };
+
+  const plusCamera = async () => {
+    
+  }
 
   if (!open) return null;
 
   return (
     <div className={LCStyles.sidebar}>
       <div className={LCStyles.buttonContainer}>
-        <button onClick={onClose} className={LCStyles.closeButton}><BiX/></button>
-        <button onClick={handleRefresh} className={LCStyles.refreshButton}><BiRevision /></button>
+        <button onClick={onClose} className={LCStyles.closeButton}><BiX /></button>
+        <div style={{display: 'flex'}}>
+        <button onClick={fetchCameras} className={LCStyles.refreshButton}><BiRevision /></button>
+        <button /* onClick={plusCamera}  */className={LCStyles.plusButton}><BiSolidLayerPlus /></button>
+        </div>
       </div>
       {isLoaded && loading && (
         <div className={LCStyles.loadingTable}>
@@ -103,7 +101,10 @@ const ListCamera: React.FC<ListCameraProps> = ({
                 <tr key={camera.id}>
                   <td>{camera.name.split(/[^a-zA-Z0-9]/)[0]}</td>
                   <td>{camera.address ? camera.address.match(/(?:http:\/\/)?(\d+\.\d+\.\d+\.\d+)/)?.[1] : 'N/A'}</td>
-                  <td>
+                  <td
+                    onDragStart={(e) => handleDragStart(e, camera)}
+                    draggable
+                  >
                     <BsFillCameraVideoFill />
                   </td>
                 </tr>

@@ -20,7 +20,8 @@
   justify-content: center;
   align-items: center;
 }
-.refreshButton {
+.refreshButton, 
+.plusButton {
   background: none;
   border: none;
   font-size: 26px;
