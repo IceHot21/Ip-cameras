@@ -95,7 +95,7 @@ const ListCamera: React.FC<ListCameraProps> = ({
               <tr>
                 <th>Название камеры</th>
                 <th>IP</th>
-                <th>Добавить</th>
+                <th><BsFillCameraVideoFill /></th>
               </tr>
             </thead>
             <tbody>

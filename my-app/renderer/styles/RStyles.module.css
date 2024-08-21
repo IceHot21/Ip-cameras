@@ -2,18 +2,17 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: 'DM Sans', sans-serif;
   transition: background 0.4s ease-in;
 }
 
 .container {
-  height: 100%; 
+  height: 100%;
   width: 90%;
   transform-style: preserve-3d;
   display: flex;
   justify-content: center;
   align-items: center;
-  position: relative; /* Ensure relative positioning for containing the grid */
+  position: relative;
 }
 
 .container svg {
@@ -25,7 +24,7 @@
 
 .cards {
   display: grid;
-  grid-template-columns: 25% 50%;
+  grid-template-columns: 25% 52%;
   align-items: center;
   justify-items: center;
 }
@@ -39,11 +38,11 @@
   cursor: pointer;
 }
 
-.indexText {
+/* .indexText {
   margin-bottom: 10px;
   font-size: 16px;
   font-weight: bold;
-}
+} */
 
 .card.inactive {
   transform: scale(0.8);
@@ -57,21 +56,43 @@
   transform: translateX(0) scale(1);
   opacity: 1;
   z-index: 1;
-  position: relative; /* Ensure relative positioning for containing the grid */
+  position: relative;
+  animation: fadeIn 1s ease-in;
 }
 
-.gridOverlay {
+.tableOverlay {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  display: grid;
-  grid-template-columns: repeat(10, 1fr); /* 5 columns, each 20% wide */
-  grid-template-rows: repeat(10, 1fr); /* 5 rows, each 20% high */
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-.gridCell {
+.tableOverlay table {
+  border-collapse: collapse;
+  width: 100%;
+  height: 100%;
+}
+
+.tableOverlay td {
   border: 1px solid rgba(0, 0, 0, 0.2);
+  padding: 10px;
+  text-align: center;
+  aspect-ratio: 1 / 1; 
+}
+
+.tableCell {
   background: transparent;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }

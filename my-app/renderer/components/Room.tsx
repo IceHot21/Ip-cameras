@@ -43,12 +43,21 @@ const Room: FC<RoomProps> = ({ children, svgProps }) => {
                 className={`${RStyles.card} ${RStyles.active}`}
                 onClick={() => handleSvgClick(index)}
               >
-                <div className={RStyles.indexText}>{index + 1}</div>
+{/*                 <div className={RStyles.indexText}>{index + 1}</div> */}
                 <SvgComponent {...svgProps} />
-                <div className={RStyles.gridOverlay}>
-                  {Array.from({ length: 100 }).map((_, i) => (
-                    <div key={i} className={RStyles.gridCell}></div>
-                  ))}
+                <div className={RStyles.tableOverlay}>
+                  <table>
+                    <tbody>
+                      {Array.from({ length: 15 }).map((_, i) => (
+                        <tr key={i}>
+                          {Array.from({ length: 20 }).map((_, j) => (
+                            <td key={j} className={RStyles.tableCell}>
+                            </td>
+                          ))}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
                 </div>
               </div>
             )

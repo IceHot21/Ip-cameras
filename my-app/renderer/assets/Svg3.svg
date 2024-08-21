@@ -2,9 +2,9 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   width="297mm"
-   height="210mm"
-   viewBox="0 0 297 210"
+   width="800mm"
+   height="600mm"
+   viewBox="0 0 3023.6221 2267.7165"
    version="1.1"
    id="svg1"
    xmlns="http://www.w3.org/2000/svg"
@@ -12,14 +12,16 @@
   <defs
      id="defs1" />
   <g
-     id="layer1">
+     id="layer1"
+     transform="matrix(5.5907822,0,0,6.8539332,-45.697156,-87.092665)">
     <g
        id="g48"
        transform="matrix(0.26458333,0,0,0.26458333,4.3631682,7.0622078)">
       <g
          shape-node=""
          id="g2"
-         transform="translate(-8.249703,-904.32342)">
+         transform="matrix(2.0305558,0,0,1.6561659,-31.616425,-1511.7118)"
+         style="fill:#000000;fill-opacity:1;stroke-width:0.674449;stroke-dasharray:none">
         <path
            cell-id="dywd90HHQDTC9VfVC1Rt-6"
            d="M 23,1026 V 926 h 100 v 10 H 33 v 90 z"
@@ -27,12 +29,14 @@
            stroke="#000000"
            stroke-miterlimit="10"
            pointer-events="all"
-           id="path2" />
+           id="path2"
+           style="fill:#000000;fill-opacity:1;stroke-width:0.674449;stroke-dasharray:none" />
       </g>
       <g
          shape-node=""
          id="g3"
-         transform="translate(-8.249703,-904.32342)">
+         transform="matrix(2.0302612,0,0,1.6572853,-30.210448,-1512.7477)"
+         style="stroke-width:0.674726;stroke-dasharray:none">
         <rect
            cell-id="dywd90HHQDTC9VfVC1Rt-7"
            x="123"
@@ -42,7 +46,8 @@
            fill="#ffffff"
            stroke="#000000"
            pointer-events="all"
-           id="rect2" />
+           id="rect2"
+           style="stroke-width:0.674726;stroke-dasharray:none" />
         <path
            cell-id="dywd90HHQDTC9VfVC1Rt-7"
            d="M 123,931 H 223"
@@ -50,12 +55,14 @@
            stroke="#000000"
            stroke-miterlimit="10"
            pointer-events="all"
-           id="path3" />
+           id="path3"
+           style="stroke-width:0.674726;stroke-dasharray:none" />
       </g>
       <g
          shape-node=""
          id="g4"
-         transform="translate(-8.249703,-904.32342)">
+         transform="matrix(2.0308629,0,0,1.6574315,-29.033958,-1512.8844)"
+         style="stroke-width:0.674726;stroke-dasharray:none">
         <rect
            cell-id="dywd90HHQDTC9VfVC1Rt-8"
            x="223"
@@ -65,12 +72,14 @@
            fill="#000000"
            stroke="#000000"
            pointer-events="all"
-           id="rect3" />
+           id="rect3"
+           style="stroke-width:0.674726;stroke-dasharray:none" />
       </g>
       <g
          shape-node=""
          id="g5"
-         transform="translate(-8.249703,-904.32342)">
+         transform="matrix(1.0151507,0,0,1.6571875,300.06852,-1512.6584)"
+         style="stroke-width:0.674726;stroke-dasharray:none">
         <rect
            cell-id="dywd90HHQDTC9VfVC1Rt-9"
            x="323"
@@ -80,7 +89,8 @@
            fill="#ffffff"
            stroke="#000000"
            pointer-events="all"
-           id="rect4" />
+           id="rect4"
+           style="stroke-width:0.674726;stroke-dasharray:none" />
         <path
            cell-id="dywd90HHQDTC9VfVC1Rt-9"
            d="M 323,931 H 423"
@@ -88,12 +98,14 @@
            stroke="#000000"
            stroke-miterlimit="10"
            pointer-events="all"
-           id="path4" />
+           id="path4"
+           style="stroke-width:0.674726;stroke-dasharray:none" />
       </g>
       <g
          shape-node=""
          id="g6"
-         transform="translate(-8.249703,-904.32342)">
+         transform="matrix(2.0291121,0,0,1.6576857,-127.69613,-1513.1212)"
+         style="stroke-width:0.674726;stroke-dasharray:none">
         <rect
            cell-id="dywd90HHQDTC9VfVC1Rt-10"
            x="423"
@@ -103,12 +115,14 @@
            fill="#000000"
            stroke="#000000"
            pointer-events="all"
-           id="rect5" />
+           id="rect5"
+           style="stroke-width:0.674726;stroke-dasharray:none" />
       </g>
       <g
          shape-node=""
          id="g7"
-         transform="translate(-8.249703,-904.32342)">
+         transform="matrix(2.737456,0,0,1.6582427,-496.56175,-1513.6386)"
+         style="stroke-width:0.674726;stroke-dasharray:none">
         <rect
            cell-id="dywd90HHQDTC9VfVC1Rt-11"
            x="523"
@@ -118,7 +132,8 @@
            fill="#ffffff"
            stroke="#000000"
            pointer-events="all"
-           id="rect6" />
+           id="rect6"
+           style="stroke-width:0.674726;stroke-dasharray:none" />
         <path
            cell-id="dywd90HHQDTC9VfVC1Rt-11"
            d="m 523,931 h 74"
@@ -126,12 +141,14 @@
            stroke="#000000"
            stroke-miterlimit="10"
            pointer-events="all"
-           id="path6" />
+           id="path6"
+           style="stroke-width:0.674726;stroke-dasharray:none" />
       </g>
       <g
          shape-node=""
          id="g8"
-         transform="translate(-8.249703,-904.32342)">
+         transform="matrix(1.6180714,0,0,1.6550557,172.59715,-1510.6838)"
+         style="stroke-width:0.674726;stroke-dasharray:none">
         <rect
            cell-id="dywd90HHQDTC9VfVC1Rt-12"
            x="597"
@@ -141,12 +158,14 @@
            fill="#000000"
            stroke="#000000"
            pointer-events="all"
-           id="rect7" />
+           id="rect7"
+           style="stroke-width:0.674726;stroke-dasharray:none" />
       </g>
       <g
          shape-node=""
          id="g9"
-         transform="translate(-8.249703,-904.32342)">
+         transform="matrix(1.3686785,0,0,1.6715956,353.91545,-1525.9938)"
+         style="stroke-width:0.674726;stroke-dasharray:none">
         <rect
            cell-id="dywd90HHQDTC9VfVC1Rt-14"
            x="723"
@@ -156,7 +175,8 @@
            fill="#ffffff"
            stroke="#000000"
            pointer-events="all"
-           id="rect8" />
+           id="rect8"
+           style="stroke-width:0.674726;stroke-dasharray:none" />
         <path
            cell-id="dywd90HHQDTC9VfVC1Rt-14"
            d="m 723,931 h 74"
@@ -164,12 +184,14 @@
            stroke="#000000"
            stroke-miterlimit="10"
            pointer-events="all"
-           id="path8" />
+           id="path8"
+           style="stroke-width:0.674726;stroke-dasharray:none" />
       </g>
       <g
          shape-node=""
          id="g10"
-         transform="translate(-8.249703,-904.32342)">
+         transform="matrix(2.0295507,0,0,1.655674,-173.61871,-1511.2422)"
+         style="stroke-width:0.674726;stroke-dasharray:none">
         <rect
            cell-id="dywd90HHQDTC9VfVC1Rt-15"
            x="798"
@@ -179,12 +201,14 @@
            fill="#000000"
            stroke="#000000"
            pointer-events="all"
-           id="rect9" />
+           id="rect9"
+           style="stroke-width:0.674726;stroke-dasharray:none" />
       </g>
       <g
          shape-node=""
          id="g11"
-         transform="translate(-8.249703,-904.32342)">
+         transform="matrix(2.0328298,0,0,1.6441336,-175.40217,-1500.429)"
+         style="stroke-width:0.674726;stroke-dasharray:none">
         <rect
            cell-id="dywd90HHQDTC9VfVC1Rt-16"
            x="898"
@@ -194,7 +218,8 @@
            fill="#ffffff"
            stroke="#000000"
            pointer-events="all"
-           id="rect10" />
+           id="rect10"
+           style="stroke-width:0.674726;stroke-dasharray:none" />
         <path
            cell-id="dywd90HHQDTC9VfVC1Rt-16"
            d="M 898,931 H 998"
@@ -202,12 +227,14 @@
            stroke="#000000"
            stroke-miterlimit="10"
            pointer-events="all"
-           id="path10" />
+           id="path10"
+           style="stroke-width:0.674726;stroke-dasharray:none" />
       </g>
       <g
          shape-node=""
          id="g12"
-         transform="translate(-8.249703,-904.32342)">
+         transform="matrix(2.0306698,0,0,1.6556933,-171.92073,-1511.2401)"
+         style="stroke-width:0.674726;stroke-dasharray:none">
         <path
            cell-id="dywd90HHQDTC9VfVC1Rt-17"
            d="M 998,1026 V 926 h 100 v 10 h -90 v 90 z"
@@ -216,12 +243,14 @@
            stroke-miterlimit="10"
            transform="rotate(90,1048,976)"
            pointer-events="all"
-           id="path11" />
+           id="path11"
+           style="stroke-width:0.674726;stroke-dasharray:none" />
       </g>
       <g
          shape-node=""
          id="g14"
-         transform="translate(-8.249703,-904.32342)">
+         transform="matrix(2.0270662,0,0,1.6561757,-31.509416,-1510.6062)"
+         style="stroke-width:0.674815;stroke-dasharray:none">
         <rect
            cell-id="yXGS2nNIjGBrIJSfOipT-5"
            x="-22"
@@ -232,7 +261,8 @@
            stroke="#000000"
            transform="rotate(90,28,1076)"
            pointer-events="all"
-           id="rect13" />
+           id="rect13"
+           style="stroke-width:0.674815;stroke-dasharray:none" />
         <path
            cell-id="yXGS2nNIjGBrIJSfOipT-5"
            d="M -22,1076 H 78"
@@ -241,12 +271,14 @@
            stroke-miterlimit="10"
            transform="rotate(90,28,1076)"
            pointer-events="all"
-           id="path13" />
+           id="path13"
+           style="stroke-width:0.674815;stroke-dasharray:none" />
       </g>
       <g
          shape-node=""
          id="g15"
-         transform="translate(-8.249703,-904.32342)">
+         transform="matrix(2.0274352,0,0,2.3898028,-31.520415,-2335.3043)"
+         style="stroke-width:0.674726;stroke-dasharray:none">
         <rect
            cell-id="yXGS2nNIjGBrIJSfOipT-6"
            x="-24"
@@ -257,35 +289,14 @@
            stroke="#000000"
            transform="rotate(90,28,1178)"
            pointer-events="all"
-           id="rect14" />
-      </g>
-      <g
-         shape-node=""
-         id="g16"
-         transform="translate(-8.249703,-904.32342)">
-        <rect
-           cell-id="yXGS2nNIjGBrIJSfOipT-7"
-           x="23"
-           y="1230"
-           width="80"
-           height="5"
-           fill="#ffffff"
-           stroke="#000000"
-           pointer-events="all"
-           id="rect15" />
-        <path
-           cell-id="yXGS2nNIjGBrIJSfOipT-7"
-           d="m 103,1235 c 0,44.18 -35.82,80 -80,80 v -80"
-           fill="none"
-           stroke="#000000"
-           stroke-miterlimit="10"
-           pointer-events="all"
-           id="path15" />
+           id="rect14"
+           style="stroke-width:0.674726;stroke-dasharray:none" />
       </g>
       <g
          shape-node=""
          id="g17"
-         transform="translate(-8.249703,-904.32342)">
+         transform="matrix(2.0279201,0,0,2.3900967,-31.528977,-2453.939)"
+         style="stroke-width:0.674726;stroke-dasharray:none">
         <rect
            cell-id="yXGS2nNIjGBrIJSfOipT-8"
            x="-24"
@@ -296,12 +307,14 @@
            stroke="#000000"
            transform="rotate(90,28,1367)"
            pointer-events="all"
-           id="rect16" />
+           id="rect16"
+           style="stroke-width:0.674726;stroke-dasharray:none" />
       </g>
       <g
          shape-node=""
          id="g18"
-         transform="translate(-8.249703,-904.32342)">
+         transform="matrix(2.0293219,0,0,1.6563334,-31.58358,-1413.0612)"
+         style="stroke-width:0.674726;stroke-dasharray:none">
         <rect
            cell-id="yXGS2nNIjGBrIJSfOipT-9"
            x="-22"
@@ -312,7 +325,8 @@
            stroke="#000000"
            transform="rotate(90,28,1470)"
            pointer-events="all"
-           id="rect17" />
+           id="rect17"
+           style="stroke-width:0.674726;stroke-dasharray:none" />
         <path
            cell-id="yXGS2nNIjGBrIJSfOipT-9"
            d="M -22,1470 H 78"
@@ -321,12 +335,14 @@
            stroke-miterlimit="10"
            transform="rotate(90,28,1470)"
            pointer-events="all"
-           id="path17" />
+           id="path17"
+           style="stroke-width:0.674726;stroke-dasharray:none" />
       </g>
       <g
          shape-node=""
          id="g19"
-         transform="translate(-8.249703,-904.32342)">
+         transform="matrix(2.0305005,0,0,1.6559851,-31.609932,-1411.4139)"
+         style="stroke-width:0.674726;stroke-dasharray:none">
         <path
            cell-id="yXGS2nNIjGBrIJSfOipT-10"
            d="m 23,1620 v -100 h 100 v 10 H 33 v 90 z"
@@ -335,12 +351,14 @@
            stroke-miterlimit="10"
            transform="rotate(-90,73,1570)"
            pointer-events="all"
-           id="path18" />
+           id="path18"
+           style="stroke-width:0.674726;stroke-dasharray:none" />
       </g>
       <g
          shape-node=""
          id="g20"
-         transform="translate(-8.249703,-904.32342)">
+         transform="matrix(1.0151745,0,0,1.6568395,93.28537,-1412.8002)"
+         style="stroke-width:0.674726;stroke-dasharray:none">
         <rect
            cell-id="yXGS2nNIjGBrIJSfOipT-11"
            x="124"
@@ -350,7 +368,8 @@
            fill="#ffffff"
            stroke="#000000"
            pointer-events="all"
-           id="rect19" />
+           id="rect19"
+           style="stroke-width:0.674726;stroke-dasharray:none" />
         <path
            cell-id="yXGS2nNIjGBrIJSfOipT-11"
            d="M 124,1615 H 224"
@@ -358,12 +377,14 @@
            stroke="#000000"
            stroke-miterlimit="10"
            pointer-events="all"
-           id="path19" />
+           id="path19"
+           style="stroke-width:0.674726;stroke-dasharray:none" />
       </g>
       <g
          shape-node=""
          id="g21"
-         transform="translate(-8.249703,-904.32342)">
+         transform="matrix(3.0460091,0,0,1.6550625,-360.27932,-1409.9178)"
+         style="stroke-width:0.674726;stroke-dasharray:none">
         <rect
            cell-id="yXGS2nNIjGBrIJSfOipT-12"
            x="224"
@@ -373,12 +394,14 @@
            fill="#000000"
            stroke="#000000"
            pointer-events="all"
-           id="rect20" />
+           id="rect20"
+           style="stroke-width:0.674726;stroke-dasharray:none" />
       </g>
       <g
          shape-node=""
          id="g22"
-         transform="translate(-8.249703,-904.32342)">
+         transform="matrix(2.0302364,0,0,1.655151,-29.489464,-1410.0607)"
+         style="stroke-width:0.674726;stroke-dasharray:none">
         <rect
            cell-id="yXGS2nNIjGBrIJSfOipT-13"
            x="324"
@@ -388,7 +411,8 @@
            fill="#ffffff"
            stroke="#000000"
            pointer-events="all"
-           id="rect21" />
+           id="rect21"
+           style="stroke-width:0.674726;stroke-dasharray:none" />
         <path
            cell-id="yXGS2nNIjGBrIJSfOipT-13"
            d="M 324,1615 H 424"
@@ -396,12 +420,14 @@
            stroke="#000000"
            stroke-miterlimit="10"
            pointer-events="all"
-           id="path21" />
+           id="path21"
+           style="stroke-width:0.674726;stroke-dasharray:none" />
       </g>
       <g
          shape-node=""
          id="g23"
-         transform="translate(-8.249703,-904.32342)">
+         transform="matrix(1.7187498,0,0,1.64834,103.86719,-1399.0308)"
+         style="stroke-width:0.674726;stroke-dasharray:none">
         <rect
            cell-id="yXGS2nNIjGBrIJSfOipT-18"
            x="424"
@@ -411,12 +437,14 @@
            fill="#000000"
            stroke="#000000"
            pointer-events="all"
-           id="rect22" />
+           id="rect22"
+           style="stroke-width:0.674726;stroke-dasharray:none" />
       </g>
       <g
          shape-node=""
          id="g24"
-         transform="translate(-8.249703,-904.32342)">
+         transform="matrix(2.0299714,0,0,1.6492388,-174.65775,-1400.4824)"
+         style="stroke-width:0.674726;stroke-dasharray:none">
         <rect
            cell-id="yXGS2nNIjGBrIJSfOipT-19"
            x="899"
@@ -426,7 +454,8 @@
            fill="#ffffff"
            stroke="#000000"
            pointer-events="all"
-           id="rect23" />
+           id="rect23"
+           style="stroke-width:0.674726;stroke-dasharray:none" />
         <path
            cell-id="yXGS2nNIjGBrIJSfOipT-19"
            d="M 899,1615 H 999"
@@ -434,12 +463,14 @@
            stroke="#000000"
            stroke-miterlimit="10"
            pointer-events="all"
-           id="path23" />
+           id="path23"
+           style="stroke-width:0.674726;stroke-dasharray:none" />
       </g>
       <g
          shape-node=""
          id="g25"
-         transform="translate(-8.249703,-904.32342)">
+         transform="matrix(2.0717516,0,0,1.656154,-217.08528,-1411.6874)"
+         style="stroke-width:0.674726;stroke-dasharray:none">
         <path
            cell-id="yXGS2nNIjGBrIJSfOipT-20"
            d="m 1000,1620 v -100 h 98 v 10 h -88 v 90 z"
@@ -448,12 +479,14 @@
            stroke-miterlimit="10"
            transform="rotate(180,1049,1570)"
            pointer-events="all"
-           id="path24" />
+           id="path24"
+           style="stroke-width:0.674726;stroke-dasharray:none" />
       </g>
       <g
          shape-node=""
          id="g26"
-         transform="translate(-8.249703,-904.32342)">
+         transform="matrix(2.0237199,0,0,1.7984466,-30.7729,-1675.6108)"
+         style="stroke-width:0.674726;stroke-dasharray:none">
         <rect
            cell-id="yXGS2nNIjGBrIJSfOipT-21"
            x="33"
@@ -463,12 +496,14 @@
            fill="#000000"
            stroke="#000000"
            pointer-events="all"
-           id="rect25" />
+           id="rect25"
+           style="stroke-width:0.674726;stroke-dasharray:none" />
       </g>
       <g
          shape-node=""
          id="g27"
-         transform="translate(-8.249703,-904.32342)">
+         transform="matrix(1.1936605,0,0,1.0333349,155.64938,-776.34671)"
+         style="stroke-width:0.674726;stroke-dasharray:none">
         <rect
            cell-id="yXGS2nNIjGBrIJSfOipT-22"
            x="227"
@@ -479,7 +514,8 @@
            stroke="#000000"
            transform="rotate(-90,267,1135)"
            pointer-events="all"
-           id="rect26" />
+           id="rect26"
+           style="stroke-width:0.674726;stroke-dasharray:none" />
         <path
            cell-id="yXGS2nNIjGBrIJSfOipT-22"
            d="m 307,1097.5 c 0,44.18 -35.82,80 -80,80 v -80"
@@ -488,12 +524,42 @@
            stroke-miterlimit="10"
            transform="rotate(-90,267,1135)"
            pointer-events="all"
-           id="path26" />
+           id="path26"
+           style="stroke-width:0.674726;stroke-dasharray:none" />
+      </g>
+      <g
+         shape-node=""
+         id="g27-2"
+         transform="matrix(1.2023457,0,0,1.0282212,868.68534,-770.39677)"
+         style="stroke-width:0.674726;stroke-dasharray:none">
+        <rect
+           cell-id="yXGS2nNIjGBrIJSfOipT-22"
+           x="227"
+           y="1092.5"
+           width="80"
+           height="5"
+           fill="#ffffff"
+           stroke="#000000"
+           transform="rotate(-90,267,1135)"
+           pointer-events="all"
+           id="rect26-3"
+           style="stroke-width:0.674726;stroke-dasharray:none" />
+        <path
+           cell-id="yXGS2nNIjGBrIJSfOipT-22"
+           d="m 307,1097.5 c 0,44.18 -35.82,80 -80,80 v -80"
+           fill="none"
+           stroke="#000000"
+           stroke-miterlimit="10"
+           transform="rotate(-90,267,1135)"
+           pointer-events="all"
+           id="path26-4"
+           style="stroke-width:0.674726;stroke-dasharray:none" />
       </g>
       <g
          shape-node=""
          id="g28"
-         transform="translate(-8.249703,-904.32342)">
+         transform="matrix(1.8506602,0,0,1.6648928,-47.631131,-1518.6716)"
+         style="stroke-width:0.674726;stroke-dasharray:none">
         <path
            cell-id="yXGS2nNIjGBrIJSfOipT-23"
            d="M 310,1175 V 936 h 165 v 10 H 320 v 229 z"
@@ -502,12 +568,14 @@
            stroke-miterlimit="10"
            transform="rotate(180,392.5,1055.5)"
            pointer-events="all"
-           id="path27" />
+           id="path27"
+           style="stroke-width:0.674726;stroke-dasharray:none" />
       </g>
       <g
          shape-node=""
          id="g29"
-         transform="translate(-8.249703,-904.32342)">
+         transform="matrix(2.479711,0,0,1.6640486,-345.38344,-1517.6881)"
+         style="stroke-width:0.674726;stroke-dasharray:none">
         <rect
            cell-id="yXGS2nNIjGBrIJSfOipT-24"
            x="475"
@@ -517,12 +585,14 @@
            fill="#000000"
            stroke="#000000"
            pointer-events="all"
-           id="rect28" />
+           id="rect28"
+           style="stroke-width:0.674726;stroke-dasharray:none" />
       </g>
       <g
          shape-node=""
          id="g31"
-         transform="translate(-8.249703,-904.32342)">
+         transform="matrix(2.0123777,0,0,1.664989,-134.97132,-1518.8129)"
+         style="stroke-width:0.674726;stroke-dasharray:none">
         <path
            cell-id="yXGS2nNIjGBrIJSfOipT-26"
            d="M 684,1175 V 936 h 152 v 10 H 694 v 229 z"
@@ -531,12 +601,14 @@
            stroke-miterlimit="10"
            transform="rotate(180,760,1055.5)"
            pointer-events="all"
-           id="path30" />
+           id="path30"
+           style="stroke-width:0.674726;stroke-dasharray:none" />
       </g>
       <g
          shape-node=""
          id="g32"
-         transform="translate(-8.249703,-904.32342)">
+         transform="matrix(2.0781522,0,0,1.6563058,-224.05575,-1512.4031)"
+         style="stroke-width:0.674726;stroke-dasharray:none">
         <rect
            cell-id="yXGS2nNIjGBrIJSfOipT-27"
            x="1043"
@@ -547,7 +619,8 @@
            stroke="#000000"
            transform="rotate(90,1093,1077)"
            pointer-events="all"
-           id="rect31" />
+           id="rect31"
+           style="stroke-width:0.674726;stroke-dasharray:none" />
         <path
            cell-id="yXGS2nNIjGBrIJSfOipT-27"
            d="m 1043,1077 h 100"
@@ -556,12 +629,14 @@
            stroke-miterlimit="10"
            transform="rotate(90,1093,1077)"
            pointer-events="all"
-           id="path31" />
+           id="path31"
+           style="stroke-width:0.674726;stroke-dasharray:none" />
       </g>
       <g
          shape-node=""
          id="g33"
-         transform="translate(-8.249703,-904.32342)">
+         transform="matrix(2.0718128,0,0,1.9939949,-217.15468,-1893.7364)"
+         style="stroke-width:0.674726;stroke-dasharray:none">
         <rect
            cell-id="yXGS2nNIjGBrIJSfOipT-29"
            x="947"
@@ -572,12 +647,14 @@
            stroke="#000000"
            transform="rotate(90,1093,1274)"
            pointer-events="all"
-           id="rect32" />
+           id="rect32"
+           style="stroke-width:0.674726;stroke-dasharray:none" />
       </g>
       <g
          shape-node=""
          id="g34"
-         transform="translate(-8.249703,-904.32342)">
+         transform="matrix(2.0743203,0,0,1.6555246,-219.84696,-1413.5056)"
+         style="stroke-width:0.674726;stroke-dasharray:none">
         <rect
            cell-id="yXGS2nNIjGBrIJSfOipT-30"
            x="1043"
@@ -588,7 +665,8 @@
            stroke="#000000"
            transform="rotate(90,1093,1471)"
            pointer-events="all"
-           id="rect33" />
+           id="rect33"
+           style="stroke-width:0.674726;stroke-dasharray:none" />
         <path
            cell-id="yXGS2nNIjGBrIJSfOipT-30"
            d="m 1043,1471 h 100"
@@ -597,12 +675,14 @@
            stroke-miterlimit="10"
            transform="rotate(90,1093,1471)"
            pointer-events="all"
-           id="path33" />
+           id="path33"
+           style="stroke-width:0.674726;stroke-dasharray:none" />
       </g>
       <g
          shape-node=""
          id="g35"
-         transform="translate(-8.249703,-904.32342)">
+         transform="matrix(2.1308927,0,0,1.7937244,-234.86435,-1670.0924)"
+         style="stroke-width:0.674726;stroke-dasharray:none">
         <rect
            cell-id="yXGS2nNIjGBrIJSfOipT-31"
            x="837"
@@ -612,12 +692,14 @@
            fill="#000000"
            stroke="#000000"
            pointer-events="all"
-           id="rect34" />
+           id="rect34"
+           style="stroke-width:0.674726;stroke-dasharray:none" />
       </g>
       <g
          shape-node=""
          id="g36"
-         transform="translate(-8.249703,-904.32342)">
+         transform="matrix(1.1931048,0,0,1.0333527,639.61521,-776.36614)"
+         style="stroke-width:0.674726;stroke-dasharray:none">
         <rect
            cell-id="yXGS2nNIjGBrIJSfOipT-32"
            x="935"
@@ -628,7 +710,8 @@
            stroke="#000000"
            transform="rotate(-90,975,1135)"
            pointer-events="all"
-           id="rect35" />
+           id="rect35"
+           style="stroke-width:0.674726;stroke-dasharray:none" />
         <path
            cell-id="yXGS2nNIjGBrIJSfOipT-32"
            d="m 1015,1097.5 c 0,44.18 -35.82,80 -80,80 v -80"
@@ -637,12 +720,14 @@
            stroke-miterlimit="10"
            transform="rotate(-90,975,1135)"
            pointer-events="all"
-           id="path35" />
+           id="path35"
+           style="stroke-width:0.674726;stroke-dasharray:none" />
       </g>
       <g
          shape-node=""
          id="g37"
-         transform="translate(-8.249703,-904.32342)">
+         transform="matrix(2.6203132,0,0,1.781269,-812.74008,-1655.5196)"
+         style="stroke-width:0.674726;stroke-dasharray:none">
         <rect
            cell-id="yXGS2nNIjGBrIJSfOipT-33"
            x="1018"
@@ -652,27 +737,31 @@
            fill="#000000"
            stroke="#000000"
            pointer-events="all"
-           id="rect36" />
+           id="rect36"
+           style="stroke-width:0.674726;stroke-dasharray:none" />
       </g>
       <g
          shape-node=""
          id="g38"
-         transform="translate(-8.249703,-904.32342)">
+         transform="matrix(2.3238518,0,0,1.7963356,-42.256891,-1599.996)"
+         style="stroke-width:0.674726;stroke-dasharray:none">
         <rect
            cell-id="yXGS2nNIjGBrIJSfOipT-35"
-           x="34"
-           y="1367"
-           width="78"
-           height="10"
+           x="33.994694"
+           y="1366.9946"
+           width="78.031418"
+           height="9.1021223"
            fill="#000000"
            stroke="#000000"
            pointer-events="all"
-           id="rect37" />
+           id="rect37"
+           style="stroke-width:0.643851;stroke-dasharray:none" />
       </g>
       <g
          shape-node=""
          id="g39"
-         transform="translate(-8.249703,-904.32342)">
+         transform="matrix(2.4435501,0,0,1.632901,-216.66234,-1376.5649)"
+         style="stroke-width:0.674726;stroke-dasharray:none">
         <rect
            cell-id="yXGS2nNIjGBrIJSfOipT-36"
            x="304"
@@ -682,12 +771,14 @@
            fill="#000000"
            stroke="#000000"
            pointer-events="all"
-           id="rect38" />
+           id="rect38"
+           style="stroke-width:0.674726;stroke-dasharray:none" />
       </g>
       <g
          shape-node=""
          id="g40"
-         transform="translate(-8.249703,-904.32342)">
+         transform="matrix(1.1931547,0,0,1.0331263,84.975714,-556.90958)"
+         style="stroke-width:0.674726;stroke-dasharray:none">
         <rect
            cell-id="yXGS2nNIjGBrIJSfOipT-39"
            x="115"
@@ -698,7 +789,8 @@
            stroke="#000000"
            transform="rotate(90,155,1407)"
            pointer-events="all"
-           id="rect39" />
+           id="rect39"
+           style="stroke-width:0.674726;stroke-dasharray:none" />
         <path
            cell-id="yXGS2nNIjGBrIJSfOipT-39"
            d="m 195,1369.5 c 0,44.18 -35.82,80 -80,80 v -80"
@@ -707,12 +799,14 @@
            stroke-miterlimit="10"
            transform="rotate(90,155,1407)"
            pointer-events="all"
-           id="path39" />
+           id="path39"
+           style="stroke-width:0.674726;stroke-dasharray:none" />
       </g>
       <g
          shape-node=""
          id="g41"
-         transform="translate(-8.249703,-904.32342)">
+         transform="matrix(1.9165077,0,0,1.6380284,-57.843155,-1383.6253)"
+         style="stroke-width:0.674726;stroke-dasharray:none">
         <path
            cell-id="yXGS2nNIjGBrIJSfOipT-40"
            d="m 129.5,1541.5 v -106 h 243 v 10 h -233 v 96 z"
@@ -721,12 +815,14 @@
            stroke-miterlimit="10"
            transform="rotate(90,251,1488.5)"
            pointer-events="all"
-           id="path40" />
+           id="path40"
+           style="stroke-width:0.674726;stroke-dasharray:none" />
       </g>
       <g
          shape-node=""
          id="g42"
-         transform="translate(-8.249703,-904.32342)">
+         transform="matrix(1.1928747,0,0,1.0333759,267.98031,-557.27003)"
+         style="stroke-width:0.674726;stroke-dasharray:none">
         <rect
            cell-id="yXGS2nNIjGBrIJSfOipT-41"
            x="390"
@@ -737,7 +833,8 @@
            stroke="#000000"
            transform="rotate(90,430,1407)"
            pointer-events="all"
-           id="rect41" />
+           id="rect41"
+           style="stroke-width:0.674726;stroke-dasharray:none" />
         <path
            cell-id="yXGS2nNIjGBrIJSfOipT-41"
            d="m 470,1369.5 c 0,44.18 -35.81,80 -80,80 v -80"
@@ -746,12 +843,14 @@
            stroke-miterlimit="10"
            transform="rotate(90,430,1407)"
            pointer-events="all"
-           id="path41" />
+           id="path41"
+           style="stroke-width:0.674726;stroke-dasharray:none" />
       </g>
       <g
          shape-node=""
          id="g43"
-         transform="translate(-8.249703,-904.32342)">
+         transform="matrix(2.8124849,0,0,1.6383941,-497.34014,-1384.1262)"
+         style="stroke-width:0.674726;stroke-dasharray:none">
         <path
            cell-id="yXGS2nNIjGBrIJSfOipT-42"
            d="m 387.5,1524.5 v -72 h 243 v 10 h -233 v 62 z"
@@ -760,12 +859,14 @@
            stroke-miterlimit="10"
            transform="rotate(90,509,1488.5)"
            pointer-events="all"
-           id="path42" />
+           id="path42"
+           style="stroke-width:0.674726;stroke-dasharray:none" />
       </g>
       <g
          shape-node=""
          id="g45"
-         transform="translate(-8.249703,-904.32342)">
+         transform="matrix(1.9720515,0,0,1.65574,-108.14531,-1407.8211)"
+         style="stroke-width:0.674726;stroke-dasharray:none">
         <path
            cell-id="LJH3iPK0ykXcOXy-PzSb-2"
            d="m 788,1467 v -100 h 300 v 10 H 798 v 90 z"
@@ -773,12 +874,14 @@
            stroke="#000000"
            stroke-miterlimit="10"
            pointer-events="all"
-           id="path45" />
+           id="path45"
+           style="stroke-width:0.674726;stroke-dasharray:none" />
       </g>
       <g
          shape-node=""
          id="g46"
-         transform="translate(-8.249703,-904.32342)">
+         transform="matrix(1.2667838,0,0,0.97308699,447.40965,-406.42376)"
+         style="stroke-width:0.674726;stroke-dasharray:none">
         <rect
            cell-id="LJH3iPK0ykXcOXy-PzSb-3"
            x="788"
@@ -788,7 +891,8 @@
            fill="#ffffff"
            stroke="#000000"
            pointer-events="all"
-           id="rect45" />
+           id="rect45"
+           style="stroke-width:0.674726;stroke-dasharray:none" />
         <path
            cell-id="LJH3iPK0ykXcOXy-PzSb-3"
            d="m 868,1473 c 0,44.18 -35.82,80 -80,80 v -80"
@@ -796,12 +900,14 @@
            stroke="#000000"
            stroke-miterlimit="10"
            pointer-events="all"
-           id="path46" />
+           id="path46"
+           style="stroke-width:0.674726;stroke-dasharray:none" />
       </g>
       <g
          shape-node=""
          id="g47"
-         transform="translate(-8.249703,-904.32342)">
+         transform="matrix(1.8736942,0,0,2.5881556,-30.703326,-2913.4229)"
+         style="stroke-width:0.674726;stroke-dasharray:none">
         <rect
            cell-id="LJH3iPK0ykXcOXy-PzSb-4"
            x="764.5"
@@ -812,7 +918,8 @@
            stroke="#000000"
            transform="rotate(90,793,1581.5)"
            pointer-events="all"
-           id="rect46" />
+           id="rect46"
+           style="stroke-width:0.674726;stroke-dasharray:none" />
       </g>
     </g>
   </g>
