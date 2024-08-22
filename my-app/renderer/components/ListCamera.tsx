@@ -8,7 +8,7 @@ interface ListCameraProps {
   onClose: () => void;
   onSelectCameras: (cameras: any[]) => void;
   FlagLocal: () => void;
-  onGridOpen: () => void; 
+  onGridOpen: () => void;
 }
 
 interface Camera {
@@ -22,7 +22,7 @@ const ListCamera: React.FC<ListCameraProps> = ({
   onClose,
   onSelectCameras,
   FlagLocal,
-  onGridOpen, 
+  onGridOpen,
 }) => {
   const [cameras, setCameras] = useState<Camera[]>([]);
   const [loading, setLoading] = useState(true);
@@ -74,9 +74,9 @@ const ListCamera: React.FC<ListCameraProps> = ({
     <div className={LCStyles.sidebar}>
       <div className={LCStyles.buttonContainer}>
         <button onClick={onClose} className={LCStyles.closeButton}><BiX /></button>
-        <div style={{display: 'flex'}}>
-        <button onClick={fetchCameras} className={LCStyles.refreshButton}><BiRevision /></button>
-        <button onClick={onGridOpen} className={LCStyles.plusButton}><BiSolidLayerPlus /></button>
+        <div style={{ display: 'flex' }}>
+          <button onClick={fetchCameras} className={LCStyles.refreshButton}><BiRevision /></button>
+          <button onClick={onGridOpen} className={LCStyles.plusButton}><BiSolidLayerPlus /></button>
         </div>
       </div>
       {isLoaded && loading && (
@@ -99,12 +99,14 @@ const ListCamera: React.FC<ListCameraProps> = ({
                 <tr key={camera.id}>
                   <td>{camera.name.split(/[^a-zA-Z0-9]/)[0]}</td>
                   <td>{camera.address ? camera.address.match(/(?:http:\/\/)?(\d+\.\d+\.\d+\.\d+)/)?.[1] : 'N/A'}</td>
-                  <td
+                  <button
+                    type="button"
                     onDragStart={(e) => handleDragStart(e, camera)}
                     draggable
+                    className={LCStyles.draggableButton}
                   >
                     <BsFillCameraVideoFill />
-                  </td>
+                  </button>
                 </tr>
               ))}
             </tbody>

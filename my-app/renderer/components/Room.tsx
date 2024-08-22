@@ -81,10 +81,6 @@ const Room: FC<RoomProps> = ({ children, svgProps, onCameraDropped }) => {
         </div>
         {children}
       </div>
-      {/* Добавляем сетку во второй столбец */}
-{/*       <div className={RStyles.gridContainer}>
-        <Grid />
-      </div> */}
     </div>
   );
 };
