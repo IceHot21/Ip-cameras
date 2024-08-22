@@ -8,6 +8,7 @@ interface ListCameraProps {
   onClose: () => void;
   onSelectCameras: (cameras: any[]) => void;
   FlagLocal: () => void;
+  onGridOpen: () => void; 
 }
 
 interface Camera {
@@ -21,6 +22,7 @@ const ListCamera: React.FC<ListCameraProps> = ({
   onClose,
   onSelectCameras,
   FlagLocal,
+  onGridOpen, 
 }) => {
   const [cameras, setCameras] = useState<Camera[]>([]);
   const [loading, setLoading] = useState(true);
@@ -66,10 +68,6 @@ const ListCamera: React.FC<ListCameraProps> = ({
     removeCamera(droppedCamera);
   };
 
-  const plusCamera = async () => {
-    
-  }
-
   if (!open) return null;
 
   return (
@@ -78,7 +76,7 @@ const ListCamera: React.FC<ListCameraProps> = ({
         <button onClick={onClose} className={LCStyles.closeButton}><BiX /></button>
         <div style={{display: 'flex'}}>
         <button onClick={fetchCameras} className={LCStyles.refreshButton}><BiRevision /></button>
-        <button /* onClick={plusCamera}  */className={LCStyles.plusButton}><BiSolidLayerPlus /></button>
+        <button onClick={onGridOpen} className={LCStyles.plusButton}><BiSolidLayerPlus /></button>
         </div>
       </div>
       {isLoaded && loading && (

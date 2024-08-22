@@ -2,8 +2,9 @@ import React, { FC, useState } from 'react';
 import Svg1 from '../assets/Svg1.svg';
 import Svg2 from '../assets/Svg2.svg';
 import Svg3 from '../assets/Svg3.svg';
-import RStyles from '../styles/RStyles.module.css';
+import RStyles from '../styles/Room.module.css';
 import { BsFillCameraVideoFill } from "react-icons/bs";
+import Grid from './Grid'; 
 
 type RoomProps = {
   children: React.ReactNode;
@@ -60,6 +61,7 @@ const Room: FC<RoomProps> = ({ children, svgProps, onCameraDropped }) => {
                   className={`${RStyles.card} ${RStyles.inactive}`}
                   onClick={() => handleSvgClick(index)}
                 >
+                  <div className={RStyles.indexText}>{index + 1}</div>
                   <SvgComponent {...svgProps} />
                 </div>
               )
@@ -73,38 +75,16 @@ const Room: FC<RoomProps> = ({ children, svgProps, onCameraDropped }) => {
                 onClick={() => handleSvgClick(index)}
               >
                 <SvgComponent {...svgProps} />
-                <div className={RStyles.tableOverlay}>
-                  <table>
-                    <tbody>
-                      {Array.from({ length: 15 }).map((_, rowIndex) => (
-                        <tr key={rowIndex}>
-                          {Array.from({ length: 20 }).map((_, colIndex) => (
-                            <td
-                              key={`${rowIndex}-${colIndex}`}
-                              className={RStyles.tableCell}
-                              onClick={() => handleCellClick(rowIndex, colIndex)}
-                              onDrop={(e) => handleDrop(e, rowIndex, colIndex)}
-                              onDragOver={handleDragOver}
-                            >
-                              {droppedCameras[`${rowIndex}-${colIndex}`] && (
-                                <BsFillCameraVideoFill />
-                              )}
-                              {selectedCell === `${rowIndex}-${colIndex}` && (
-                                <div className={RStyles.selectedCell} />
-                              )}
-                            </td>
-                          ))}
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
               </div>
             )
           ))}
         </div>
         {children}
       </div>
+      {/* Добавляем сетку во второй столбец */}
+{/*       <div className={RStyles.gridContainer}>
+        <Grid />
+      </div> */}
     </div>
   );
 };
