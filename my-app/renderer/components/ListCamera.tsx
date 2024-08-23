@@ -103,6 +103,7 @@ const ListCamera: React.FC<ListCameraProps> = ({
                     onDragStart={(e) => handleDragStart(e, camera)}
                     draggable
                     className={LCStyles.draggableButton}
+                    id={`${camera.name.replace(/[^a-zA-Z0-9]/g, '-')}`}
                   >
                     <BsFillCameraVideoFill />
                   </td>
