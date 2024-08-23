@@ -91,7 +91,7 @@ const ListCamera: React.FC<ListCameraProps> = ({
               <tr>
                 <th>Название камеры</th>
                 <th>IP</th>
-                <th><BsFillCameraVideoFill /></th>
+                <th></th>
               </tr>
             </thead>
             <tbody>
@@ -122,3 +122,5 @@ const ListCamera: React.FC<ListCameraProps> = ({
 };
 
 export default ListCamera;
+
+

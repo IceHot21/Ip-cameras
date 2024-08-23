@@ -1,61 +1,44 @@
-import React, { FC, useState } from 'react';
+import React, { FC } from 'react';
+import RStyles from '../styles/Room.module.css';
+import GStyles from '../styles/Grid.module.css'; // Импортируем стили для сетки, чтобы использовать их в компоненте Room
 import Svg1 from '../assets/Svg1.svg';
 import Svg2 from '../assets/Svg2.svg';
 import Svg3 from '../assets/Svg3.svg';
-import RStyles from '../styles/Room.module.css';
-import { BsFillCameraVideoFill } from "react-icons/bs";
-import Grid from './Grid'; 
-
-type RoomProps = {
-  children: React.ReactNode;
-  svgProps: any;
-  onCameraDropped: (camera: Camera) => void;
-};
+import { BsFillCameraVideoFill } from 'react-icons/bs';
 
 interface Camera {
   id: number;
   name: string;
   address: string;
+  floor: number;
+  cell: string;
+  initialPosition: { rowIndex: number; colIndex: number };
 }
 
-const Room: FC<RoomProps> = ({ children, svgProps, onCameraDropped }) => {
-  const [activeSvg, setActiveSvg] = useState(0);
-  const [droppedCameras, setDroppedCameras] = useState<{ [key: string]: Camera }>({});
-  const [selectedCell, setSelectedCell] = useState<string | null>(null);
+type RoomProps = {
+  children: React.ReactNode;
+  svgProps: any;
+  onCameraDropped: (camera: Camera, rowIndex: number, colIndex: number) => void;
+  droppedCameras: { [key: string]: Camera };
+  activeFloor: number;
+  onFloorChange: (floor: number) => void;
+};
+
+const Room: FC<RoomProps> = ({ children, svgProps, droppedCameras, activeFloor, onFloorChange }) => {
   const svgs = [Svg1, Svg2, Svg3];
 
   const handleSvgClick = (index: number) => {
-    setActiveSvg(index);
-  };
-
-  const handleDrop = (e: React.DragEvent<HTMLTableCellElement>, rowIndex: number, colIndex: number) => {
-    e.preventDefault();
-    const cameraData = e.dataTransfer.getData('camera');
-    const camera: Camera = JSON.parse(cameraData);
-
-    setDroppedCameras((prev) => ({
-      ...prev,
-      [`${rowIndex}-${colIndex}`]: camera,
-    }));
-
-    onCameraDropped(camera);
-  };
-
-  const handleDragOver = (e: React.DragEvent<HTMLTableCellElement>) => {
-    e.preventDefault();
-  };
-
-  const handleCellClick = (rowIndex: number, colIndex: number) => {
-    setSelectedCell(`${rowIndex}-${colIndex}`);
+    onFloorChange(index);
   };
 
   return (
     <div className={RStyles.body}>
       <div className={RStyles.container}>
         <div className={RStyles.cards}>
+          {/* Отображение неактивных этажей */}
           <div className={RStyles.inactiveContainer}>
             {svgs.map((SvgComponent, index) => (
-              index !== activeSvg && (
+              index !== activeFloor && (
                 <div
                   key={index}
                   className={`${RStyles.card} ${RStyles.inactive}`}
@@ -67,14 +50,39 @@ const Room: FC<RoomProps> = ({ children, svgProps, onCameraDropped }) => {
               )
             ))}
           </div>
+          {/* Отображение активного этажа */}
           {svgs.map((SvgComponent, index) => (
-            index === activeSvg && (
+            index === activeFloor && (
               <div
                 key={index}
                 className={`${RStyles.card} ${RStyles.active}`}
                 onClick={() => handleSvgClick(index)}
               >
                 <SvgComponent {...svgProps} />
+                {/* Полупрозрачная сетка */}
+                <div className={GStyles.gridContainer}>
+                  <div className={GStyles.grid}>
+                    {Array.from({ length: 15 }).map((_, rowIndex) => (
+                      Array.from({ length: 20 }).map((_, colIndex) => {
+                        const cellKey = `${activeFloor}-${rowIndex}-${colIndex}`;
+
+                        return (
+                          <div
+                            key={cellKey}
+                            id={cellKey}
+                            className={`${GStyles.gridCell} ${RStyles.transparentCell}`}
+                          >
+                            {droppedCameras[cellKey] && (
+                              <div className={GStyles.cameraIcon} id="cameraIcon">
+                                <BsFillCameraVideoFill />
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })
+                    ))}
+                  </div>
+                </div>
               </div>
             )
           ))}
