@@ -31,5 +31,15 @@
 .selectedCell {
   width: 100%;
   height: 100%;
-  position: absolute;
+}
+
+.cameraIcon
+{
+  display:flex;
+  justify-content: center;
+  align-items: center;
+  aspect-ratio: 1 / 1;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%
 }

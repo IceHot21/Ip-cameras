@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, useState } from 'react';
 import GStyles from '../styles/Grid.module.css';
 import { BsFillCameraVideoFill } from 'react-icons/bs';
 
@@ -6,27 +6,31 @@ interface Camera {
   id: number;
   name: string;
   address: string;
-  position: { row: number, col: number } | null;
 }
 
-interface GridProps {
-  cameras: Camera[];
-  onUpdateCameraPosition: (camera: Camera, position: { row: number; col: number }) => void; // правильно указанное имя функции
-}
-
-const Grid: FC<GridProps> = ({ cameras, onUpdateCameraPosition }) => {
+const Grid: FC = () => {
+  const [droppedCameras, setDroppedCameras] = useState<{ [key: string]: Camera | null }>({});
+  const [selectedCell, setSelectedCell] = useState<string | null>(null);
 
   const handleDrop = (e: React.DragEvent<HTMLDivElement>, rowIndex: number, colIndex: number) => {
     e.preventDefault();
-    
     const cameraData = e.dataTransfer.getData('camera');
     const camera: Camera = JSON.parse(cameraData);
-    
-    onUpdateCameraPosition(camera, { row: rowIndex, col: colIndex });
+
+    const cellKey = `${rowIndex}-${colIndex}`;
+
+    setDroppedCameras((prev) => ({
+      ...prev,
+      [cellKey]: camera,
+    }));
   };
 
   const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
+  };
+
+  const handleCellClick = (rowIndex: number, colIndex: number) => {
+    setSelectedCell(`${rowIndex}-${colIndex}`);
   };
 
   return (
@@ -34,18 +38,22 @@ const Grid: FC<GridProps> = ({ cameras, onUpdateCameraPosition }) => {
       <div className={GStyles.grid}>
         {Array.from({ length: 15 }).map((_, rowIndex) => (
           Array.from({ length: 20 }).map((_, colIndex) => {
-            const cameraInCell = cameras.find(camera => 
-              camera.position?.row === rowIndex && camera.position?.col === colIndex
-            );
+            const cellKey = `${rowIndex}-${colIndex}`;
 
             return (
               <div
-                key={`${rowIndex}-${colIndex}`}
+                key={cellKey}
+                id={cellKey}
                 className={GStyles.gridCell}
+                onClick={() => handleCellClick(rowIndex, colIndex)}
                 onDrop={(e) => handleDrop(e, rowIndex, colIndex)}
                 onDragOver={handleDragOver}
               >
-                {cameraInCell && <BsFillCameraVideoFill />}
+                {droppedCameras[cellKey] && (
+                  <div className={GStyles.cameraIcon}>
+                    <BsFillCameraVideoFill />
+                  </div>
+                )}
               </div>
             );
           })

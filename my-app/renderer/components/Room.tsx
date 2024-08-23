@@ -1,28 +1,52 @@
-import React, { FC,useState } from 'react';
+import React, { FC, useState } from 'react';
 import Svg1 from '../assets/Svg1.svg';
 import Svg2 from '../assets/Svg2.svg';
 import Svg3 from '../assets/Svg3.svg';
 import RStyles from '../styles/Room.module.css';
 import { BsFillCameraVideoFill } from "react-icons/bs";
+import Grid from './Grid'; 
+
+type RoomProps = {
+  children: React.ReactNode;
+  svgProps: any;
+  onCameraDropped: (camera: Camera) => void;
+};
 
 interface Camera {
   id: number;
   name: string;
   address: string;
-  position: { row: number, col: number } | null;
 }
 
-type RoomProps = {
-  cameras: Camera[];
-  onCameraDropped: (camera: Camera, position: { row: number; col: number }) => void;
-};
-
-const Room: FC<RoomProps> = ({ cameras, onCameraDropped }) => {
+const Room: FC<RoomProps> = ({ children, svgProps, onCameraDropped }) => {
   const [activeSvg, setActiveSvg] = useState(0);
+  const [droppedCameras, setDroppedCameras] = useState<{ [key: string]: Camera }>({});
+  const [selectedCell, setSelectedCell] = useState<string | null>(null);
   const svgs = [Svg1, Svg2, Svg3];
 
   const handleSvgClick = (index: number) => {
     setActiveSvg(index);
+  };
+
+  const handleDrop = (e: React.DragEvent<HTMLTableCellElement>, rowIndex: number, colIndex: number) => {
+    e.preventDefault();
+    const cameraData = e.dataTransfer.getData('camera');
+    const camera: Camera = JSON.parse(cameraData);
+
+    setDroppedCameras((prev) => ({
+      ...prev,
+      [`${rowIndex}-${colIndex}`]: camera,
+    }));
+
+    onCameraDropped(camera);
+  };
+
+  const handleDragOver = (e: React.DragEvent<HTMLTableCellElement>) => {
+    e.preventDefault();
+  };
+
+  const handleCellClick = (rowIndex: number, colIndex: number) => {
+    setSelectedCell(`${rowIndex}-${colIndex}`);
   };
 
   return (
@@ -38,7 +62,7 @@ const Room: FC<RoomProps> = ({ cameras, onCameraDropped }) => {
                   onClick={() => handleSvgClick(index)}
                 >
                   <div className={RStyles.indexText}>{index + 1}</div>
-                  <SvgComponent />
+                  <SvgComponent {...svgProps} />
                 </div>
               )
             ))}
@@ -50,26 +74,12 @@ const Room: FC<RoomProps> = ({ cameras, onCameraDropped }) => {
                 className={`${RStyles.card} ${RStyles.active}`}
                 onClick={() => handleSvgClick(index)}
               >
-                <SvgComponent />
+                <SvgComponent {...svgProps} />
               </div>
             )
           ))}
         </div>
-        {/* отображаем камеры на активном плане */}
-        {cameras.map((camera) => 
-          camera.position && (
-            <div 
-              key={camera.id}
-              style={{
-                position: 'absolute', 
-                top: `${camera.position.row * 10}px`, 
-                left: `${camera.position.col * 10}px`
-              }}
-            >
-              <BsFillCameraVideoFill />
-            </div>
-          )
-        )}
+        {children}
       </div>
     </div>
   );
