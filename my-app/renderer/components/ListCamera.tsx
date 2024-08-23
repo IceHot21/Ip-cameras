@@ -6,8 +6,7 @@ import { BiX, BiRevision, BiSolidLayerPlus } from "react-icons/bi";
 interface ListCameraProps {
   open: boolean;
   onClose: () => void;
-  onSelectCameras: (cameras: any[]) => void;
-  FlagLocal: () => void;
+  onSelectCameras: (camera: Camera) => void; // изменено для добавления одной камеры
   onGridOpen: () => void;
 }
 
@@ -21,7 +20,6 @@ const ListCamera: React.FC<ListCameraProps> = ({
   open,
   onClose,
   onSelectCameras,
-  FlagLocal,
   onGridOpen,
 }) => {
   const [cameras, setCameras] = useState<Camera[]>([]);
@@ -58,14 +56,8 @@ const ListCamera: React.FC<ListCameraProps> = ({
     e.dataTransfer.setData('camera', JSON.stringify(camera));
   };
 
-  const removeCamera = (camera: Camera) => {
-    setCameras(cameras.filter((c) => c.id !== camera.id));
-  };
-
-  const handleDrop = (e: React.DragEvent<HTMLTableCellElement>, camera: Camera) => {
-    e.preventDefault();
-    const droppedCamera: Camera = JSON.parse(e.dataTransfer.getData('camera'));
-    removeCamera(droppedCamera);
+  const handleCameraSelect = (camera: Camera) => {
+    onSelectCameras(camera); // Добавляем выбранную камеру в родительский компонент
   };
 
   if (!open) return null;
@@ -99,14 +91,14 @@ const ListCamera: React.FC<ListCameraProps> = ({
                 <tr key={camera.id}>
                   <td>{camera.name.split(/[^a-zA-Z0-9]/)[0]}</td>
                   <td>{camera.address ? camera.address.match(/(?:http:\/\/)?(\d+\.\d+\.\d+\.\d+)/)?.[1] : 'N/A'}</td>
-                  <button
-                    type="button"
+                  <td
                     onDragStart={(e) => handleDragStart(e, camera)}
+                    onClick={() => handleCameraSelect(camera)} // добавлена возможность выбрать камеру при клике
                     draggable
                     className={LCStyles.draggableButton}
                   >
                     <BsFillCameraVideoFill />
-                  </button>
+                  </td>
                 </tr>
               ))}
             </tbody>
