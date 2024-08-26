@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import LCStyles from '../styles/ListCamera.module.css';
 import { BsFillCameraVideoFill } from "react-icons/bs";
 import { BiX, BiRevision, BiSolidLayerPlus } from "react-icons/bi";
+import StartStream from './StartStream';
+import ModalStream from './ModalStream';
 
 interface ListCameraProps {
   open: boolean;
@@ -15,6 +17,10 @@ interface Camera {
   id: number;
   name: string;
   address: string;
+  floor: number;
+  cell: string;
+  initialPosition: { rowIndex: number; colIndex: number };
+  rtspUrl: string;
 }
 
 const ListCamera: React.FC<ListCameraProps> = ({
@@ -27,11 +33,11 @@ const ListCamera: React.FC<ListCameraProps> = ({
   const [cameras, setCameras] = useState<Camera[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [isLoaded, setIsLoaded] = useState(false);
+  const [selectedCamera, setSelectedCamera] = useState<Camera | null>(null);
+  const [showModal, setShowModal] = useState<boolean>(false);
 
   useEffect(() => {
     if (open) {
-      setIsLoaded(true);
       fetchCameras();
     }
   }, [open]);
@@ -54,18 +60,13 @@ const ListCamera: React.FC<ListCameraProps> = ({
     }
   };
 
-  const handleDragStart = (e: React.DragEvent<HTMLTableCellElement>, camera: Camera) => {
+  const handleDoubleClick = (camera: Camera) => {
+    setSelectedCamera(camera);
+    setShowModal(true);
+  };
+
+  const handleDragStart = (e: React.DragEvent<HTMLDivElement>, camera: Camera) => {
     e.dataTransfer.setData('camera', JSON.stringify(camera));
-  };
-
-  const removeCamera = (camera: Camera) => {
-    setCameras(cameras.filter((c) => c.id !== camera.id));
-  };
-
-  const handleDrop = (e: React.DragEvent<HTMLTableCellElement>, camera: Camera) => {
-    e.preventDefault();
-    const droppedCamera: Camera = JSON.parse(e.dataTransfer.getData('camera'));
-    removeCamera(droppedCamera);
   };
 
   if (!open) return null;
@@ -79,12 +80,13 @@ const ListCamera: React.FC<ListCameraProps> = ({
           <button onClick={onGridOpen} className={LCStyles.plusButton}><BiSolidLayerPlus /></button>
         </div>
       </div>
-      {isLoaded && loading && (
+      {loading ? (
         <div className={LCStyles.loadingTable}>
           <p>Загрузка...</p>
         </div>
-      )}
-      {!loading && !error && (
+      ) : error ? (
+        <div>{error}</div>
+      ) : (
         <div className={LCStyles.tableContainer}>
           <table>
             <thead className={LCStyles.tableHeader}>
@@ -96,16 +98,17 @@ const ListCamera: React.FC<ListCameraProps> = ({
             </thead>
             <tbody>
               {cameras.map((camera) => (
-                <tr key={camera.id}>
+                <tr key={camera.id} onDoubleClick={() => handleDoubleClick(camera)}>
                   <td>{camera.name.split(/[^a-zA-Z0-9]/)[0]}</td>
                   <td>{camera.address ? camera.address.match(/(?:http:\/\/)?(\d+\.\d+\.\d+\.\d+)/)?.[1] : 'N/A'}</td>
-                  <td
-                    onDragStart={(e) => handleDragStart(e, camera)}
-                    draggable
-                    className={LCStyles.draggableButton}
-                    id={`${camera.name.replace(/[^a-zA-Z0-9]/g, '-')}`}
-                  >
-                    <BsFillCameraVideoFill />
+                  <td>
+                    <div
+                      className={LCStyles.iconContainer}
+                      draggable
+                      onDragStart={(e) => handleDragStart(e, camera)}
+                    >
+                      <BsFillCameraVideoFill className={LCStyles.icon} />
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -113,15 +116,18 @@ const ListCamera: React.FC<ListCameraProps> = ({
           </table>
         </div>
       )}
-      {error && (
-        <div>
-          <p>{error}</p>
-        </div>
-      )}
+      <ModalStream isOpen={showModal} onClose={() => setShowModal(false)}>
+        {selectedCamera && (
+          <StartStream
+            rtspUrl={selectedCamera.rtspUrl}
+            id={selectedCamera.id}
+            cameraName={selectedCamera.name}
+            setCam={() => setShowModal(false)}  // Добавляем закрытие стрима
+          />
+        )}
+      </ModalStream>
     </div>
   );
 };
 
 export default ListCamera;
-
-

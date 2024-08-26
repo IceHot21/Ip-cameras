@@ -9,7 +9,7 @@ interface Camera {
   rtspUrl: string;
 }
 
-const StreamPlayer = ({ rtspUrl, id, cameraName, setCam }) => {
+const StartStream = ({ rtspUrl, id, cameraName, setCam }) => {
   const [port, setPort] = useState(9999 + id);
   const [streamStarted, setStreamStarted] = useState(false);
   const [error, setError] = useState(null);
@@ -20,12 +20,12 @@ const StreamPlayer = ({ rtspUrl, id, cameraName, setCam }) => {
   useEffect(() => {
     const startStream = async () => {
       try {
-        const response = await fetch(`http://localhost:4200/ip/start-stream`, {
+        const response = await fetch('http://localhost:4200/ip/start-stream', {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ rtspUrl, port })
+          body: JSON.stringify({ rtspUrl, port }),
         });
 
         if (response.ok) {
@@ -50,18 +50,21 @@ const StreamPlayer = ({ rtspUrl, id, cameraName, setCam }) => {
         onVideoDecode: async (decoder, time) => {
           // console.log(`Video decode: ${time}`);
         },
-        onSourceEstablished: () => console.log(`Источник установлен для порта ${port}`),
-        onSourceCompleted: () => console.log(`Источник завершен для порта ${port}`),
-        onError: (error) => console.error(`Error in JSMpeg player: ${error}`)
+        onSourceEstablished: () =>
+          console.log(`Источник установлен для порта ${port}`),
+        onSourceCompleted: () =>
+          console.log(`Источник завершен для порта ${port}`),
+        onError: (error) =>
+          console.error(`Error in JSMpeg player: ${error}`),
       });
       setPlayers(player);
 
       console.log(`Stream started for camera ${cameraName} on canvas ${id}`);
       return () => {
         if (player) {
-          player.destroy()
+          player.destroy();
         }
-      }
+      };
     }
   }, [streamStarted, port, id]);
 
@@ -77,9 +80,9 @@ const StreamPlayer = ({ rtspUrl, id, cameraName, setCam }) => {
     const response = await fetch('http://localhost:4200/ip/stop-stream', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ port })
+      body: JSON.stringify({ port }),
     });
 
     if (!response.ok) {
@@ -93,58 +96,67 @@ const StreamPlayer = ({ rtspUrl, id, cameraName, setCam }) => {
   };
 
   const handleStartRecording = () => {
-    debugger
     fetch('http://localhost:4200/ip/start-recording', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ rtspUrl, port, cameraName })
-    }).then(response => {
-      if (response.ok) {
-        response.json().then(data => {
-          console.log(`Запись начата на порту ${port} с именем файла ${data.fileName}`);
-          setIsRecording(true);
-        });
-      } else {
-        console.error('Не удалось начать запись');
-      }
-    }).catch(error => {
-      console.error('Ошибка при начале записи:', error);
-    });
+      body: JSON.stringify({ rtspUrl, port, cameraName }),
+    })
+      .then((response) => {
+        if (response.ok) {
+          response.json().then((data) => {
+            console.log(
+              `Запись начата на порту ${port} с именем файла ${data.fileName}`
+            );
+            setIsRecording(true);
+          });
+        } else {
+          console.error('Не удалось начать запись');
+        }
+      })
+      .catch((error) => {
+        console.error('Ошибка при начале записи:', error);
+      });
   };
 
   const handleStopRecording = () => {
     fetch('http://localhost:4200/ip/stop-recording', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ port })
-    }).then(response => {
-      if (response.ok) {
-        console.log(`Запись остановлена на порту ${port}`);
-        setIsRecording(false);
-      } else {
-        console.error('Не удалось остановить запись');
-      }
-    }).catch(error => {
-      console.error('Ошибка при остановке записи:', error);
-    });
+      body: JSON.stringify({ port }),
+    })
+      .then((response) => {
+        if (response.ok) {
+          console.log(`Запись остановлена на порту ${port}`);
+          setIsRecording(false);
+        } else {
+          console.error('Не удалось остановить запись');
+        }
+      })
+      .catch((error) => {
+        console.error('Ошибка при остановке записи:', error);
+      });
   };
 
   const handleTakeScreenshot = () => {
-
+    // Screenshot functionality
   };
 
   return (
     <div className={SSStyles.startContainer}>
-      <div className={`${SSStyles.canvasesContainer} canvas-container${port}`}>
+      <div
+        className={`${SSStyles.canvasesContainer} canvas-container${port}`}
+      >
         <div className={`${SSStyles.cameraName} camera-name`}>{cameraName}</div>
         <canvas id={`canvas${id}`} />
         <div className={SSStyles.buttonsContainer}>
           <button onClick={handleDelete}>Удалить камеру</button>
-          <button onClick={isRecording ? handleStopRecording : handleStartRecording}>
+          <button
+            onClick={isRecording ? handleStopRecording : handleStartRecording}
+          >
             {isRecording ? 'Стоп' : 'Запись'}
           </button>
           <button onClick={handleTakeScreenshot}>Сделать скриншот</button>
@@ -155,4 +167,4 @@ const StreamPlayer = ({ rtspUrl, id, cameraName, setCam }) => {
   );
 };
 
-export default StreamPlayer;
+export default StartStream;

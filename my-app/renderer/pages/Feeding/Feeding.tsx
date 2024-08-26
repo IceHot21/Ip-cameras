@@ -12,6 +12,7 @@ interface Camera {
   floor: number;
   cell: string;
   initialPosition: { rowIndex: number; colIndex: number };
+  rtspUrl: string;
 }
 
 const Feeding: FC = () => {
@@ -20,8 +21,7 @@ const Feeding: FC = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [activeFloor, setActiveFloor] = useState(0);
   const [droppedCameras, setDroppedCameras] = useState<{ [key: string]: Camera }>({});
-
-  // Load cameras from localStorage on mount
+  
   useEffect(() => {
     const storedCameras = localStorage.getItem('droppedCameras');
     if (storedCameras) {
@@ -29,9 +29,10 @@ const Feeding: FC = () => {
     }
   }, []);
 
-  // Save cameras to localStorage whenever they change
   useEffect(() => {
-    localStorage.setItem('droppedCameras', JSON.stringify(droppedCameras));
+    if (Object.keys(droppedCameras).length > 0) {
+      localStorage.setItem('droppedCameras', JSON.stringify(droppedCameras));
+    }
   }, [droppedCameras]);
 
   const handleListCameraToggle = () => {
@@ -39,20 +40,22 @@ const Feeding: FC = () => {
   };
 
   const handleGridOpen = () => {
-    setIsGridOpen((prev) => !prev);
-    setIsEditing(!isGridOpen); // Включаем или выключаем режим редактирования
+    setIsGridOpen(prev => !prev);
+    setIsEditing(!isGridOpen);
   };
 
   const handleCameraDrop = (camera: Camera, rowIndex: number, colIndex: number) => {
-    const cellKey = `${activeFloor}-${rowIndex}-${colIndex}`;
-    setDroppedCameras((prev) => ({
+    const cellKey = `${activeFloor}-${rowIndex}-${colIndex};`
+    const updatedCamera: Camera = {
+      ...camera,
+      floor: activeFloor,
+      cell: cellKey,
+      initialPosition: { rowIndex, colIndex },
+    };
+
+    setDroppedCameras(prev => ({
       ...prev,
-      [cellKey]: {
-        ...camera,
-        floor: activeFloor,
-        cell: cellKey,
-        initialPosition: { rowIndex, colIndex }
-      },
+      [cellKey]: updatedCamera,
     }));
   };
 
@@ -93,10 +96,10 @@ const Feeding: FC = () => {
         />
         {isEditing && (
           <div className={FStyles.gridContainer}>
-            <Grid 
-              onCameraDrop={handleCameraDrop} 
-              droppedCameras={droppedCameras} 
-              activeFloor={activeFloor} 
+            <Grid
+              onCameraDrop={handleCameraDrop}
+              droppedCameras={droppedCameras}
+              activeFloor={activeFloor}
             />
           </div>
         )}

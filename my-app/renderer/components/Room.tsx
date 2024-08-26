@@ -1,10 +1,12 @@
-import React, { FC } from 'react';
+import React, { FC, useState } from 'react';
 import RStyles from '../styles/Room.module.css';
 import GStyles from '../styles/Grid.module.css'; // Импортируем стили для сетки, чтобы использовать их в компоненте Room
 import Svg1 from '../assets/Svg1.svg';
 import Svg2 from '../assets/Svg2.svg';
 import Svg3 from '../assets/Svg3.svg';
 import { BsFillCameraVideoFill } from 'react-icons/bs';
+import ModalStream from './ModalStream'; // Импортируйте компонент Modal
+import StartStream from './StartStream';
 
 interface Camera {
   id: number;
@@ -13,6 +15,7 @@ interface Camera {
   floor: number;
   cell: string;
   initialPosition: { rowIndex: number; colIndex: number };
+  rtspUrl: string;
 }
 
 type RoomProps = {
@@ -26,11 +29,21 @@ type RoomProps = {
 
 const Room: FC<RoomProps> = ({ children, svgProps, droppedCameras, activeFloor, onFloorChange }) => {
   const svgs = [Svg1, Svg2, Svg3];
+  const [showModal, setShowModal] = useState<boolean>(false);
+  const [selectedCamera, setSelectedCamera] = useState<Camera | null>(null);
 
   const handleSvgClick = (index: number) => {
     onFloorChange(index);
   };
+  
+  const handleDragStart = (e: React.DragEvent<HTMLDivElement>, camera: Camera) => {
+    e.dataTransfer.setData('camera', JSON.stringify(camera));
+  };
 
+  const handleDoubleClick = (camera: Camera) => {
+    setSelectedCamera(camera);
+    setShowModal(true);
+  };
   return (
     <div className={RStyles.body}>
       <div className={RStyles.container}>
@@ -50,7 +63,6 @@ const Room: FC<RoomProps> = ({ children, svgProps, droppedCameras, activeFloor, 
               )
             ))}
           </div>
-          {/* Отображение активного этажа */}
           {svgs.map((SvgComponent, index) => (
             index === activeFloor && (
               <div
@@ -73,7 +85,10 @@ const Room: FC<RoomProps> = ({ children, svgProps, droppedCameras, activeFloor, 
                             className={`${GStyles.gridCell} ${RStyles.transparentCell}`}
                           >
                             {droppedCameras[cellKey] && (
-                              <div className={GStyles.cameraIcon} id="cameraIcon">
+                              <div className={GStyles.cameraIcon} id="cameraIcon"
+                              draggable
+                              onDragStart={(e) => handleDragStart(e, droppedCameras[cellKey])}
+                              onDoubleClick={() => handleDoubleClick(droppedCameras[cellKey])}>
                                 <BsFillCameraVideoFill />
                               </div>
                             )}
@@ -89,6 +104,16 @@ const Room: FC<RoomProps> = ({ children, svgProps, droppedCameras, activeFloor, 
         </div>
         {children}
       </div>
+      <ModalStream isOpen={showModal} onClose={() => setShowModal(false)}>
+        {selectedCamera && (
+          <StartStream
+            rtspUrl={selectedCamera.rtspUrl}
+            id={selectedCamera.id}
+            cameraName={selectedCamera.name}
+            setCam={() => setShowModal(false)}  // Добавляем закрытие стрима
+          />
+        )}
+      </ModalStream>
     </div>
   );
 };

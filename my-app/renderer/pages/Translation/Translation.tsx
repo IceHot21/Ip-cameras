@@ -1,7 +1,7 @@
 /* import React, { useState, useEffect, useRef } from 'react';
 import TStyles from './Transletion.module.css';
 import ListCamera from '../../components/ListCamera';
-import StreamPlayer from '../../components/StartStream';
+import StartStream from '../../components/StartStream';
 import JSMpeg from '@cycjimmy/jsmpeg-player';
 
 interface Camera {
@@ -38,7 +38,7 @@ const Translation: React.FC = () => {
   return (
     <div className={TStyles.canvasesContainer}>
       {cameras.map((camera) => (
-        <StreamPlayer
+        <StartStream
           key={camera.id}
           rtspUrl={camera.rtspUrl}
           id={camera.id}
