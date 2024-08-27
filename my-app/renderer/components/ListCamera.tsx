@@ -1,131 +1,111 @@
-import React, { useState, useEffect } from 'react';
+import { FC, useEffect, useState } from 'react';
 import LCStyles from '../styles/ListCamera.module.css';
-import { BsFillCameraVideoFill } from "react-icons/bs";
-import { BiX, BiRevision, BiSolidLayerPlus } from "react-icons/bi";
-import StartStream from './StartStream';
-import ModalStream from './ModalStream';
 
 interface ListCameraProps {
   open: boolean;
   onClose: () => void;
   onSelectCameras: (cameras: any[]) => void;
   FlagLocal: () => void;
-  onGridOpen: () => void;
 }
 
 interface Camera {
   id: number;
   name: string;
   address: string;
-  floor: number;
-  cell: string;
-  initialPosition: { rowIndex: number; colIndex: number };
-  rtspUrl: string;
 }
 
-const ListCamera: React.FC<ListCameraProps> = ({
-  open,
-  onClose,
-  onSelectCameras,
-  FlagLocal,
-  onGridOpen,
-}) => {
+const ListCamera: FC<ListCameraProps> = ({ open, onClose, onSelectCameras, FlagLocal }) => {
   const [cameras, setCameras] = useState<Camera[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [selectedCamera, setSelectedCamera] = useState<Camera | null>(null);
-  const [showModal, setShowModal] = useState<boolean>(false);
+  const [selectedCameras, setSelectedCameras] = useState<Camera[]>([]);
 
   useEffect(() => {
     if (open) {
-      fetchCameras();
+      handleDiscoverCameras();
     }
   }, [open]);
 
-  const fetchCameras = async () => {
-    setLoading(true);
-    setError(null);
+  const handleDiscoverCameras = async () => {
     try {
       const response = await fetch('http://localhost:4200/ip/cameras-list');
       if (response.ok) {
         const discoveredCameras = await response.json();
         setCameras(discoveredCameras);
       } else {
-        setError('Не удалось обнаружить камеры');
+        console.error('Failed to discover cameras');
       }
-    } catch (err) {
-      setError('Ошибка обнаружения камер: ' + err.message);
-    } finally {
-      setLoading(false);
+    } catch (error) {
+      console.error('Error discovering cameras:', error);
     }
   };
 
-  const handleDoubleClick = (camera: Camera) => {
-    setSelectedCamera(camera);
-    setShowModal(true);
+  const handleCheckboxChange = (camera: Camera) => {
+    setSelectedCameras((prevSelectedCameras) =>
+      prevSelectedCameras.some((c) => c.id === camera.id)
+        ? prevSelectedCameras.filter((c) => c.id !== camera.id)
+        : [...prevSelectedCameras, camera]
+    );console.log(selectedCameras)
   };
 
-  const handleDragStart = (e: React.DragEvent<HTMLDivElement>, camera: Camera) => {
-    e.dataTransfer.setData('camera', JSON.stringify(camera));
+  const handleStartStreams = () => {
+    onSelectCameras(selectedCameras);
+    const savedCameras = localStorage.getItem('cameras');
+    let camerasArray = [];
+
+    if (savedCameras && savedCameras.length !== 0) {
+      camerasArray = JSON.parse(savedCameras);
+    }
+
+    selectedCameras.forEach((SerchedCamera, index) => {
+      const cameraName = SerchedCamera.name.split(/[^a-zA-Z0-9]/)[0];
+      const ipAddress = SerchedCamera.address.match(/(?:http:\/\/)?(\d+\.\d+\.\d+\.\d+)/)[1];
+      const rtspUrl = `rtsp://admin:Dd7560848@${ipAddress}`;
+      const newCamera = { id: camerasArray.length + 1, rtspUrl, name: cameraName };
+      camerasArray.push(newCamera);
+    });
+
+    localStorage.setItem('cameras', JSON.stringify(camerasArray));
+    console.log(selectedCameras);
+    FlagLocal();
   };
 
   if (!open) return null;
 
   return (
-    <div className={LCStyles.sidebar}>
-      <div className={LCStyles.buttonContainer}>
-        <button onClick={onClose} className={LCStyles.closeButton}><BiX /></button>
-        <div style={{ display: 'flex' }}>
-          <button onClick={fetchCameras} className={LCStyles.refreshButton}><BiRevision /></button>
-          <button onClick={onGridOpen} className={LCStyles.plusButton}><BiSolidLayerPlus /></button>
-        </div>
-      </div>
-      {loading ? (
-        <div className={LCStyles.loadingTable}>
-          <p>Загрузка...</p>
-        </div>
-      ) : error ? (
-        <div>{error}</div>
-      ) : (
-        <div className={LCStyles.tableContainer}>
-          <table>
-            <thead className={LCStyles.tableHeader}>
-              <tr>
-                <th>Название камеры</th>
-                <th>IP</th>
-                <th></th>
+    <div className={LCStyles.modalOverlay} onClick={onClose}>
+      <div className={LCStyles.modalContent} onClick={(e) => e.stopPropagation()}>
+        <button className={LCStyles.closeButton} onClick={onClose}>X</button>
+        <table className={LCStyles.tableContainer}>
+          <thead>
+            <tr>
+              <th>Название камеры</th>
+              <th>IP</th>
+              <th>Название комнаты</th>
+              <th>Выбрать</th>
+            </tr>
+          </thead>
+          <tbody>
+            {cameras.map((camera) => (
+              <tr key={camera.id}>
+                <td>{camera.name.split(/[^a-zA-Z0-9]/)[0]}</td>
+                <td>{camera.address ? camera.address.match(/(?:http:\/\/)?(\d+\.\d+\.\d+\.\d+)/)?.[1] : 'N/A'}</td>
+                <td>
+                  <input type="text" placeholder="Введите название комнаты" />
+                </td>
+                <td>
+                  <input
+                    type="checkbox"
+                    onChange={() => handleCheckboxChange(camera)}
+                    checked={selectedCameras.some((c) => c.id === camera.id)}
+                  />
+                </td>
               </tr>
-            </thead>
-            <tbody>
-              {cameras.map((camera) => (
-                <tr key={camera.id} onDoubleClick={() => handleDoubleClick(camera)}>
-                  <td>{camera.name.split(/[^a-zA-Z0-9]/)[0]}</td>
-                  <td>{camera.address ? camera.address.match(/(?:http:\/\/)?(\d+\.\d+\.\d+\.\d+)/)?.[1] : 'N/A'}</td>
-                  <td>
-                    <div
-                      className={LCStyles.iconContainer}
-                      draggable
-                      onDragStart={(e) => handleDragStart(e, camera)}
-                    >
-                      <BsFillCameraVideoFill className={LCStyles.icon} />
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
-      <ModalStream isOpen={showModal} onClose={() => setShowModal(false)}>
-        {selectedCamera && (
-          <StartStream
-            rtspUrl={selectedCamera.rtspUrl}
-            id={selectedCamera.id}
-            cameraName={selectedCamera.name}
-            setCam={() => setShowModal(false)}  // Добавляем закрытие стрима
-          />
-        )}
-      </ModalStream>
+            ))}
+          </tbody>
+        </table>
+        <button className={LCStyles.startStreamButton} onClick={handleStartStreams}>
+          Запустить стримы
+        </button>
+      </div>
     </div>
   );
 };

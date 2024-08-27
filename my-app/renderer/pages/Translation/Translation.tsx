@@ -1,4 +1,4 @@
-/* import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import TStyles from './Transletion.module.css';
 import ListCamera from '../../components/ListCamera';
 import StartStream from '../../components/StartStream';
@@ -16,10 +16,10 @@ const Translation: React.FC = () => {
   const [isListCameraOpen, setIsListCameraOpen] = useState(false);
   const [FlagLocal, setFlagLocal] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
-  const canvasesContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const savedCameras = localStorage.getItem('cameras');
+    console.log(savedCameras);
     if (savedCameras) {
       const cameras = JSON.parse(savedCameras);
       setCameras(cameras);
@@ -27,6 +27,7 @@ const Translation: React.FC = () => {
   }, [FlagLocal]);
 
   const handleCameraSelection = (cameras: Camera[]) => {
+    console.log(cameras);
     setCameras(cameras);
     setIsListCameraOpen(false);
   };
@@ -75,4 +76,4 @@ const Translation: React.FC = () => {
   );
 };
 
-export default Translation; */
+export default Translation;

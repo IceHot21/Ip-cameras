@@ -104,7 +104,6 @@ const Room: FC<RoomProps> = ({ children, svgProps, droppedCameras, activeFloor, 
         </div>
         {children}
       </div>
-      <ModalStream isOpen={showModal} onClose={() => setShowModal(false)}>
         {selectedCamera && (
           <StartStream
             rtspUrl={selectedCamera.rtspUrl}
@@ -113,7 +112,6 @@ const Room: FC<RoomProps> = ({ children, svgProps, droppedCameras, activeFloor, 
             setCam={() => setShowModal(false)}  // Добавляем закрытие стрима
           />
         )}
-      </ModalStream>
     </div>
   );
 };

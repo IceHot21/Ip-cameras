@@ -10,6 +10,7 @@ interface Camera {
 }
 
 const StartStream = ({ rtspUrl, id, cameraName, setCam }) => {
+  console.log('rtspUrl:', rtspUrl, 'id:', id, 'cameraName:', cameraName);
   const [port, setPort] = useState(9999 + id);
   const [streamStarted, setStreamStarted] = useState(false);
   const [error, setError] = useState(null);
@@ -17,8 +18,10 @@ const StartStream = ({ rtspUrl, id, cameraName, setCam }) => {
   const [players, setPlayers] = useState(null);
   const [isRecording, setIsRecording] = useState(false);
 
+
   useEffect(() => {
     const startStream = async () => {
+      console.log('Starting stream with URL:', rtspUrl, 'on port:', port);
       try {
         const response = await fetch('http://localhost:4200/ip/start-stream', {
           method: 'POST',
@@ -27,17 +30,20 @@ const StartStream = ({ rtspUrl, id, cameraName, setCam }) => {
           },
           body: JSON.stringify({ rtspUrl, port }),
         });
-
+  
         if (response.ok) {
           setStreamStarted(true);
+          console.log('Stream started successfully.');
         } else {
           setError(`Failed to start stream for camera ${cameraName}`);
+          console.error('Failed response:', response);
         }
       } catch (error) {
         setError(`Error starting stream for camera ${cameraName}: ${error}`);
+        console.error('Error:', error);
       }
     };
-
+  
     startStream();
   }, [rtspUrl, id, cameraName]);
 

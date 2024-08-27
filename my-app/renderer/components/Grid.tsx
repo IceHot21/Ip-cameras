@@ -85,7 +85,6 @@ const Grid: FC<GridProps> = ({ onCameraDrop, droppedCameras, activeFloor }) => {
         )}
       </div>
 
-      <ModalStream isOpen={showModal} onClose={() => setShowModal(false)}>
         {selectedCamera && (
           <StartStream
             rtspUrl={selectedCamera.rtspUrl}
@@ -94,7 +93,6 @@ const Grid: FC<GridProps> = ({ onCameraDrop, droppedCameras, activeFloor }) => {
             setCam={() => setShowModal(false)}  // Добавляем закрытие стрима
           />
         )}
-      </ModalStream>
     </div>
   );
 };
