@@ -27,7 +27,6 @@ const Translation: React.FC = () => {
   }, [FlagLocal]);
 
   const handleCameraSelection = (cameras: Camera[]) => {
-    console.log(cameras);
     setCameras(cameras);
     setIsListCameraOpen(false);
   };

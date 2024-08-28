@@ -25,6 +25,7 @@ const Feeding: FC = () => {
   const [cameras, setCameras] = useState<Camera[]>([]);
   const [selectedCameras, setSelectedCameras] = useState<Camera[]>([]);
   const [isModalStreamOpen, setIsModalStreamOpen] = useState(false);
+  const [FlagLocal, setFlagLocal] = useState(true);
 
   useEffect(() => {
     const storedCameras = localStorage.getItem('droppedCameras');
@@ -49,7 +50,7 @@ const Feeding: FC = () => {
   };
 
   const handleCameraDrop = (camera: Camera, rowIndex: number, colIndex: number) => {
-    const cellKey = `${activeFloor}-${rowIndex}-${colIndex};`;
+    const cellKey = `${activeFloor}-${rowIndex}-${colIndex}`;
     const updatedCamera: Camera = {
       ...camera,
       floor: activeFloor,
@@ -64,14 +65,27 @@ const Feeding: FC = () => {
     setActiveFloor(floor);
   };
 
-  const handleSelectCameras = (cameras: Camera[]) => {
-    setSelectedCameras(cameras);
-    setCameras(cameras);
-    setIsModalStreamOpen(true);
-  };
+  useEffect(() => {
+    if (FlagLocal) {
+      const savedCameras = localStorage.getItem('cameras');
+      if (savedCameras) {
+        const cameras = JSON.parse(savedCameras);
+        setSelectedCameras(cameras);
+      }
+      console.log(savedCameras);
+      setIsModalStreamOpen(true);
+    }
+  }, [FlagLocal]);
 
   const handleCloseModalStream = () => {
     setIsModalStreamOpen(false);
+    setFlagLocal(true); 
+    localStorage.removeItem('cameras');
+  };
+
+  const handleDoubleClickCamera = (camera: Camera) => {
+    setSelectedCameras([camera]); 
+    setIsModalStreamOpen(true); 
   };
 
   return (
@@ -86,12 +100,12 @@ const Feeding: FC = () => {
         <ListCamera
           open={isListCameraOpen}
           onClose={() => setIsListCameraOpen(false)}
-          onSelectCameras={handleSelectCameras}
-          FlagLocal={() => {}}
+          FlagLocal={() => setFlagLocal(prev => !prev)}
           onGridOpen={handleGridOpen}
+          onDoubleClickCamera={handleDoubleClickCamera} 
         />
       )}
-      <div className={FStyles.roomContainer}>
+      {<div className={FStyles.roomContainer}>
         <Room
           children={null}
           svgProps={{}}
@@ -109,7 +123,7 @@ const Feeding: FC = () => {
             />
           </div>
         )}
-      </div>
+      </div>}
       {isModalStreamOpen && (
         <ModalStream
           onClose={handleCloseModalStream}

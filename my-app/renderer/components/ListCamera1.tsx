@@ -6,9 +6,9 @@ import { BiX, BiRevision, BiSolidLayerPlus } from "react-icons/bi";
 interface ListCameraProps {
   open: boolean;
   onClose: () => void;
-  onSelectCameras: (cameras: any[]) => void; // Обновляем типизацию
   FlagLocal: () => void;
   onGridOpen: () => void;
+  onDoubleClickCamera: (camera: Camera) => void; // Добавили пропс для двойного клика
 }
 
 interface Camera {
@@ -24,9 +24,9 @@ interface Camera {
 const ListCamera: FC<ListCameraProps> = ({
   open,
   onClose,
-  onSelectCameras,
   FlagLocal,
   onGridOpen,
+  onDoubleClickCamera,
 }) => {
   const [cameras, setCameras] = useState<Camera[]>([]);
   const [loading, setLoading] = useState(true);
@@ -55,11 +55,9 @@ const ListCamera: FC<ListCameraProps> = ({
         setCameras(discoveredCameras);
       } else {
         console.error('Failed to discover cameras');
-        setError('Не удалось обнаружить камеры');
       }
     } catch (error) {
       console.error('Error discovering cameras:', error);
-      setError('Ошибка обнаружения камер');
     } finally {
       setLoading(false);
     }
@@ -68,8 +66,9 @@ const ListCamera: FC<ListCameraProps> = ({
   const handleDoubleClick = (camera: Camera) => {
     if (!selectedCameras.some(c => c.id === camera.id)) {
       const newSelectedCameras = [...selectedCameras, camera];
+  
       setSelectedCameras(newSelectedCameras);
-      onSelectCameras(newSelectedCameras); 
+      onDoubleClickCamera(camera); // Вызов обработчика двойного клика
     }
   };
 
@@ -91,10 +90,12 @@ const ListCamera: FC<ListCameraProps> = ({
       console.log(newCamera);
       camerasArray.push(newCamera);
     });
-
-    localStorage.setItem('cameras', JSON.stringify(camerasArray));
-    console.log(selectedCameras);
-    FlagLocal();
+    localStorage.setItem('cameras', JSON.stringify(camerasArray))
+    if(localStorage.getItem('cameras'))
+    {
+      console.log(localStorage.getItem('cameras'));
+      FlagLocal();
+    }
   };
 
   const handleDragStart = (e: React.DragEvent<HTMLDivElement>, camera: Camera) => {

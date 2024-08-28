@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect, FC } from 'react';
 import JSMpeg from '@cycjimmy/jsmpeg-player';
 import SSStyles from '../styles/StartStream.module.css';
 
@@ -6,11 +6,19 @@ interface Camera {
   id: number;
   name: string;
   address: string;
+  floor?: number;
+  cell?: string;
+  initialPosition?: { rowIndex: number; colIndex: number };
   rtspUrl: string;
 }
+interface StartStreamProps {
+  rtspUrl: string;
+  id: number;
+  cameraName: string;
+  setCam: (cameras: Camera[]) => void;
+}
 
-const StartStream = ({ rtspUrl, id, cameraName, setCam }) => {
-  console.log('rtspUrl:', rtspUrl, 'id:', id, 'cameraName:', cameraName);
+const StartStream: FC<StartStreamProps> = ({ rtspUrl, id, cameraName, setCam }) => {
   const [port, setPort] = useState(9999 + id);
   const [streamStarted, setStreamStarted] = useState(false);
   const [error, setError] = useState(null);
@@ -19,9 +27,8 @@ const StartStream = ({ rtspUrl, id, cameraName, setCam }) => {
   const [isRecording, setIsRecording] = useState(false);
 
 
-  useEffect(() => {
+ useEffect(() => {
     const startStream = async () => {
-      console.log('Starting stream with URL:', rtspUrl, 'on port:', port);
       try {
         const response = await fetch('http://localhost:4200/ip/start-stream', {
           method: 'POST',
@@ -54,7 +61,6 @@ const StartStream = ({ rtspUrl, id, cameraName, setCam }) => {
         canvas: document.getElementById(`canvas${id}`),
         autoplay: true,
         onVideoDecode: async (decoder, time) => {
-          // console.log(`Video decode: ${time}`);
         },
         onSourceEstablished: () =>
           console.log(`Источник установлен для порта ${port}`),
@@ -148,7 +154,6 @@ const StartStream = ({ rtspUrl, id, cameraName, setCam }) => {
   };
 
   const handleTakeScreenshot = () => {
-    // Screenshot functionality
   };
 
   return (

@@ -39,7 +39,7 @@ const Grid: FC<GridProps> = ({ onCameraDrop, droppedCameras, activeFloor }) => {
 
   const handleDrop = (e: React.DragEvent<HTMLDivElement>, rowIndex: number, colIndex: number) => {
     e.preventDefault();
-    const cameraData = e.dataTransfer.getData('camera');
+    const cameraData = e.dataTransfer.getData('droppedCameras');
     const camera: Camera = JSON.parse(cameraData);
 
     if (typeof camera.initialPosition === 'object' && camera.initialPosition !== null) {

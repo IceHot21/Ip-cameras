@@ -4,12 +4,22 @@ import StartStream from './StartStream';
 
 interface ModalStreamProps {
   onClose: () => void;
-  selectedCameras: any[];
-  setCam: (cameras: any[]) => void;
+  selectedCameras: Camera[];
+  setCam: (cameras: any) => void;
+}
+
+interface Camera {
+  id: number;
+  name: string;
+  address: string;
+  floor?: number;
+  cell?: string;
+  initialPosition?: { rowIndex: number; colIndex: number };
+  rtspUrl: string;
 }
 
 const ModalStream: FC<ModalStreamProps> = ({ onClose, selectedCameras, setCam }) => {
-  const [cameras, setCameras] = useState(selectedCameras);
+  const [cameras, setCameras] = useState<Camera[]>(selectedCameras);
 
   useEffect(() => {
     setCameras(selectedCameras);
@@ -24,7 +34,7 @@ const ModalStream: FC<ModalStreamProps> = ({ onClose, selectedCameras, setCam })
           Close
         </button>
         <div className={MSStyles.cameraContainer}>
-          {selectedCameras.map((camera) => (
+          {cameras.map((camera) => (
             <div key={camera.id} className={MSStyles.cameraItem}>
               <StartStream
                 key={camera.id}
