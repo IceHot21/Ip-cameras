@@ -27,7 +27,7 @@ const StartStream: FC<StartStreamProps> = ({ rtspUrl, id, cameraName, setCam }) 
   const [isRecording, setIsRecording] = useState(false);
 
 
- useEffect(() => {
+  useEffect(() => {
     const startStream = async () => {
       try {
         const response = await fetch('http://localhost:4200/ip/start-stream', {
@@ -37,7 +37,7 @@ const StartStream: FC<StartStreamProps> = ({ rtspUrl, id, cameraName, setCam }) 
           },
           body: JSON.stringify({ rtspUrl, port }),
         });
-  
+
         if (response.ok) {
           setStreamStarted(true);
           console.log('Stream started successfully.');
@@ -50,7 +50,7 @@ const StartStream: FC<StartStreamProps> = ({ rtspUrl, id, cameraName, setCam }) 
         console.error('Error:', error);
       }
     };
-  
+
     startStream();
   }, [rtspUrl, id, cameraName]);
 

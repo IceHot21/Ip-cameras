@@ -65,13 +65,13 @@ const ListCamera: FC<ListCameraProps> = ({
 
   const handleDoubleClick = (camera: Camera) => {
     if (!selectedCameras.some(c => c.id === camera.id)) {
-      const newSelectedCameras = [...selectedCameras, camera];
-  
-      setSelectedCameras(newSelectedCameras);
-      onDoubleClickCamera(camera); // Вызов обработчика двойного клика
+      setSelectedCameras([camera]);
+      onDoubleClickCamera(camera);
+    } else {
+      setSelectedCameras([]);
     }
   };
-
+  
   const handleStartStreams = () => {
     const savedCameras = localStorage.getItem('cameras');
     let camerasArray = [];

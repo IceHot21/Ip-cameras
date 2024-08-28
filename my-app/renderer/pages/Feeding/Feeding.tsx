@@ -40,6 +40,18 @@ const Feeding: FC = () => {
     }
   }, [droppedCameras]);
 
+  useEffect(() => {
+    if (FlagLocal) {
+      const savedCameras = localStorage.getItem('cameras');
+      if (savedCameras) {
+        const cameras = JSON.parse(savedCameras);
+        setSelectedCameras(cameras);
+      }
+      console.log(savedCameras);
+      setIsModalStreamOpen(true);
+    }
+  }, [FlagLocal]);
+
   const handleListCameraToggle = () => {
     setIsListCameraOpen(!isListCameraOpen);
   };
@@ -57,7 +69,6 @@ const Feeding: FC = () => {
       cell: cellKey,
       initialPosition: { rowIndex, colIndex },
     };
-
     setDroppedCameras((prev) => ({ ...prev, [cellKey]: updatedCamera }));
   };
 
@@ -65,27 +76,15 @@ const Feeding: FC = () => {
     setActiveFloor(floor);
   };
 
-  useEffect(() => {
-    if (FlagLocal) {
-      const savedCameras = localStorage.getItem('cameras');
-      if (savedCameras) {
-        const cameras = JSON.parse(savedCameras);
-        setSelectedCameras(cameras);
-      }
-      console.log(savedCameras);
-      setIsModalStreamOpen(true);
-    }
-  }, [FlagLocal]);
-
   const handleCloseModalStream = () => {
     setIsModalStreamOpen(false);
-    setFlagLocal(true); 
+    setFlagLocal(true);
     localStorage.removeItem('cameras');
   };
 
   const handleDoubleClickCamera = (camera: Camera) => {
-    setSelectedCameras([camera]); 
-    setIsModalStreamOpen(true); 
+    setSelectedCameras([camera]);
+    setIsModalStreamOpen(true);
   };
 
   return (
@@ -102,7 +101,7 @@ const Feeding: FC = () => {
           onClose={() => setIsListCameraOpen(false)}
           FlagLocal={() => setFlagLocal(prev => !prev)}
           onGridOpen={handleGridOpen}
-          onDoubleClickCamera={handleDoubleClickCamera} 
+          onDoubleClickCamera={handleDoubleClickCamera}
         />
       )}
       {<div className={FStyles.roomContainer}>
