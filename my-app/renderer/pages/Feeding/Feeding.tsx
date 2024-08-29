@@ -22,7 +22,6 @@ const Feeding: FC = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [activeFloor, setActiveFloor] = useState(0);
   const [droppedCameras, setDroppedCameras] = useState<{ [key: string]: Camera }>({});
-  const [cameras, setCameras] = useState<Camera[]>([]);
   const [selectedCameras, setSelectedCameras] = useState<Camera[]>([]);
   const [isModalStreamOpen, setIsModalStreamOpen] = useState(false);
   const [FlagLocal, setFlagLocal] = useState(true);
@@ -90,9 +89,13 @@ const Feeding: FC = () => {
   return (
     <div>
       <div className={FStyles.listContainer}>
+        <div className={FStyles.listButton}>
+          <label className={FStyles.listLabel}>Этаж {activeFloor + 1}</label>
+        </div>
         <BsLayoutTextWindow
           className={FStyles.listIcon}
           onClick={handleListCameraToggle}
+          title="Открыть сисок камер"
         />
       </div>
       {isListCameraOpen && (
@@ -112,6 +115,7 @@ const Feeding: FC = () => {
           droppedCameras={droppedCameras}
           activeFloor={activeFloor}
           onFloorChange={handleFloorChange}
+          onDoubleClickCamera={handleDoubleClickCamera}
         />
         {isEditing && (
           <div className={FStyles.gridContainer}>

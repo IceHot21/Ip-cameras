@@ -74,6 +74,11 @@
   display: flex;
   justify-content: end;
   flex-direction: row-reverse;
+  padding-right: 2px;
+}
+
+.buttonContainer button:hover{
+  transform: scale(1.1);
 }
 
 .streamModal {
@@ -95,4 +100,12 @@
   position: relative;
   width: 80%;
   max-width: 800px;
+}
+
+.tableBody tr{
+  cursor:pointer;
+}
+
+.tableBody .cameraId:hover{
+  transform: scale(1.1);
 }

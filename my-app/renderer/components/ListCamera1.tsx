@@ -8,7 +8,7 @@ interface ListCameraProps {
   onClose: () => void;
   FlagLocal: () => void;
   onGridOpen: () => void;
-  onDoubleClickCamera: (camera: Camera) => void; // Добавили пропс для двойного клика
+  onDoubleClickCamera: (camera: Camera) => void; 
 }
 
 interface Camera {
@@ -40,7 +40,7 @@ const ListCamera: FC<ListCameraProps> = ({
   }, [open]);
 
   useEffect(() => {
-    if(selectedCameras){
+    if (selectedCameras) {
       handleStartStreams();
     }
   }, [selectedCameras]);
@@ -71,7 +71,7 @@ const ListCamera: FC<ListCameraProps> = ({
       setSelectedCameras([]);
     }
   };
-  
+
   const handleStartStreams = () => {
     const savedCameras = localStorage.getItem('cameras');
     let camerasArray = [];
@@ -91,8 +91,7 @@ const ListCamera: FC<ListCameraProps> = ({
       camerasArray.push(newCamera);
     });
     localStorage.setItem('cameras', JSON.stringify(camerasArray))
-    if(localStorage.getItem('cameras'))
-    {
+    if (localStorage.getItem('cameras')) {
       console.log(localStorage.getItem('cameras'));
       FlagLocal();
     }
@@ -107,10 +106,10 @@ const ListCamera: FC<ListCameraProps> = ({
   return (
     <div className={LCStyles.sidebar}>
       <div className={LCStyles.buttonContainer}>
-        <button onClick={onClose} className={LCStyles.closeButton}><BiX /></button>
+        <button onClick={onClose} className={LCStyles.closeButton} title="Закрыть"><BiX /></button>
         <div style={{ display: 'flex' }}>
-          <button onClick={handleDiscoverCameras} className={LCStyles.refreshButton}><BiRevision /></button>
-          <button onClick={onGridOpen} className={LCStyles.plusButton}><BiSolidLayerPlus /></button>
+          <button onClick={handleDiscoverCameras} className={LCStyles.refreshButton} title="Обновить"><BiRevision /></button>
+          <button onClick={onGridOpen} className={LCStyles.plusButton} title="Добавить камеру"><BiSolidLayerPlus /></button>
         </div>
       </div>
       {loading ? (
@@ -129,24 +128,31 @@ const ListCamera: FC<ListCameraProps> = ({
                 <th></th>
               </tr>
             </thead>
-            <tbody>
-              {cameras.map((camera) => (
-                <tr
-                  key={camera.id}
-                  onDoubleClick={() => handleDoubleClick(camera)}
-                >
-                  <td>{camera.name.split(/[^a-zA-Z0-9]/)[0]}</td>
-                  <td>{camera.address ? camera.address.match(/(?:http:\/\/)?(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})/)?.[1] : "N/A"}</td>
-                  <td>
-                    <div
-                      draggable
-                      onDragStart={(e) => handleDragStart(e, camera)}
-                    >
-                      <BsFillCameraVideoFill />
-                    </div>
-                  </td>
-                </tr>
-              ))}
+            <tbody className={LCStyles.tableBody}>
+              {cameras.map((camera) => {
+                const cameraId = `Камера ${camera.name.split(/[^a-zA-Z0-9]/)[0]}`;
+
+                return (
+                  <tr
+                    key={camera.id}
+                    onDoubleClick={() => handleDoubleClick(camera)}
+                    id={cameraId}
+                  >
+                    <td>{camera.name.split(/[^a-zA-Z0-9]/)[0]}</td>
+                    <td>{camera.address ? camera.address.match(/(?:http:\/\/)?(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})/)?.[1] : "N/A"}</td>
+                    <td>
+                      <div
+                        draggable
+                        onDragStart={(e) => handleDragStart(e, camera)}
+                        id={cameraId}
+                        title={`${cameraId}`}
+                      >
+                        <BsFillCameraVideoFill className={LCStyles.cameraId} />
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>

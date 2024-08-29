@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from 'react';
+/* import { FC, useEffect, useState } from 'react';
 import LCStyles from '../styles/ListCamera.module.css';
 
 interface ListCameraProps {
@@ -110,4 +110,4 @@ const ListCamera: FC<ListCameraProps> = ({ open, onClose, onSelectCameras, FlagL
   );
 };
 
-export default ListCamera;
+export default ListCamera; */
