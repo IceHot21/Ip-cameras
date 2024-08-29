@@ -161,10 +161,12 @@ const StartStream: FC<StartStreamProps> = ({ rtspUrl, id, cameraName, setCam }) 
       <div
         className={`${SSStyles.canvasesContainer} canvas-container${port}`}
       >
-        <div className={`${SSStyles.cameraName} camera-name`}>{cameraName}</div>
+        {/* <div className={`${SSStyles.cameraName} camera-name`}>{cameraName}</div> */}
+        <div className={SSStyles.deleteBut} style={{display: 'flex', justifyContent: 'flex-end', position: 'absolute' }}>
+          <button onClick={handleDelete}>Удалить камеру</button>
+        </div>
         <canvas id={`canvas${id}`} />
         <div className={SSStyles.buttonsContainer}>
-          <button onClick={handleDelete}>Удалить камеру</button>
           <button
             onClick={isRecording ? handleStopRecording : handleStartRecording}
           >

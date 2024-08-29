@@ -37,7 +37,7 @@ const Room: FC<RoomProps> = ({ children, svgProps, droppedCameras, activeFloor, 
   };
   
   const handleDragStart = (e: React.DragEvent<HTMLDivElement>, camera: Camera) => {
-    e.dataTransfer.setData('camera', JSON.stringify(camera));
+    e.dataTransfer.setData('droppedCameras', JSON.stringify(camera));
   };
 
   const handleDoubleClick = (camera: Camera) => {
@@ -109,7 +109,7 @@ const Room: FC<RoomProps> = ({ children, svgProps, droppedCameras, activeFloor, 
             rtspUrl={selectedCamera.rtspUrl}
             id={selectedCamera.id}
             cameraName={selectedCamera.name}
-            setCam={() => setShowModal(false)}  // Добавляем закрытие стрима
+            setCam={() => setShowModal(false)} 
           />
         )}
     </div>

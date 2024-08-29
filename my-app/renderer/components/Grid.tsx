@@ -25,7 +25,7 @@ const Grid: FC<GridProps> = ({ onCameraDrop, droppedCameras, activeFloor }) => {
   const [showModal, setShowModal] = useState<boolean>(false);
 
   const handleDragStart = (e: React.DragEvent<HTMLDivElement>, camera: Camera) => {
-    e.dataTransfer.setData('camera', JSON.stringify(camera));
+    e.dataTransfer.setData('droppedCameras', JSON.stringify(camera));
   };
 
   const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
@@ -37,9 +37,11 @@ const Grid: FC<GridProps> = ({ onCameraDrop, droppedCameras, activeFloor }) => {
     setShowModal(true);
   };
 
-  const handleDrop = (e: React.DragEvent<HTMLDivElement>, rowIndex: number, colIndex: number) => {
-    e.preventDefault();
-    const cameraData = e.dataTransfer.getData('droppedCameras');
+const handleDrop = (e: React.DragEvent<HTMLDivElement>, rowIndex: number, colIndex: number) => {
+  e.preventDefault();
+  const cameraData = e.dataTransfer.getData('droppedCameras');
+
+  if (cameraData) {
     const camera: Camera = JSON.parse(cameraData);
 
     if (typeof camera.initialPosition === 'object' && camera.initialPosition !== null) {
@@ -51,7 +53,8 @@ const Grid: FC<GridProps> = ({ onCameraDrop, droppedCameras, activeFloor }) => {
     droppedCameras[newCellKey] = camera;
     camera.initialPosition = { rowIndex, colIndex };
     onCameraDrop(camera, rowIndex, colIndex);
-  };
+  }
+};
 
   return (
     <div className={GStyles.gridContainer}>
