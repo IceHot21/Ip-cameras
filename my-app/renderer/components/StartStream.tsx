@@ -1,6 +1,7 @@
 import { useState, useEffect, FC } from 'react';
 import JSMpeg from '@cycjimmy/jsmpeg-player';
 import SSStyles from '../styles/StartStream.module.css';
+import { BiX } from 'react-icons/bi';
 
 interface Camera {
   id: number;
@@ -161,9 +162,9 @@ const StartStream: FC<StartStreamProps> = ({ rtspUrl, id, cameraName, setCam }) 
       <div
         className={`${SSStyles.canvasesContainer} canvas-container${port}`}
       >
-        {/* <div className={`${SSStyles.cameraName} camera-name`}>{cameraName}</div> */}
-        <div className={SSStyles.deleteBut} style={{display: 'flex', justifyContent: 'flex-end', position: 'absolute' }}>
-          <button onClick={handleDelete}>Удалить камеру</button>
+        {<div className={`${SSStyles.cameraName} camera-name`}>{cameraName}</div>}
+        <div className={SSStyles.deleteBut}>
+          <button onClick={handleDelete}><BiX /></button>
         </div>
         <canvas id={`canvas${id}`} />
         <div className={SSStyles.buttonsContainer}>

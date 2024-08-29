@@ -6,9 +6,6 @@
 .buttonsContainer {
     display: flex;
     justify-content: space-between;
-    border-bottom-left-radius: 5px;
-    border-bottom-right-radius: 5px;
-    border-bottom: 1px solid #ccc;
 }
 
 .buttonsContainer button {
@@ -26,13 +23,11 @@
 }
 
 .startContainer {
-    border: 1px solid #ccc;
     border-radius: 15px;
 }
 
 .canvasesContainer {
     position: relative;
-    margin: 10px;
     border-radius: 10px;
 }
 
@@ -41,10 +36,11 @@
     background-color: rgba(255, 255, 255, 0.7);
     padding: 5px;
     font-weight: bold;
-    font-size: 14px;
+    font-size: 18px;
     color: black;
     right: 0px;
     border-top-right-radius: 10px;
+    margin-top: 35px;
 }
 
 .canvasesContainer canvas {
@@ -57,4 +53,27 @@
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
     box-shadow: none;
+}
+
+.deleteBut{
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
+    margin-top: -18px;
+    margin-left: 18px;
+}
+
+.deleteBut button:hover{
+    transform: scale(1.1);
+    cursor: pointer;
+}
+
+.deleteBut button{
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+
+}
+.deleteBut svg{
+    font-size: 30px;
 }

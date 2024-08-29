@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import TStyles from './Transletion.module.css';
 import ListCamera from '../../components/ListCamera';
-import StartStream from '../../components/StartStream';
+import StartStream from '../../components/StartStream';/*  */
 import JSMpeg from '@cycjimmy/jsmpeg-player';
 
 interface Camera {

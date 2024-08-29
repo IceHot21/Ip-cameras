@@ -30,9 +30,6 @@ const ModalStream: FC<ModalStreamProps> = ({ onClose, selectedCameras, setCam })
   return (
     <div className={MSStyles.modalOverlay}>
       <div className={MSStyles.modalContent}>
-{/*         <button onClick={onClose} className={MSStyles.closeButton}>
-          Close
-        </button> */}
         <div className={MSStyles.cameraContainer}>
           {cameras.map((camera) => (
             <div key={camera.id} className={MSStyles.cameraItem}>
