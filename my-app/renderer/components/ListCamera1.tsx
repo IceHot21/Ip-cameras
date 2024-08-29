@@ -2,6 +2,7 @@ import { useState, useEffect, FC } from 'react';
 import LCStyles from '../styles/ListCamera.module.css';
 import { BsFillCameraVideoFill } from "react-icons/bs";
 import { BiX, BiRevision, BiSolidLayerPlus } from "react-icons/bi";
+import { FaCheck } from 'react-icons/fa';
 
 interface ListCameraProps {
   open: boolean;
@@ -32,6 +33,7 @@ const ListCamera: FC<ListCameraProps> = ({
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedCameras, setSelectedCameras] = useState<Camera[]>([]);
+  const [isAddingCamera, setIsAddingCamera] = useState(false); 
 
   useEffect(() => {
     if (open) {
@@ -101,6 +103,11 @@ const ListCamera: FC<ListCameraProps> = ({
     e.dataTransfer.setData('droppedCameras', JSON.stringify(camera));
   };
 
+  const handleAddCameraClick = () => {
+    setIsAddingCamera(!isAddingCamera); 
+    onGridOpen(); 
+  };
+
   if (!open) return null;
 
   return (
@@ -109,7 +116,9 @@ const ListCamera: FC<ListCameraProps> = ({
         <button onClick={onClose} className={LCStyles.closeButton} title="Закрыть"><BiX /></button>
         <div style={{ display: 'flex' }}>
           <button onClick={handleDiscoverCameras} className={LCStyles.refreshButton} title="Обновить"><BiRevision /></button>
-          <button onClick={onGridOpen} className={LCStyles.plusButton} title="Добавить камеру"><BiSolidLayerPlus /></button>
+          <button onClick={handleAddCameraClick} className={LCStyles.plusButton} >
+            {isAddingCamera ? <FaCheck title="Сохранить камеру" /> : <BiSolidLayerPlus title="Добавить камеру"/>} 
+          </button>
         </div>
       </div>
       {loading ? (

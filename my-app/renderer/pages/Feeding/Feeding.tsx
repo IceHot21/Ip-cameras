@@ -1,4 +1,4 @@
-import { FC, useState, useEffect } from 'react';
+import React, { FC, useState, useEffect } from 'react';
 import { BsLayoutTextWindow } from "react-icons/bs";
 import FStyles from './Feeding.module.css';
 import Room from '../../components/Room';
@@ -95,7 +95,7 @@ const Feeding: FC = () => {
         <BsLayoutTextWindow
           className={FStyles.listIcon}
           onClick={handleListCameraToggle}
-          title="Открыть сисок камер"
+          title="Открыть список камер"
         />
       </div>
       {isListCameraOpen && (
@@ -107,7 +107,7 @@ const Feeding: FC = () => {
           onDoubleClickCamera={handleDoubleClickCamera}
         />
       )}
-      {<div className={FStyles.roomContainer}>
+      <div className={`${FStyles.roomContainer} ${isGridOpen ? FStyles.transparentBackground : ''}`}>
         <Room
           children={null}
           svgProps={{}}
@@ -126,7 +126,7 @@ const Feeding: FC = () => {
             />
           </div>
         )}
-      </div>}
+      </div>
       {isModalStreamOpen && (
         <ModalStream
           onClose={handleCloseModalStream}
