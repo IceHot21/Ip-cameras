@@ -5,6 +5,7 @@ import Room from '../../components/Room';
 import Grid from '../../components/Grid';
 import ListCamera from '../../components/ListCamera1';
 import ModalStream from '../../components/ModalStream';
+import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 
 interface Camera {
   id: number;
@@ -14,6 +15,7 @@ interface Camera {
   cell: string;
   initialPosition: { rowIndex: number; colIndex: number };
   rtspUrl: string;
+  isDisabled: boolean;
 }
 
 const Feeding: FC = () => {
@@ -25,6 +27,7 @@ const Feeding: FC = () => {
   const [selectedCameras, setSelectedCameras] = useState<Camera[]>([]);
   const [isModalStreamOpen, setIsModalStreamOpen] = useState(false);
   const [FlagLocal, setFlagLocal] = useState(true);
+  const [movedCameras, setMovedCameras] = useState<Set<number>>(new Set());
 
   useEffect(() => {
     const storedCameras = localStorage.getItem('droppedCameras');
@@ -69,10 +72,23 @@ const Feeding: FC = () => {
       initialPosition: { rowIndex, colIndex },
     };
     setDroppedCameras((prev) => ({ ...prev, [cellKey]: updatedCamera }));
+    setMovedCameras((prev) => new Set(prev).add(camera.id));
   };
 
   const handleFloorChange = (floor: number) => {
     setActiveFloor(floor);
+  };
+
+  const handleLeftClick = () => {
+    if (activeFloor > 0) {
+      setActiveFloor(prevFloor => prevFloor - 1);
+    }
+  };
+
+  const handleRightClick = () => {
+    if (activeFloor < 2) {
+      setActiveFloor(prevFloor => prevFloor + 1);
+    }
   };
 
   const handleCloseModalStream = () => {
@@ -90,7 +106,9 @@ const Feeding: FC = () => {
     <div>
       <div className={FStyles.listContainer}>
         <div className={FStyles.listButton}>
-          <label className={FStyles.listLabel}>Этаж {activeFloor + 1}</label>
+          <FaChevronLeft className={`${FStyles.leftSvg} ${activeFloor === 0 ? FStyles.disabled : ''}`} onClick={handleLeftClick} />
+          <h1 className={FStyles.listLabel}>Этаж {activeFloor + 1}</h1>
+          <FaChevronRight className={`${FStyles.rightSvg} ${activeFloor === 2 ? FStyles.disabled : ''}`} onClick={handleRightClick} />
         </div>
         <BsLayoutTextWindow
           className={FStyles.listIcon}
@@ -105,6 +123,7 @@ const Feeding: FC = () => {
           FlagLocal={() => setFlagLocal(prev => !prev)}
           onGridOpen={handleGridOpen}
           onDoubleClickCamera={handleDoubleClickCamera}
+          movedCameras={movedCameras}
         />
       )}
       <div className={`${FStyles.roomContainer} ${isGridOpen ? FStyles.transparentBackground : ''}`}>

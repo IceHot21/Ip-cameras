@@ -10,6 +10,7 @@ interface ListCameraProps {
   FlagLocal: () => void;
   onGridOpen: () => void;
   onDoubleClickCamera: (camera: Camera) => void; 
+  movedCameras: Set<number>;
 }
 
 interface Camera {
@@ -20,6 +21,7 @@ interface Camera {
   cell?: string;
   initialPosition?: { rowIndex: number; colIndex: number };
   rtspUrl: string;
+  isDisabled: boolean;
 }
 
 const ListCamera: FC<ListCameraProps> = ({
@@ -28,12 +30,13 @@ const ListCamera: FC<ListCameraProps> = ({
   FlagLocal,
   onGridOpen,
   onDoubleClickCamera,
+  movedCameras,
 }) => {
-  const [cameras, setCameras] = useState<Camera[]>([]);
+   const [cameras, setCameras] = useState<Camera[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedCameras, setSelectedCameras] = useState<Camera[]>([]);
-  const [isAddingCamera, setIsAddingCamera] = useState(false); 
+  const [isAddingCamera, setIsAddingCamera] = useState(false);
 
   useEffect(() => {
     if (open) {
@@ -82,17 +85,17 @@ const ListCamera: FC<ListCameraProps> = ({
       camerasArray = JSON.parse(savedCameras);
     }
 
-    selectedCameras.forEach((SerchedCamera, index) => {
-      console.log(SerchedCamera);
+    selectedCameras.forEach((searchedCamera, index) => {
+      console.log(searchedCamera);
 
-      const cameraName = SerchedCamera.name.split(/[^a-zA-Z0-9]/)[0];
-      const ipAddress = SerchedCamera.address.match(/(?:http:\/\/)?(\d+\.\d+\.\d+\.\d+)/)[1];
+      const cameraName = searchedCamera.name.split(/[^a-zA-Z0-9]/)[0];
+      const ipAddress = searchedCamera.address.match(/(?:http:\/\/)?(\d+\.\d+\.\d+\.\d+)/)[1];
       const rtspUrl = `rtsp://admin:Dd7560848@${ipAddress}`;
       const newCamera = { id: camerasArray.length + 1, rtspUrl, name: cameraName };
       console.log(newCamera);
       camerasArray.push(newCamera);
     });
-    localStorage.setItem('cameras', JSON.stringify(camerasArray))
+    localStorage.setItem('cameras', JSON.stringify(camerasArray));
     if (localStorage.getItem('cameras')) {
       console.log(localStorage.getItem('cameras'));
       FlagLocal();
@@ -100,12 +103,12 @@ const ListCamera: FC<ListCameraProps> = ({
   };
 
   const handleDragStart = (e: React.DragEvent<HTMLDivElement>, camera: Camera) => {
-    e.dataTransfer.setData('droppedCameras', JSON.stringify(camera));
+    e.dataTransfer.setData('camera', JSON.stringify(camera));
   };
 
   const handleAddCameraClick = () => {
-    setIsAddingCamera(!isAddingCamera); 
-    onGridOpen(); 
+    setIsAddingCamera(!isAddingCamera);
+    onGridOpen();
   };
 
   if (!open) return null;
@@ -117,7 +120,7 @@ const ListCamera: FC<ListCameraProps> = ({
         <div style={{ display: 'flex' }}>
           <button onClick={handleDiscoverCameras} className={LCStyles.refreshButton} title="Обновить"><BiRevision /></button>
           <button onClick={handleAddCameraClick} className={LCStyles.plusButton} >
-            {isAddingCamera ? <FaCheck title="Сохранить камеру" /> : <BiSolidLayerPlus title="Добавить камеру"/>} 
+            {isAddingCamera ? <FaCheck title="Сохранить камеру" /> : <BiSolidLayerPlus title="Добавить камеру"/>}
           </button>
         </div>
       </div>
@@ -140,21 +143,22 @@ const ListCamera: FC<ListCameraProps> = ({
             <tbody className={LCStyles.tableBody}>
               {cameras.map((camera) => {
                 const cameraId = `Камера ${camera.name.split(/[^a-zA-Z0-9]/)[0]}`;
-
+                const isDisabled = movedCameras.has(camera.id);
                 return (
                   <tr
                     key={camera.id}
                     onDoubleClick={() => handleDoubleClick(camera)}
                     id={cameraId}
+                    className={isDisabled ? LCStyles.disabledRow : ''}
                   >
                     <td>{camera.name.split(/[^a-zA-Z0-9]/)[0]}</td>
                     <td>{camera.address ? camera.address.match(/(?:http:\/\/)?(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})/)?.[1] : "N/A"}</td>
                     <td>
                       <div
-                        draggable
+                        draggable={!isDisabled}
                         onDragStart={(e) => handleDragStart(e, camera)}
                         id={cameraId}
-                        title={`${cameraId}`}
+                        title={cameraId}
                       >
                         <BsFillCameraVideoFill className={LCStyles.cameraId} />
                       </div>

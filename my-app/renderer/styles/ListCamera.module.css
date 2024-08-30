@@ -109,3 +109,14 @@
 .tableBody .cameraId:hover{
   transform: scale(1.1);
 }
+
+.disabledRow {
+  opacity: 0.5; 
+  pointer-events: none; 
+  cursor: not-allowed; 
+}
+
+/* Добавьте этот новый класс */
+.disabledRow.isDisabled {
+  background-color: #ccc; /* или любой другой стиль, который вы хотите применить */
+}

@@ -2,7 +2,6 @@ import React, { FC, useState } from 'react';
 import GStyles from '../styles/Grid.module.css';
 import { BsFillCameraVideoFill } from 'react-icons/bs';
 import StartStream from './StartStream';
-import ModalStream from './ModalStream'; // Импортируйте компонент Modal
 
 interface Camera {
   id: number;
@@ -12,6 +11,7 @@ interface Camera {
   cell: string;
   initialPosition: { rowIndex: number; colIndex: number };
   rtspUrl: string;
+  isDisabled: boolean;
 }
 
 interface GridProps {
@@ -43,13 +43,16 @@ const handleDrop = (e: React.DragEvent<HTMLDivElement>, rowIndex: number, colInd
 
   if (cameraData) {
     const camera: Camera = JSON.parse(cameraData);
+    const newCellKey = `${activeFloor}-${rowIndex}-${colIndex}`;
 
     if (typeof camera.initialPosition === 'object' && camera.initialPosition !== null) {
       const initialCellKey = `${activeFloor}-${camera.initialPosition.rowIndex}-${camera.initialPosition.colIndex}`;
-      delete droppedCameras[initialCellKey];
+
+      if (initialCellKey !== newCellKey) {
+        delete droppedCameras[initialCellKey];
+      }
     }
 
-    const newCellKey = `${activeFloor}-${rowIndex}-${colIndex}`;
     droppedCameras[newCellKey] = camera;
     camera.initialPosition = { rowIndex, colIndex };
     onCameraDrop(camera, rowIndex, colIndex);
@@ -74,8 +77,8 @@ const handleDrop = (e: React.DragEvent<HTMLDivElement>, rowIndex: number, colInd
                 {droppedCameras[cellKey] && (
                   <div
                     className={GStyles.cameraIcon}
-                    id="cameraIcon"
                     draggable
+                    id={droppedCameras[cellKey].name}
                     onDragStart={(e) => handleDragStart(e, droppedCameras[cellKey])}
                     onDoubleClick={() => handleDoubleClick(droppedCameras[cellKey])}
                   >
@@ -93,7 +96,7 @@ const handleDrop = (e: React.DragEvent<HTMLDivElement>, rowIndex: number, colInd
             rtspUrl={selectedCamera.rtspUrl}
             id={selectedCamera.id}
             cameraName={selectedCamera.name}
-            setCam={() => setShowModal(false)}  // Добавляем закрытие стрима
+            setCam={() => setShowModal(false)}  
           />
         )}
     </div>
