@@ -9,7 +9,7 @@ interface ListCameraProps {
   onClose: () => void;
   FlagLocal: () => void;
   onGridOpen: () => void;
-  onDoubleClickCamera: (camera: Camera) => void; 
+  onDoubleClickCamera: (camera: Camera) => void;
   movedCameras: Set<number>;
 }
 
@@ -32,7 +32,7 @@ const ListCamera: FC<ListCameraProps> = ({
   onDoubleClickCamera,
   movedCameras,
 }) => {
-   const [cameras, setCameras] = useState<Camera[]>([]);
+  const [cameras, setCameras] = useState<Camera[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedCameras, setSelectedCameras] = useState<Camera[]>([]);
@@ -103,7 +103,7 @@ const ListCamera: FC<ListCameraProps> = ({
   };
 
   const handleDragStart = (e: React.DragEvent<HTMLDivElement>, camera: Camera) => {
-    e.dataTransfer.setData('camera', JSON.stringify(camera));
+    e.dataTransfer.setData('droppedCameras', JSON.stringify(camera));
   };
 
   const handleAddCameraClick = () => {
@@ -120,7 +120,7 @@ const ListCamera: FC<ListCameraProps> = ({
         <div style={{ display: 'flex' }}>
           <button onClick={handleDiscoverCameras} className={LCStyles.refreshButton} title="Обновить"><BiRevision /></button>
           <button onClick={handleAddCameraClick} className={LCStyles.plusButton} >
-            {isAddingCamera ? <FaCheck title="Сохранить камеру" /> : <BiSolidLayerPlus title="Добавить камеру"/>}
+            {isAddingCamera ? <FaCheck title="Сохранить камеру" /> : <BiSolidLayerPlus title="Добавить камеру" />}
           </button>
         </div>
       </div>
@@ -144,12 +144,13 @@ const ListCamera: FC<ListCameraProps> = ({
               {cameras.map((camera) => {
                 const cameraId = `Камера ${camera.name.split(/[^a-zA-Z0-9]/)[0]}`;
                 const isDisabled = movedCameras.has(camera.id);
+                console.log(isDisabled)
                 return (
                   <tr
                     key={camera.id}
                     onDoubleClick={() => handleDoubleClick(camera)}
                     id={cameraId}
-                    className={isDisabled ? LCStyles.disabledRow : ''}
+                    className={isDisabled ? `${LCStyles.tableRow} ${LCStyles.disabledRow}` : LCStyles.tableRow}
                   >
                     <td>{camera.name.split(/[^a-zA-Z0-9]/)[0]}</td>
                     <td>{camera.address ? camera.address.match(/(?:http:\/\/)?(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})/)?.[1] : "N/A"}</td>

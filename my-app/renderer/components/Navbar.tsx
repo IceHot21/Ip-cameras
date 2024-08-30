@@ -2,7 +2,7 @@ import { FC, useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/router";
 import NStyles from "../styles/Navbar.module.css";
-import { BiPlay, BiCameraMovie, BiCamera, BiRepeat, BiLogOut, BiSolidHome  } from "react-icons/bi";
+import { BiPlay, BiCameraMovie, BiCamera, BiRepeat, BiLogOut, BiSolidHome, BiAccessibility  } from "react-icons/bi";
 
 // Компонент MenuToggle для переключения между иконкой меню и крестиком
 const MenuToggle = ({ toggle }) => (
@@ -44,8 +44,8 @@ const MenuToggle = ({ toggle }) => (
 // Компонент для навигации, включающий пункты меню
 const Navigation = ({ onMenuItemClick }) => {
   const menuItems = [
-    { name: "Главная", action: "/Feeding/Feeding", icon: <BiSolidHome size={24} />},
-/*     { name: "Трансляция", action: "/Translation/Translation", icon: <BiPlay size={24} /> }, */
+    { name: "Главная", action: "/Home/Home", icon: <BiSolidHome size={24} /> },
+    { name: "Схема здания", action: "/Feeding/Feeding", icon: <BiAccessibility size={24} />},
     { name: "Видеоархив", action: "/Videoarchive/Videoarchive", icon: <BiCameraMovie size={24} /> },
     { name: "Фотоархив", action: "/Photoarchive/Photoarchive", icon: <BiCamera size={24} /> },
     { name: "Смена", action: "/LoginPage/LoginPage", icon: <BiRepeat size={24} /> },

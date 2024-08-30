@@ -25,14 +25,14 @@ const LoginPage: FC = () => {
       const data = await login(username, password);
       console.log(data); // 'Login successful'
       // Перенаправление на защищенную страницу
-      router.push('/Feeding/Feeding');
+      router.push('/Home/Home');
     } catch (error) {
       console.error('Login failed', error);
     }
   };
 
   const guestButt = () => {
-    router.push('/Feeding/Feeding');
+    router.push('/Home/Home');
   };
 
   const handleFocus = () => {

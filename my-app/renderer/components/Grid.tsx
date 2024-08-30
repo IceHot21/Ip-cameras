@@ -37,27 +37,27 @@ const Grid: FC<GridProps> = ({ onCameraDrop, droppedCameras, activeFloor }) => {
     setShowModal(true);
   };
 
-const handleDrop = (e: React.DragEvent<HTMLDivElement>, rowIndex: number, colIndex: number) => {
-  e.preventDefault();
-  const cameraData = e.dataTransfer.getData('droppedCameras');
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>, rowIndex: number, colIndex: number) => {
+    e.preventDefault();
+    const cameraData = e.dataTransfer.getData('droppedCameras');
 
-  if (cameraData) {
-    const camera: Camera = JSON.parse(cameraData);
-    const newCellKey = `${activeFloor}-${rowIndex}-${colIndex}`;
+    if (cameraData) {
+      const camera: Camera = JSON.parse(cameraData);
+      const newCellKey = `${activeFloor}-${rowIndex}-${colIndex}`;
 
-    if (typeof camera.initialPosition === 'object' && camera.initialPosition !== null) {
-      const initialCellKey = `${activeFloor}-${camera.initialPosition.rowIndex}-${camera.initialPosition.colIndex}`;
+      if (typeof camera.initialPosition === 'object' && camera.initialPosition !== null) {
+        const initialCellKey = `${activeFloor}-${camera.initialPosition.rowIndex}-${camera.initialPosition.colIndex}`;
 
-      if (initialCellKey !== newCellKey) {
-        delete droppedCameras[initialCellKey];
+        if (initialCellKey !== newCellKey) {
+          delete droppedCameras[initialCellKey];
+        }
       }
-    }
 
-    droppedCameras[newCellKey] = camera;
-    camera.initialPosition = { rowIndex, colIndex };
-    onCameraDrop(camera, rowIndex, colIndex);
-  }
-};
+      droppedCameras[newCellKey] = camera;
+      camera.initialPosition = { rowIndex, colIndex };
+      onCameraDrop(camera, rowIndex, colIndex);
+    }
+  };
 
   return (
     <div className={GStyles.gridContainer}>
@@ -90,15 +90,14 @@ const handleDrop = (e: React.DragEvent<HTMLDivElement>, rowIndex: number, colInd
           })
         )}
       </div>
-
-        {selectedCamera && (
-          <StartStream
-            rtspUrl={selectedCamera.rtspUrl}
-            id={selectedCamera.id}
-            cameraName={selectedCamera.name}
-            setCam={() => setShowModal(false)}  
-          />
-        )}
+      {selectedCamera && (
+        <StartStream
+          rtspUrl={selectedCamera.rtspUrl}
+          id={selectedCamera.id}
+          cameraName={selectedCamera.name}
+          setCam={() => setShowModal(false)}
+        />
+      )}
     </div>
   );
 };
