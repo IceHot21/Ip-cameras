@@ -3,7 +3,7 @@ import { BsLayoutTextWindow } from "react-icons/bs";
 import FStyles from './Feeding.module.css';
 import Room from '../../components/Room';
 import Grid from '../../components/Grid';
-import ListCamera from '../../components/ListCamera1';
+import ListCamera from '../../components/ListCamera';
 import ModalStream from '../../components/ModalStream';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 
@@ -91,12 +91,6 @@ const Feeding: FC = () => {
     }
   };
 
-  const handleCloseModalStream = () => {
-    setIsModalStreamOpen(false);
-    setFlagLocal(true);
-    localStorage.removeItem('cameras');
-  };
-
   const handleDoubleClickCamera = (camera: Camera) => {
     setSelectedCameras([camera]);
     setIsModalStreamOpen(true);
@@ -124,6 +118,7 @@ const Feeding: FC = () => {
           onGridOpen={handleGridOpen}
           onDoubleClickCamera={handleDoubleClickCamera}
           movedCameras={movedCameras}
+          droppedCameras={droppedCameras}
         />
       )}
       <div className={`${FStyles.roomContainer} ${isGridOpen ? FStyles.transparentBackground : ''}`}>
@@ -135,6 +130,7 @@ const Feeding: FC = () => {
           activeFloor={activeFloor}
           onFloorChange={handleFloorChange}
           onDoubleClickCamera={handleDoubleClickCamera}
+          FlagLocal={() => setFlagLocal(prev => !prev)}
         />
         {isEditing && (
           <div className={FStyles.gridContainer}>
@@ -142,13 +138,14 @@ const Feeding: FC = () => {
               onCameraDrop={handleCameraDrop}
               droppedCameras={droppedCameras}
               activeFloor={activeFloor}
+              onDoubleClickCamera={handleDoubleClickCamera}
+              FlagLocal={() => setFlagLocal(prev => !prev)}
             />
           </div>
         )}
       </div>
       {isModalStreamOpen && (
         <ModalStream
-          onClose={handleCloseModalStream}
           selectedCameras={selectedCameras}
           setCam={setSelectedCameras}
         />

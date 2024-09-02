@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import GStyles from '../styles/Grid.module.css';
 import { BsFillCameraVideoFill } from 'react-icons/bs';
 import StartStream from './StartStream';
@@ -6,23 +6,30 @@ import StartStream from './StartStream';
 interface Camera {
   id: number;
   name: string;
-  address: string;
   floor: number;
   cell: string;
   initialPosition: { rowIndex: number; colIndex: number };
   rtspUrl: string;
   isDisabled: boolean;
+  address: string;
 }
 
 interface GridProps {
   onCameraDrop: (camera: Camera, rowIndex: number, colIndex: number) => void;
   droppedCameras: { [key: string]: Camera };
   activeFloor: number;
+  onDoubleClickCamera: (camera: Camera) => void; 
+  FlagLocal: () => void;
 }
 
-const Grid: FC<GridProps> = ({ onCameraDrop, droppedCameras, activeFloor }) => {
-  const [selectedCamera, setSelectedCamera] = useState<Camera | null>(null);
-  const [showModal, setShowModal] = useState<boolean>(false);
+const Grid: FC<GridProps> = ({ onCameraDrop, droppedCameras, activeFloor, onDoubleClickCamera, FlagLocal }) => {
+  const [selectedCameras, setSelectedCameras] = useState<Camera[]>([]);
+
+  useEffect(() => {
+    if (selectedCameras) {
+      handleStartStreams([]);
+    }
+  }, [selectedCameras]);
 
   const handleDragStart = (e: React.DragEvent<HTMLDivElement>, camera: Camera) => {
     e.dataTransfer.setData('droppedCameras', JSON.stringify(camera));
@@ -33,17 +40,53 @@ const Grid: FC<GridProps> = ({ onCameraDrop, droppedCameras, activeFloor }) => {
   };
 
   const handleDoubleClick = (camera: Camera) => {
-    setSelectedCamera(camera);
-    setShowModal(true);
+    if (!selectedCameras.some(c => c.id === camera.id)) {
+      setSelectedCameras([camera]);
+      onDoubleClickCamera(camera);
+      handleStartStreams([camera]);
+    } else {
+      setSelectedCameras([]);
+    }
+  };
+
+  const handleStartStreams = (selectedCameras: Camera[]) => {
+    const savedCameras = localStorage.getItem('cameras');
+    let camerasArray = [];
+
+    if (savedCameras && savedCameras.length !== 0) {
+      camerasArray = JSON.parse(savedCameras);
+    }
+
+    selectedCameras.forEach((searchedCamera) => {
+      const cameraName = searchedCamera.name.split(/[^a-zA-Z0-9]/)[0];
+      const ipAddress = searchedCamera.address.match(/(?:http:\/\/)?(\d+\.\d+\.\d+\.\d+)/)[1];
+      const rtspUrl = `rtsp://admin:Dd7560848@${ipAddress}`;
+      const newCamera = { id: camerasArray.length + 1, rtspUrl, name: cameraName };
+      camerasArray.push(newCamera);
+    });
+
+    localStorage.setItem('cameras', JSON.stringify(camerasArray));
+    if (localStorage.getItem('cameras')) {
+      FlagLocal();
+    }
   };
 
   const handleDrop = (e: React.DragEvent<HTMLDivElement>, rowIndex: number, colIndex: number) => {
     e.preventDefault();
     const cameraData = e.dataTransfer.getData('droppedCameras');
+    let camerasArray = [];
 
     if (cameraData) {
       const camera: Camera = JSON.parse(cameraData);
+      
+      const cameraName = camera.name.split(/[^a-zA-Z0-9]/)[0];
+      const ipAddress = camera.address.match(/(?:http:\/\/)?(\d+\.\d+\.\d+\.\d+)/)[1];
+      const rtspUrl = `rtsp://admin:Dd7560848@${ipAddress}`;
       const newCellKey = `${activeFloor}-${rowIndex}-${colIndex}`;
+      const newCamera = { id: Object.keys(droppedCameras).length + 1, rtspUrl, name: cameraName, floor: activeFloor, cell: `${activeFloor}-${rowIndex}-${colIndex}`, initialPosition: { rowIndex, colIndex }, isDisabled: false, address: camera.address };
+      droppedCameras[newCellKey] = newCamera;
+
+      console.log(newCamera);
 
       if (typeof camera.initialPosition === 'object' && camera.initialPosition !== null) {
         const initialCellKey = `${activeFloor}-${camera.initialPosition.rowIndex}-${camera.initialPosition.colIndex}`;
@@ -53,9 +96,8 @@ const Grid: FC<GridProps> = ({ onCameraDrop, droppedCameras, activeFloor }) => {
         }
       }
 
-      droppedCameras[newCellKey] = camera;
       camera.initialPosition = { rowIndex, colIndex };
-      onCameraDrop(camera, rowIndex, colIndex);
+      onCameraDrop(newCamera, rowIndex, colIndex);
     }
   };
 
@@ -65,7 +107,9 @@ const Grid: FC<GridProps> = ({ onCameraDrop, droppedCameras, activeFloor }) => {
         {Array.from({ length: 15 }).map((_, rowIndex) =>
           Array.from({ length: 20 }).map((_, colIndex) => {
             const cellKey = `${activeFloor}-${rowIndex}-${colIndex}`;
+            const camera = droppedCameras[cellKey];
 
+            const cameraId = camera ? `Камера ${camera.name.split(/[^a-zA-Z0-9]/)[0]}` : '';
             return (
               <div
                 key={cellKey}
@@ -78,9 +122,10 @@ const Grid: FC<GridProps> = ({ onCameraDrop, droppedCameras, activeFloor }) => {
                   <div
                     className={GStyles.cameraIcon}
                     draggable
-                    id={droppedCameras[cellKey].name}
                     onDragStart={(e) => handleDragStart(e, droppedCameras[cellKey])}
                     onDoubleClick={() => handleDoubleClick(droppedCameras[cellKey])}
+                    id={cameraId}
+                    title={cameraId}
                   >
                     <BsFillCameraVideoFill />
                   </div>
@@ -90,14 +135,6 @@ const Grid: FC<GridProps> = ({ onCameraDrop, droppedCameras, activeFloor }) => {
           })
         )}
       </div>
-      {selectedCamera && (
-        <StartStream
-          rtspUrl={selectedCamera.rtspUrl}
-          id={selectedCamera.id}
-          cameraName={selectedCamera.name}
-          setCam={() => setShowModal(false)}
-        />
-      )}
     </div>
   );
 };

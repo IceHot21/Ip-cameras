@@ -3,7 +3,6 @@ import MSStyles from '../styles/ModalStream.module.css';
 import StartStream from './StartStream';
 
 interface ModalStreamProps {
-  onClose: () => void;
   selectedCameras: Camera[];
   setCam: (cameras: any) => void;
 }
@@ -18,7 +17,7 @@ interface Camera {
   rtspUrl: string;
 }
 
-const ModalStream: FC<ModalStreamProps> = ({ onClose, selectedCameras, setCam }) => {
+const ModalStream: FC<ModalStreamProps> = ({ selectedCameras, setCam }) => {
   const [cameras, setCameras] = useState<Camera[]>(selectedCameras);
 
   useEffect(() => {

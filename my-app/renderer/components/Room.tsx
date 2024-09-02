@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import RStyles from '../styles/Room.module.css';
 import GStyles from '../styles/Grid.module.css'; 
 import Svg1 from '../assets/Svg1.svg';
@@ -26,12 +26,18 @@ type RoomProps = {
   activeFloor: number;
   onFloorChange: (floor: number) => void;
   onDoubleClickCamera: (camera: Camera) => void; 
+  FlagLocal: () => void;
 };
 
-const Room: FC<RoomProps> = ({ children, svgProps, droppedCameras, activeFloor, onFloorChange, onDoubleClickCamera }) => {
+const Room: FC<RoomProps> = ({ children, svgProps, droppedCameras, activeFloor, onFloorChange, onDoubleClickCamera, FlagLocal }) => {
   const svgs = [Svg1, Svg2, Svg3];
   const [selectedCameras, setSelectedCameras] = useState<Camera[]>([]);
 
+  useEffect(() => {
+    if (selectedCameras) {
+      handleStartStreams([]);
+    }
+  }, [selectedCameras]);
 
   const handleSvgClick = (index: number) => {
     onFloorChange(index);
@@ -45,10 +51,34 @@ const Room: FC<RoomProps> = ({ children, svgProps, droppedCameras, activeFloor, 
     if (!selectedCameras.some(c => c.id === camera.id)) {
       setSelectedCameras([camera]);
       onDoubleClickCamera(camera);
+      handleStartStreams([camera]);
     } else {
       setSelectedCameras([]);
     }
   };
+
+  const handleStartStreams = (selectedCameras: Camera[]) => {
+    const savedCameras = localStorage.getItem('cameras');
+    let camerasArray = [];
+
+    if (savedCameras && savedCameras.length !== 0) {
+      camerasArray = JSON.parse(savedCameras);
+    }
+
+    selectedCameras.forEach((searchedCamera) => {
+      const cameraName = searchedCamera.name.split(/[^a-zA-Z0-9]/)[0];
+      const ipAddress = searchedCamera.address.match(/(?:http:\/\/)?(\d+\.\d+\.\d+\.\d+)/)[1];
+      const rtspUrl = `rtsp://admin:Dd7560848@${ipAddress}`;
+      const newCamera = { id: camerasArray.length + 1, rtspUrl, name: cameraName };
+      camerasArray.push(newCamera);
+    });
+
+    localStorage.setItem('cameras', JSON.stringify(camerasArray));
+    if (localStorage.getItem('cameras')) {
+      FlagLocal();
+    }
+  };
+
   return (
     <div className={RStyles.body}>
       <div className={RStyles.container}>
@@ -114,14 +144,6 @@ const Room: FC<RoomProps> = ({ children, svgProps, droppedCameras, activeFloor, 
         </div>
         {children}
       </div>
-{/*       {selectedCamera && (
-        <StartStream
-          rtspUrl={selectedCamera.rtspUrl}
-          id={selectedCamera.id}
-          cameraName={selectedCamera.name}
-          setCam={() => setShowModal(false)} 
-        />
-      )} */}
     </div>
   );
 };

@@ -84,9 +84,9 @@ const StartStream: FC<StartStreamProps> = ({ rtspUrl, id, cameraName, setCam }) 
   const handleDelete = async () => {
     const savedCameras = localStorage.getItem('cameras');
     if (!savedCameras) return;
-
-    let newCameras: Camera[] = JSON.parse(savedCameras);
-    const camera = newCameras.find((camera) => camera.id === id);
+    
+    let newCameras: Camera[] = JSON.parse(savedCameras); 
+    const camera = newCameras.find((camera) => camera.id === id);console.log(camera);
     if (!camera) return;
 
     const port = 9999 + id;
@@ -106,6 +106,7 @@ const StartStream: FC<StartStreamProps> = ({ rtspUrl, id, cameraName, setCam }) 
     newCameras = newCameras.filter((camera) => camera.id !== id);
     localStorage.setItem('cameras', JSON.stringify(newCameras));
     setCam(newCameras);
+   
   };
 
   const handleStartRecording = () => {
