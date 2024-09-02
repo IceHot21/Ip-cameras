@@ -1,8 +1,8 @@
 import path from 'path'
-import { app, ipcMain } from 'electron'
+import { app, ipcMain, screen } from 'electron' // Импортируем модуль screen
 import serve from 'electron-serve'
 import { createWindow } from './helpers'
-import { exec } from 'child_process';
+import { exec } from 'child_process'
 
 const isProd = process.env.NODE_ENV === 'production'
 
@@ -14,41 +14,44 @@ if (isProd) {
 
 const startServer = (): Promise<void> => {
   return new Promise((resolve, reject) => {
-    const serverPath = path.join('C:/Users/AT/Documents/GitHub/Ip_cameras_refact/Nextron-nest-app-start-config/my-app');
-    const serverCommand = 'npm run start:prod'; // или 'node server.js'
+    const serverPath = path.join('C:/Users/AT/Documents/GitHub/Ip_cameras_refact/Nextron-nest-app-start-config/my-app')
+    const serverCommand = 'npm run start:prod' // или 'node server.js'
 
-    const serverProcess = exec(serverCommand, { cwd: serverPath });
+    const serverProcess = exec(serverCommand, { cwd: serverPath })
 
-    console.log('Starting server...');
+    console.log('Starting server...')
 
     serverProcess.stdout.on('data', (data) => {
-      console.log(`stdout: ${data}`);
-      resolve();
-    });
+      console.log(`stdout: ${data}`)
+      resolve()
+    })
 
     serverProcess.stderr.on('data', (data) => {
-      console.error(`stderr: ${data}`);
-      reject(data);
-    });
+      console.error(`stderr: ${data}`)
+      reject(data)
+    })
 
     serverProcess.on('close', (code) => {
-      console.log(`Server process exited with code ${code}`);
-    });
-  });
-};
+      console.log(`Server process exited with code ${code}`)
+    })
+  })
+}
 
 ;(async () => {
   await app.whenReady()
 
   if (isProd) {
-    await startServer();
+    await startServer()
   }
+
+  // Получаем информацию о главном экране
+  const { width, height } = screen.getPrimaryDisplay().workAreaSize
 
   const mainWindow = createWindow('main', {
     title: "ТД-ЭЛ Сервер",
-    width: 1920,
-    height: 1080,
-    autoHideMenuBar: true,      // Скрываем меню окна
+    width: width, // Устанавливаем ширину окна равной ширине экрана
+    height: height, // Устанавливаем высоту окна равной высоте экрана
+    autoHideMenuBar: true,
     frame: false,
     titleBarStyle: "hidden",
     webPreferences: {
