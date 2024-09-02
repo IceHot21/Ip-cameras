@@ -18,7 +18,7 @@ interface GridProps {
   onCameraDrop: (camera: Camera, rowIndex: number, colIndex: number) => void;
   droppedCameras: { [key: string]: Camera };
   activeFloor: number;
-  onDoubleClickCamera: (camera: Camera) => void; 
+  onDoubleClickCamera: (camera: Camera) => void;
   FlagLocal: () => void;
 }
 
@@ -70,31 +70,37 @@ const Grid: FC<GridProps> = ({ onCameraDrop, droppedCameras, activeFloor, onDoub
       FlagLocal();
     }
   };
-
   const handleDrop = (e: React.DragEvent<HTMLDivElement>, rowIndex: number, colIndex: number) => {
     e.preventDefault();
     const cameraData = e.dataTransfer.getData('droppedCameras');
-    let camerasArray = [];
 
     if (cameraData) {
       const camera: Camera = JSON.parse(cameraData);
-      
       const cameraName = camera.name.split(/[^a-zA-Z0-9]/)[0];
       const ipAddress = camera.address.match(/(?:http:\/\/)?(\d+\.\d+\.\d+\.\d+)/)[1];
       const rtspUrl = `rtsp://admin:Dd7560848@${ipAddress}`;
       const newCellKey = `${activeFloor}-${rowIndex}-${colIndex}`;
-      const newCamera = { id: Object.keys(droppedCameras).length + 1, rtspUrl, name: cameraName, floor: activeFloor, cell: `${activeFloor}-${rowIndex}-${colIndex}`, initialPosition: { rowIndex, colIndex }, isDisabled: false, address: camera.address };
+
+      const existingCameraKey = Object.keys(droppedCameras).find(key => droppedCameras[key].name === cameraName);
+      if (existingCameraKey) {
+        if (existingCameraKey !== newCellKey) {
+          delete droppedCameras[existingCameraKey];
+        }
+      }
+      
+      const newCamera = {
+        id: Object.keys(droppedCameras).length + 1,
+        rtspUrl,
+        name: cameraName,
+        floor: activeFloor,
+        cell: newCellKey,
+        initialPosition: { rowIndex, colIndex },
+        isDisabled: false,
+        address: camera.address
+      };
       droppedCameras[newCellKey] = newCamera;
 
       console.log(newCamera);
-
-      if (typeof camera.initialPosition === 'object' && camera.initialPosition !== null) {
-        const initialCellKey = `${activeFloor}-${camera.initialPosition.rowIndex}-${camera.initialPosition.colIndex}`;
-
-        if (initialCellKey !== newCellKey) {
-          delete droppedCameras[initialCellKey];
-        }
-      }
 
       camera.initialPosition = { rowIndex, colIndex };
       onCameraDrop(newCamera, rowIndex, colIndex);

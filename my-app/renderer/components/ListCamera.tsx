@@ -52,47 +52,36 @@ const ListCamera: FC<ListCameraProps> = ({
     }
   }, [selectedCameras]);
 
+  useEffect(() => {
+    handleDiscoverCameras();
+  }, [setCameras]);
+
   const handleDiscoverCameras = async () => {
     setLoading(true);
     setError(null);
-  
+
     try {
       const response = await fetch('http://localhost:4200/ip/cameras-list');
       if (response.ok) {
         const discoveredCameras: Camera[] = await response.json();
-        setCameras(discoveredCameras);
-  
         const storedCameras = localStorage.getItem('droppedCameras');
         let droppedCameras = storedCameras ? JSON.parse(storedCameras) : {};
-  
-        discoveredCameras.forEach((camera) => {
-          const cameraName = camera.name.split(/[^a-zA-Z0-9]/)[0];
-          const ipAddressMatch = camera.address.match(/(?:http:\/\/)?(\d+\.\d+\.\d+\.\d+)/);
-          const ipAddress = ipAddressMatch ? ipAddressMatch[1] : '';
-          const rtspUrl = `rtsp://admin:Dd7560848@${ipAddress}`;
-  
-          // Используем cameraName как ключ
-          const newCellKey = `${ipAddress}`;
-  
-          if (!droppedCameras[newCellKey]) {
-            const newCamera = {
-              id: Object.keys(droppedCameras).length + 1,
-              rtspUrl,
-              name: cameraName,
-              floor: -1,
-              cell: newCellKey,
-              initialPosition: { rowIndex: -1, colIndex: -1 },
-              isDisabled: false,
-              address: camera.address,
-            };
-            droppedCameras[newCellKey] = newCamera;
+
+        const camerasInGrid = Object.values(droppedCameras).reduce((acc: { [key: string]: boolean }, camera: Camera) => {
+          const ipAddress = camera.address.match(/(?:http:\/\/)?(\d+\.\d+\.\d+\.\d+)/)?.[1];
+          if (ipAddress && camera.initialPosition && camera.initialPosition.rowIndex !== -1 && camera.initialPosition.colIndex !== -1) {
+            acc[ipAddress] = true;
           }
+          return acc;
+        }, {});
+
+        const filteredCameras = discoveredCameras.filter((camera) => {
+          const ipAddress = camera.address.match(/(?:http:\/\/)?(\d+\.\d+\.\d+\.\d+)/)?.[1];
+          return ipAddress && !camerasInGrid[ipAddress];
         });
-  
+
+        setCameras(filteredCameras);
         localStorage.setItem('droppedCameras', JSON.stringify(droppedCameras));
-  
-        console.log('Updated droppedCameras after discovery:', droppedCameras);
-  
       } else {
         console.error('Failed to discover cameras');
       }
@@ -102,7 +91,6 @@ const ListCamera: FC<ListCameraProps> = ({
       setLoading(false);
     }
   };
-  
 
   const handleDoubleClick = (camera: Camera) => {
     if (!selectedCameras.some(c => c.id === camera.id)) {
@@ -176,8 +164,7 @@ const ListCamera: FC<ListCameraProps> = ({
             <tbody className={LCStyles.tableBody}>
               {cameras.map((camera) => {
                 const cameraId = `Камера ${camera.name.split(/[^a-zA-Z0-9]/)[0]}`;
-                const isDisabled = movedCameras.has(camera.id);
-                console.log(isDisabled)
+                const isDisabled = movedCameras.has(camera.id) || (camera.initialPosition && (camera.initialPosition.rowIndex !== -1 || camera.initialPosition.colIndex !== -1));
                 return (
                   <tr
                     key={camera.id}
@@ -189,7 +176,7 @@ const ListCamera: FC<ListCameraProps> = ({
                     <td>{camera.address ? camera.address.match(/(?:http:\/\/)?(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})/)?.[1] : "N/A"}</td>
                     <td>
                       <div
-                        draggable={!isDisabled}
+                        draggable
                         onDragStart={(e) => handleDragStart(e, camera)}
                         id={cameraId}
                         title={cameraId}
