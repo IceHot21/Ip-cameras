@@ -54,7 +54,7 @@ const ListCamera: FC<ListCameraProps> = ({
 
   useEffect(() => {
     handleDiscoverCameras();
-  }, [setCameras]);
+  }, [droppedCameras]);
 
   const handleDiscoverCameras = async () => {
     setLoading(true);
