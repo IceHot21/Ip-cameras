@@ -1,11 +1,83 @@
-.homeContainer{
+.carouselContainer {
     display: flex;
-    height: 90vh;
+    justify-content: center;
     align-items: center;
-    justify-content: space-evenly;
+    width: 100%;
+    height: 100%;
+  }
+  
+  .carousel {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    width: 100%;
+  }
+  
+  .carouselInner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    position: relative;
+  }
+  
+  .buildingIcon {
+    display: flex;
     flex-direction: column;
-}
-
-.homeIcon{
-    font-size: 400px;
-}
+    align-items: center;
+    justify-content: center;
+    opacity: 0.4;
+    transform: scale(0.8);
+    transition: opacity 0.3s, transform 0.3s;
+    position: absolute;
+    width: 200px; /* Фиксированная ширина для элементов */
+  }
+  
+  .buildingIcon svg {
+    font-size: 7rem; /* Увеличенный размер SVG */
+  }
+  
+  .buildingIcon span {
+    margin-top: 10px;
+  }
+  
+  .active {
+    opacity: 1;
+    transform: scale(1);
+    z-index: 1;
+  }
+  
+  .nearby {
+    opacity: 0.7;
+    transform: scale(0.9);
+  }
+  
+  .prev {
+    transform: translateX(-120%) scale(0.9);
+  }
+  
+  .next {
+    transform: translateX(120%) scale(0.9);
+  }
+  
+  .prevButton,
+  .nextButton {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    font-size: 2rem;
+    cursor: pointer;
+    outline: none;
+    width: 50px; /* Уменьшенная ширина кнопок */
+  }
+  
+  .prevButton {
+    left: 20px;
+  }
+  
+  .nextButton {
+    right: 20px;
+  }

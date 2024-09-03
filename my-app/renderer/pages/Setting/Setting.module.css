@@ -1,0 +1,10 @@
+.homeNumber{
+    display:flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.input{
+    margin-top:10%;
+}

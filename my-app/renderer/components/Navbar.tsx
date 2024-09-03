@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/router";
 import NStyles from "../styles/Navbar.module.css";
 import { BiPlay, BiCameraMovie, BiCamera, BiRepeat, BiLogOut, BiSolidHome, BiAccessibility  } from "react-icons/bi";
+import { IoIosSettings } from "react-icons/io";
 
 // Компонент MenuToggle для переключения между иконкой меню и крестиком
 const MenuToggle = ({ toggle }) => (
@@ -48,7 +49,8 @@ const Navigation = ({ onMenuItemClick }) => {
     { name: "Схема здания", action: "/Feeding/Feeding", icon: <BiAccessibility size={24} />},
     { name: "Видеоархив", action: "/Videoarchive/Videoarchive", icon: <BiCameraMovie size={24} /> },
     { name: "Фотоархив", action: "/Photoarchive/Photoarchive", icon: <BiCamera size={24} /> },
-    { name: "Смена", action: "/LoginPage/LoginPage", icon: <BiRepeat size={24} /> },
+    { name: "Регистрация", action: "/LoginPage/LoginPage", icon: <BiRepeat size={24} /> },
+    { name: "Настройки", action: "/Setting/Setting", icon: <IoIosSettings size={24} /> },
   ];
 
   const router = useRouter();
