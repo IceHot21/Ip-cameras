@@ -5,8 +5,6 @@ import Svg1 from '../assets/Svg1.svg';
 import Svg2 from '../assets/Svg2.svg';
 import Svg3 from '../assets/Svg3.svg';
 import { BsFillCameraVideoFill } from 'react-icons/bs';
-import ModalStream from './ModalStream'; 
-import StartStream from './StartStream';
 
 interface Camera {
   id: number;

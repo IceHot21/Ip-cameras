@@ -9,7 +9,8 @@
   align-items: center;
   justify-content: center;
   position: relative;
-  width: 55%;
+  width: 50%;
+  margin-top: 3%;
 }
 
 .carouselInner {
@@ -33,7 +34,7 @@
 }
 
 .buildingIcon svg {
-  font-size: 22rem;
+  font-size: 25rem;
   cursor: pointer;
 }
 
@@ -49,11 +50,11 @@
 }
 
 .prev {
-  transform: translateX(-120%) scale(0.6);
+  transform: translateX(-120%) scale(0.5);
 }
 
 .next {
-  transform: translateX(120%) scale(0.6);
+  transform: translateX(120%) scale(0.5);
 }
 
 .prevButton,
@@ -89,15 +90,52 @@
 }
 
 .plan {
-  width:20% !important;
+  width:47% !important;
   height: auto;
 }
 
-.planInside {
-  position: absolute;
+.outSide{
+  width: 47% !important;
+  height: auto;
+}
+.planContainer {
   display: flex;
-  margin-right: 175px;
-  margin-top: 24px;
+  position: absolute;
+  flex-direction: row;
+  align-items: center;
   width: 100%;
-  justify-content: flex-end;
+}
+
+.planOutside{
+  display: flex;
+  margin-left: 2%;
+  margin-top: 24px;
+  width: auto;
+  flex-direction: column;
+  align-content: flex-start;
+  flex-wrap: wrap;
+}
+
+.planInside{
+  display: flex;
+  margin-right: 2%;
+  margin-top: 24px;
+  width: auto;
+  flex-direction: column;
+  align-content: flex-end;
+  flex-wrap: wrap;
+}
+
+.tableContainer{
+  width: 23%;
+  position: absolute;
+  margin-top: 25%;
+  margin-left: 2%;
+}
+.tableContainer table{
+  width: 100%;
+}
+.tableHeader th{
+  border: 1px solid #333;
+  background-color: #ccc;
 }
