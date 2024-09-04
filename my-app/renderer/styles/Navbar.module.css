@@ -1,11 +1,11 @@
 .navbar {
   position: relative;
   height: 40px;
-  background-color: #333;
+  background-color: #01572d;
   display: flex;
   align-items: center;
   padding: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+/*   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); */
 }
 
 .background {
@@ -19,9 +19,9 @@
 .menuToggle {
   outline: none;
   border: none;
-  background: transparent;
+  background: #ccc;
   cursor: pointer;
-  position: absolute;
+/*   position: absolute; */
   left: 15px;
   width: 50px;
   height: 50px;
@@ -33,6 +33,11 @@
 }
 
 .menuToggle:hover {
+  transform: scale(1.1);
+  background-color: #999;
+}
+
+.menuToggle:focus{
   transform: scale(1.1);
 }
 
@@ -51,18 +56,17 @@
   margin-bottom: 10px;
   padding: 12px;
   cursor: pointer;
-  border: 1px solid #555;
-  border-radius: 8px;
+  border: none;
+  border-radius: 27px;
   text-align: center;
-  background: #555;
-  color: #fff;
+  background: #ccc;
+  color: hsl(0, 0%, 20%);
   display: flex;
   align-items: center;
   transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 .menuItem:hover {
-  background-color: #666;
   transform: translateY(-2px);
 }
 
@@ -72,16 +76,57 @@
 
 .logoutButton {
   margin-left: auto;
-  padding: 8px 16px;
-  background-color: transparent;
-  color: #fff;
+  background-color: #ccc;
+  color: #333;
   border: none;
-  border-radius: 5px;
+  display: flex;
+  border-radius: 27px;
   cursor: pointer;
   font-size: 24px;
   transition: background-color 0.3s ease;
+  height: 50px;
+  width: 50px;
+  justify-content: center;
+  align-items: center;
 }
 
 .logoutButton:hover {
-  background-color: #d32f2f;
+  background-color: #999;
+  transform: scale(1.1);
+}
+
+.tabsContainer{
+  display: flex;
+  align-items: center;
+}
+
+.tab{
+  display: flex;
+  padding: 10px;
+  border: nones;
+  border-radius: 23px;
+  color: #333;
+  height: 28px;
+  background-color: #ccc;
+  align-items: center;
+  width: 200px;
+  justify-content: space-between;
+  margin-left: 5px;
+}
+
+.tab:hover{
+  cursor:pointer;
+  background-color: #999;
+}
+
+.closeTab{
+  border: none;
+  background-color: transparent;
+  color: #333;
+}
+
+.closeTab:hover{
+  cursor: pointer;
+  color: #333;
+  transform: scale(1.2);
 }

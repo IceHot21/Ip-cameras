@@ -2,17 +2,24 @@ import { FC, useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/router";
 import NStyles from "../styles/Navbar.module.css";
-import { BiPlay, BiCameraMovie, BiCamera, BiRepeat, BiLogOut, BiSolidHome, BiAccessibility  } from "react-icons/bi";
+import { BiPlay, BiCameraMovie, BiCamera, BiRepeat, BiLogOut, BiSolidHome, BiAccessibility } from "react-icons/bi";
 import { IoIosSettings } from "react-icons/io";
 
-// Компонент MenuToggle для переключения между иконкой меню и крестиком
+
+type Tab = {
+  id: string;
+  name: string;
+  path: string;
+  isActive: boolean;
+};
+
 const MenuToggle = ({ toggle }) => (
   <button onClick={toggle} className={NStyles.menuToggle}>
     <svg width="23" height="23" viewBox="0 0 23 23">
       <motion.path
         strokeWidth="3"
         fill="transparent"
-        stroke="hsl(0, 0%, 100%)"
+        stroke="hsl(0, 0%, 20%)"
         strokeLinecap="round"
         variants={{
           closed: { d: "M 2 2.5 L 20 2.5" },
@@ -22,7 +29,7 @@ const MenuToggle = ({ toggle }) => (
       <motion.path
         d="M 2 9.423 L 20 9.423"
         strokeWidth="3"
-        stroke="hsl(0, 0%, 100%)"
+        stroke="hsl(0, 0%, 20%)"
         variants={{
           closed: { opacity: 1 },
           open: { opacity: 0 }
@@ -31,7 +38,7 @@ const MenuToggle = ({ toggle }) => (
       />
       <motion.path
         strokeWidth="3"
-        stroke="hsl(0, 0%, 100%)"
+        stroke="hsl(0, 0%, 20%)"
         strokeLinecap="round"
         variants={{
           closed: { d: "M 2 16.346 L 20 16.346" },
@@ -42,23 +49,22 @@ const MenuToggle = ({ toggle }) => (
   </button>
 );
 
-// Компонент для навигации, включающий пункты меню
 const Navigation = ({ onMenuItemClick }) => {
   const menuItems = [
     { name: "Главная", action: "/Home/Home", icon: <BiSolidHome size={24} /> },
-    { name: "Схема здания", action: "/Feeding/Feeding", icon: <BiAccessibility size={24} />},
+    { name: "Схема здания", action: "/Feeding/Feeding", icon: <BiAccessibility size={24} /> },
     { name: "Видеоархив", action: "/Videoarchive/Videoarchive", icon: <BiCameraMovie size={24} /> },
     { name: "Фотоархив", action: "/Photoarchive/Photoarchive", icon: <BiCamera size={24} /> },
     { name: "Регистрация", action: "/LoginPage/LoginPage", icon: <BiRepeat size={24} /> },
     { name: "Настройки", action: "/Setting/Setting", icon: <IoIosSettings size={24} /> },
   ];
 
-  const router = useRouter();
-
-  const handleClick = (action) => {
-    onMenuItemClick();
-    router.push(action);
-  };
+  /*   const router = useRouter();
+  
+    const handleClick = (action) => {
+      onMenuItemClick();
+      router.push(action);
+    }; */
 
   return (
     <motion.ul
@@ -79,7 +85,7 @@ const Navigation = ({ onMenuItemClick }) => {
         <motion.li
           key={i}
           className={NStyles.menuItem}
-          onClick={() => handleClick(item.action)}
+          onClick={() => onMenuItemClick(item)}
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           variants={{
@@ -107,46 +113,77 @@ const Navigation = ({ onMenuItemClick }) => {
   );
 };
 
-// Основной компонент Navbar
 const Navbar: FC = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [tabs, setTabs] = useState<Tab[]>([]);
   const containerRef = useRef(null);
   const router = useRouter();
 
-  // Функция для переключения состояния меню
   const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
 
-  // Логика выхода из системы
+  const handleMenuItemClick = (item) => {
+    const exitingTab = tabs.find((tab) => tab.path === item.action);
+    if (exitingTab) {
+      setTabs((prevTabs) =>
+        prevTabs.map((tab) =>
+          tab.id === exitingTab.id ? { ...tab, isActive: true } : { ...tab, isActive: false }
+        )
+      );
+    } else {
+      const newTab: Tab = {
+        id: String(new Date().getTime()),
+        name: item.name,
+        path: item.action,
+        isActive: true,
+      };
+      setTabs((prevTabs) =>
+        prevTabs.map((tab) => ({ ...tab, isActive: false })).concat(newTab)
+      );
+    }
+    router.push(item.action);
+    toggleMenu();
+  }
+
+  const handleTabClose = (id) => {
+    setTabs((prevTabs) => prevTabs.filter((tab) => tab.id !== id));
+  };
+
+  const handleTabClick = (id, path) => {
+    setTabs((prevTabs) =>
+      prevTabs.map((tab) =>
+        tab.id === id ? { ...tab, isActive: true } : { ...tab, isActive: false }
+      )
+    );
+    router.push(path);
+  }
+  //TODO: доделать выход из системы
   const handleLogout = () => {
-    // Здесь можно добавить логику выхода, например, очистку токена или вызов API
     console.log("Выход из системы");
-    router.push("/login"); // Перенаправление на страницу входа
+    router.push("/login");
   };
 
-  // Анимации для меню
-  const sidebar = {
-    open: (height = 1000) => ({
-      clipPath: `circle(${height * 2 + 200}px at 40px 40px)`,
-      transition: {
-        type: "spring",
-        stiffness: 20,
-        restDelta: 2,
+  /*   const sidebar = {
+      open: (height = 1000) => ({
+        clipPath: `circle(${height * 2 + 200}px at 40px 40px)`,
+        transition: {
+          type: "spring",
+          stiffness: 20,
+          restDelta: 2,
+        },
+      }),
+      closed: {
+        clipPath: "circle(30px at 40px 40px)",
+        transition: {
+          delay: 0.5,
+          type: "spring",
+          stiffness: 400,
+          damping: 40,
+        },
       },
-    }),
-    closed: {
-      clipPath: "circle(30px at 40px 40px)",
-      transition: {
-        delay: 0.5,
-        type: "spring",
-        stiffness: 400,
-        damping: 40,
-      },
-    },
-  };
-
-  // Обработка закрытия меню при нажатии вне него
+    };
+   */
   useEffect(() => {
     const handleOutsideClick = (event) => {
       if (containerRef.current && !containerRef.current.contains(event.target)) {
@@ -168,18 +205,25 @@ const Navbar: FC = () => {
       ref={containerRef}
       className={NStyles.navbar}
     >
-      {/* Анимация появления/исчезновения меню */}
       <AnimatePresence>
-        {isOpen && <Navigation onMenuItemClick={toggleMenu} />}
+        {isOpen && <Navigation onMenuItemClick={handleMenuItemClick} />}
       </AnimatePresence>
 
-      {/* Кнопка для переключения состояния меню */}
       <MenuToggle toggle={toggleMenu} />
+      <div className={NStyles.tabsContainer}>
+        {tabs.map((tab) => (
+          <div
+            key={tab.id}
+            className={`${NStyles.tab} ${tab.isActive ? NStyles.activeTab : ''}`}
+            onClick={() => handleTabClick(tab.id, tab.path)}
+          >
+            <span>{tab.name}</span>
+            <button className={NStyles.closeTab} onClick={() => handleTabClose(tab.id)}>✕</button>
+          </div>
+        ))}
+      </div>
 
-      {/* Кнопка выхода из системы */}
-      <button onClick={handleLogout} className={NStyles.logoutButton}>
-        <BiLogOut size={24} color="#fff" />
-      </button>
+      <button onClick={() => router.push("/login")} className={NStyles.logoutButton}>✕</button>
     </motion.nav>
   );
 };
