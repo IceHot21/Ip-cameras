@@ -59,13 +59,6 @@ const Navigation = ({ onMenuItemClick }) => {
     { name: "Настройки", action: "/Setting/Setting", icon: <IoIosSettings size={24} /> },
   ];
 
-  /*   const router = useRouter();
-  
-    const handleClick = (action) => {
-      onMenuItemClick();
-      router.push(action);
-    }; */
-
   return (
     <motion.ul
       className={NStyles.menuList}
@@ -164,26 +157,6 @@ const Navbar: FC = () => {
     router.push("/login");
   };
 
-  /*   const sidebar = {
-      open: (height = 1000) => ({
-        clipPath: `circle(${height * 2 + 200}px at 40px 40px)`,
-        transition: {
-          type: "spring",
-          stiffness: 20,
-          restDelta: 2,
-        },
-      }),
-      closed: {
-        clipPath: "circle(30px at 40px 40px)",
-        transition: {
-          delay: 0.5,
-          type: "spring",
-          stiffness: 400,
-          damping: 40,
-        },
-      },
-    };
-   */
   useEffect(() => {
     const handleOutsideClick = (event) => {
       if (containerRef.current && !containerRef.current.contains(event.target)) {
@@ -223,7 +196,7 @@ const Navbar: FC = () => {
         ))}
       </div>
 
-      <button onClick={() => router.push("/login")} className={NStyles.logoutButton}><BiX /></button>
+      <button onClick={() => router.push("/LoginPage/LoginPage")} className={NStyles.logoutButton}><BiX /></button>
     </motion.nav>
   );
 };

@@ -1,7 +1,7 @@
 .navbar {
   position: relative;
-  height: 40px;
-  background-color: #444;
+  height: 30px;
+  background-color: #ccc;
   display: flex;
   align-items: center;
   padding: 10px;
@@ -25,19 +25,21 @@
   background: #ccc;
   cursor: pointer;
   left: 15px;
-  width: 50px;
-  height: 50px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   display: flex;
   justify-content: center;
   align-items: center;
   -webkit-app-region: no-drag;
   transition: transform 0.3s ease;
+  opacity: 0.4;
 }
 
 .menuToggle:hover {
   transform: scale(1.1);
   background-color: #999;
+  opacity: 1;
 }
 
 .menuToggle:focus {
@@ -87,18 +89,20 @@
   display: flex;
   border-radius: 27px;
   cursor: pointer;
-  font-size: 24px;
+  font-size: 28px;
   transition: background-color 0.3s ease;
-  height: 50px;
-  width: 50px;
+  height: 40px;
+  width: 40px;
   justify-content: center;
   align-items: center;
   -webkit-app-region: no-drag;
+  opacity: 0.4;
 }
 
 .logoutButton:hover {
   background-color: #999;
   transform: scale(1.1);
+  opacity: 1;
 }
 
 .tabsContainer {
@@ -110,9 +114,9 @@
 .tab {
   display: flex;
   padding: 10px;
-  border: nones;
+  border: 1px solid #ccc;
   border-radius: 23px;
-  color: #333;
+  color: #666;
   height: 28px;
   background-color: #ccc;
   align-items: center;
@@ -124,6 +128,9 @@
 .tab:hover {
   cursor: pointer;
   background-color: #999;
+  border: 1px solid #999;
+  font-weight: bold;
+  color: #333;
 }
 
 .closeTab {
@@ -135,12 +142,17 @@
   text-align: center;
   align-items: center;
   display: flex;
+  opacity: 0; 
+  transition: opacity 0.3s ease; 
+}
+
+.tab:hover .closeTab {
+  opacity: 1; 
 }
 
 .closeTab:hover {
   cursor: pointer;
   color: #333;
-  transform: scale(1.2);
 }
 
 .logoutButton svg {
@@ -150,8 +162,9 @@
 .logoutButton svg:hover {
   color: #d30000;
 }
-.closeTab svg:hover{
+
+.closeTab svg:hover {
   background: #555;
   border-radius: 10px;
+  color: #f0f0f0;
 }
-

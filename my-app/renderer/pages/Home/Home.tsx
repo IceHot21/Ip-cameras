@@ -1,9 +1,8 @@
 import { FC, useState } from "react";
 import HStyles from "./Home.module.css";
 import { BsBuildingFill } from "react-icons/bs";
-import Svg1 from "../../assets/Svg1.svg"
-import SVG from "../../assets/SVG.svg"
-
+import Svg1 from "../../assets/Svg1.svg";
+import SVG from "../../assets/SVG.svg";
 
 interface HomeProps {
   numberHome: number;
@@ -42,22 +41,30 @@ const Home: FC<HomeProps> = ({ numberHome }) => {
             <span className={HStyles.cameraLabel}>Уличные камеры</span>
           </div>
           <div className={HStyles.tableContainer}>
-            <table>
-              <thead className={HStyles.tableHeader}>
-                <tr>
-                  <th>№</th>
-                  <th>Индикатор</th>
-                  <th>Наименование ошибок</th>
-                </tr>
-              </thead>
-              <tbody className={HStyles.tableBody}>
-                <tr>
-                  <td>1</td>
-                  <td>Ошибка</td>
-                  <td>Лишний человек</td>
-                </tr>
-              </tbody>
-            </table>
+            <div className={HStyles.tableHeaderWrapper} style={{ backgroundColor: '#006c2a' }}>
+              <table>
+                <thead className={HStyles.tableHeader}>
+                  <tr>
+                    <th>№</th>
+                    <th>Индикатор</th>
+                    <th>Наименование ошибок</th>
+                  </tr>
+                </thead>
+              </table>
+            </div>
+            <div className={HStyles.tableBodyWrapper}>
+              <table>
+                <tbody className={HStyles.tableBody}>
+                  {Array.from({ length: numberHome }, (_, index) => (
+                    <tr key={index}>
+                      <td>{index + 1}</td>
+                      <td>Ошибка {index + 1}</td>
+                      <td>Описание ошибки для здания №{index + 1}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
           <div className={HStyles.planInside}>
             <Svg1 className={HStyles.plan} />
@@ -77,7 +84,7 @@ const Home: FC<HomeProps> = ({ numberHome }) => {
                 className={`${HStyles.buildingIcon} ${getSlideClass(index)}`}
                 onClick={() => setCurrentIndex(index)}
               >
-                <span>Здание №{index + 1}</span>
+                {index === currentIndex && <span>Здание №{index + 1}</span>}
                 <BsBuildingFill />
               </div>
             ))}

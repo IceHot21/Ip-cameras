@@ -10,7 +10,7 @@
   justify-content: center;
   position: relative;
   width: 50%;
-  margin-top: 3%;
+  margin-bottom: 3%;
 }
 
 .carouselInner {
@@ -44,9 +44,16 @@
   z-index: 1;
 }
 
+.active svg{
+  color:#006c2a
+}
 .nearby {
   opacity: 0.1;
   transform: scale(0.9);
+}
+
+.nearby:hover{
+  color: #006c2a;
 }
 
 .prev {
@@ -92,10 +99,11 @@
 .outSide, .plan{
   width: 47% !important;
   height: auto;
-  border: 2px solid rgb(51 51 51 / 70%);
+  border: 2px solid #006c2ab3;
   border-top-left-radius: 25px;
   border-top-right-radius: 25px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 10px #006c2a33;
+  padding: 10px;
 }
 
 .planContainer {
@@ -109,7 +117,7 @@
 .planOutside{
   display: flex;
   margin-left: 2%;
-  margin-top: 24px;
+  margin-top: 1%;
   width: auto;
   flex-direction: column;
   align-content: flex-start;
@@ -119,29 +127,79 @@
 .planInside{
   display: flex;
   margin-right: 2%;
-  margin-top: 24px;
+  margin-top: 1%;
   width: auto;
   flex-direction: column;
   align-content: flex-end;
   flex-wrap: wrap;
 }
 
-.tableContainer{
-  width: 23%;
-  position: absolute;
-  margin-top: 25%;
-  margin-left: 2%;
-  background-color: white;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  border-radius: 12px;
+.tableContainer {
+  height: 240px;
   overflow: hidden;
+  position: absolute;
+  width: 23.8%;
+  margin-left: 2%;
+  margin-top: 47%;
+  border-radius: 23px;
+  background-color: white;
+  box-shadow: 0 4px 10px #006c2a33;
 }
-.tableContainer table{
+
+.tableHeaderWrapper {
+  width: 100%;
+  overflow: hidden;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.tableBodyWrapper {
+  width: 100%;
+  height: calc(100% - 40px); /* Высота заголовка */
+  overflow-y: auto;
+}
+
+.tableHeader {
+  color: white;
+  font-weight: bold;
+}
+
+.tableHeader th {
+  padding: 12px 15px;
+  background-color: #006c2a;
+  color: #000;
+  text-align: center;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.tableBody {
   width: 100%;
 }
-.tableHeader th{
-  border: 1px solid #333;
-  background-color: #ccc;
+
+.tableBody td {
+  text-align: center;
+  color: #555;
+  padding: 12px 15px;
+}
+
+.tableBodyWrapper::-webkit-scrollbar {
+  width: 8px;
+}
+
+.tableBodyWrapper::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.tableBodyWrapper::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+.tableBodyWrapper::-webkit-scrollbar-thumb:hover {
+  background: #555;
 }
 
 .cameraLabel {
@@ -149,10 +207,9 @@
   align-items: center;
   justify-content: center;
   height: 40px;
-  border: 2px solid rgb(51 51 51 / 70%);
+  border: 2px solid #006c2ab3;
   border-top: none;
   border-bottom-left-radius: 25px;
   border-bottom-right-radius: 25px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
-
