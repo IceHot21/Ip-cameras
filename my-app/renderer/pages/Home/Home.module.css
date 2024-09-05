@@ -44,15 +44,16 @@
   z-index: 1;
 }
 
-.active svg{
-  color:#006c2a
+.active svg {
+  color: #006c2a
 }
+
 .nearby {
   opacity: 0.1;
   transform: scale(0.9);
 }
 
-.nearby:hover{
+.nearby:hover {
   color: #006c2a;
 }
 
@@ -96,7 +97,8 @@
   margin-bottom: 50px;
 }
 
-.outSide, .plan{
+.outSide,
+.plan {
   width: 47% !important;
   height: auto;
   border: 2px solid #006c2ab3;
@@ -114,7 +116,7 @@
   width: 100%;
 }
 
-.planOutside{
+.planOutside {
   display: flex;
   margin-left: 2%;
   margin-top: 1%;
@@ -124,7 +126,7 @@
   flex-wrap: wrap;
 }
 
-.planInside{
+.planInside {
   display: flex;
   margin-right: 2%;
   margin-top: 1%;
@@ -144,6 +146,32 @@
   border-radius: 23px;
   background-color: white;
   box-shadow: 0 4px 10px #006c2a33;
+  table-layout: fixed; /* Фиксированная ширина для всей таблицы */
+}
+
+.tableContainer1 {
+  height: 180px;
+  overflow: hidden;
+  position: absolute;
+  width: 40%;
+  margin-top: 41%;
+  border-radius: 23px;
+  background-color: white;
+  box-shadow: 0 4px 10px #006c2a33;
+  table-layout: fixed; /* Фиксированная ширина для всей таблицы */
+}
+
+.tableContainer2 {
+  height: 240px;
+  overflow: hidden;
+  position: absolute;
+  width: 23.8%;
+  margin-left: 72.2%;
+  margin-top: 27.9%;
+  border-radius: 23px;
+  background-color: white;
+  box-shadow: 0 4px 10px #006c2a33;
+  table-layout: fixed; /* Фиксированная ширина для всей таблицы */
 }
 
 .tableHeaderWrapper {
@@ -160,9 +188,10 @@
   overflow-y: auto;
 }
 
-.tableHeader {
-  color: white;
-  font-weight: bold;
+.tableBodyWrapper table {
+  width: 100%;
+  table-layout: fixed; /* Фиксированная ширина для всей таблицы */
+  border-collapse: collapse;
 }
 
 .tableHeader th {
@@ -170,19 +199,37 @@
   background-color: #006c2a;
   color: #000;
   text-align: center;
-  position: sticky;
-  top: 0;
-  z-index: 1;
+  border: 1px solid #006c2a;
 }
 
-.tableBody {
-  width: 100%;
+.tableHeader th:first-child {
+  width: 15%; /* Первый столбец (меньше) */
+}
+
+.tableHeader th:nth-child(2) {
+  width: 20%; /* Второй столбец (меньше) */
+}
+
+.tableHeader th:last-child {
+  width: 65%; /* Последний столбец (больше) */
 }
 
 .tableBody td {
   text-align: center;
   color: #555;
   padding: 12px 15px;
+}
+
+.tableBody td:first-child {
+  width: 15%; /* Первый столбец (меньше) */
+}
+
+.tableBody td:nth-child(2) {
+  width: 20%; /* Второй столбец (меньше) */
+}
+
+.tableBody td:last-child {
+  width: 65%; /* Последний столбец (больше) */
 }
 
 .tableBodyWrapper::-webkit-scrollbar {

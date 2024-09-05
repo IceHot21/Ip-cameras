@@ -95,6 +95,58 @@ const Home: FC<HomeProps> = ({ numberHome }) => {
             </button>
           )}
         </div>
+        <div className={HStyles.tableContainer1}>
+            <div className={HStyles.tableHeaderWrapper} style={{ backgroundColor: '#006c2a' }}>
+              <table>
+                <thead className={HStyles.tableHeader}>
+                  <tr>
+                    <th>№</th>
+                    <th>Индикатор</th>
+                    <th>Наименование ошибок</th>
+                  </tr>
+                </thead>
+              </table>
+            </div>
+            <div className={HStyles.tableBodyWrapper}>
+              <table>
+                <tbody className={HStyles.tableBody}>
+                  {Array.from({ length: numberHome }, (_, index) => (
+                    <tr key={index}>
+                      <td>{index + 1}</td>
+                      <td>Ошибка {index + 1}</td>
+                      <td>Описание ошибки для здания №{index + 1}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div className={HStyles.tableContainer2}>
+            <div className={HStyles.tableHeaderWrapper} style={{ backgroundColor: '#006c2a' }}>
+              <table>
+                <thead className={HStyles.tableHeader}>
+                  <tr>
+                    <th>№</th>
+                    <th>Индикатор</th>
+                    <th>Наименование ошибок</th>
+                  </tr>
+                </thead>
+              </table>
+            </div>
+            <div className={HStyles.tableBodyWrapper}>
+              <table>
+                <tbody className={HStyles.tableBody}>
+                  {Array.from({ length: numberHome }, (_, index) => (
+                    <tr key={index}>
+                      <td>{index + 1}</td>
+                      <td>Ошибка {index + 1}</td>
+                      <td>Описание ошибки для здания №{index + 1}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
       </div>
     </div>
   );
