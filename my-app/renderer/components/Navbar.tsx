@@ -2,7 +2,7 @@ import { FC, useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/router";
 import NStyles from "../styles/Navbar.module.css";
-import { BiPlay, BiCameraMovie, BiCamera, BiRepeat, BiLogOut, BiSolidHome, BiAccessibility } from "react-icons/bi";
+import { BiPlay, BiCameraMovie, BiCamera, BiRepeat, BiLogOut, BiSolidHome, BiAccessibility, BiX } from "react-icons/bi";
 import { IoIosSettings } from "react-icons/io";
 
 
@@ -218,12 +218,12 @@ const Navbar: FC = () => {
             onClick={() => handleTabClick(tab.id, tab.path)}
           >
             <span>{tab.name}</span>
-            <button className={NStyles.closeTab} onClick={() => handleTabClose(tab.id)}>✕</button>
+            <button className={NStyles.closeTab} onClick={() => handleTabClose(tab.id)}><BiX /></button>
           </div>
         ))}
       </div>
 
-      <button onClick={() => router.push("/login")} className={NStyles.logoutButton}>✕</button>
+      <button onClick={() => router.push("/login")} className={NStyles.logoutButton}><BiX /></button>
     </motion.nav>
   );
 };

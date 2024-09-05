@@ -1,5 +1,5 @@
 import path from 'path'
-import { app, ipcMain, screen } from 'electron' // Импортируем модуль screen
+import { app, BrowserWindow, ipcMain, screen } from 'electron' // Импортируем модуль screen
 import serve from 'electron-serve'
 import { createWindow } from './helpers'
 import { exec } from 'child_process'
@@ -49,8 +49,8 @@ const startServer = (): Promise<void> => {
 
   const mainWindow = createWindow('main', {
     title: "ТД-ЭЛ Сервер",
-    width: width, // Устанавливаем ширину окна равной ширине экрана
-    height: height, // Устанавливаем высоту окна равной высоте экрана
+    width: width, 
+    height: height, 
     autoHideMenuBar: true,
     frame: false,
     titleBarStyle: "hidden",
@@ -75,3 +75,25 @@ app.on('window-all-closed', () => {
 ipcMain.on('message', async (event, arg) => {
   event.reply('message', `${arg} World!`)
 })
+
+ipcMain.on('window:minimize', (event) => {
+  const window = BrowserWindow.getFocusedWindow()
+  if (window) window.minimize()
+})
+
+ipcMain.on('window:maximize', (event) => {
+  const window = BrowserWindow.getFocusedWindow()
+  if (window) {
+    if (window.isMaximized()) {
+      window.unmaximize()
+    } else {
+      window.maximize()
+    }
+  }
+})
+
+ipcMain.on('window:close', (event) => {
+  const window = BrowserWindow.getFocusedWindow()
+  if (window) window.close()
+})
+

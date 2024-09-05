@@ -39,29 +39,29 @@ const Home: FC<HomeProps> = ({ numberHome }) => {
         <div className={HStyles.planContainer}>
           <div className={HStyles.planOutside}>
             <SVG className={HStyles.outSide} />
-            <span style={{ display: "flex", alignItems: "center", justifyContent: "center", marginTop: "1%" }}>Уличные камеры</span>
+            <span className={HStyles.cameraLabel}>Уличные камеры</span>
           </div>
           <div className={HStyles.tableContainer}>
-              <table>
-                <thead className={HStyles.tableHeader}>
-                  <tr>
-                    <th >№</th>
-                    <th>Индикатор</th>
-                    <th>Наименование ошибок</th>
-                  </tr>
-                </thead>
-                <tbody className={HStyles.tableBody} >
-                  <tr>
-                    <td>1</td>
-                    <td>Ошибка</td>
-                    <td>Лишний человек</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+            <table>
+              <thead className={HStyles.tableHeader}>
+                <tr>
+                  <th>№</th>
+                  <th>Индикатор</th>
+                  <th>Наименование ошибок</th>
+                </tr>
+              </thead>
+              <tbody className={HStyles.tableBody}>
+                <tr>
+                  <td>1</td>
+                  <td>Ошибка</td>
+                  <td>Лишний человек</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
           <div className={HStyles.planInside}>
             <Svg1 className={HStyles.plan} />
-            <span style={{ display: "flex", alignItems: "center", justifyContent: "center", marginTop: "1%" }}>Этаж 1</span>
+            <span className={HStyles.cameraLabel}>Этаж 1</span>
           </div>
         </div>
         <div className={HStyles.carousel}>
@@ -89,9 +89,6 @@ const Home: FC<HomeProps> = ({ numberHome }) => {
           )}
         </div>
       </div>
-
-
-
     </div>
   );
 };
