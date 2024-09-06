@@ -38,7 +38,7 @@
 
 .menuToggle:hover {
   transform: scale(1.1);
-  background-color: #999;
+/*   background-color: #999; */
   opacity: 1;
 }
 
@@ -100,7 +100,7 @@
 }
 
 .logoutButton:hover {
-  background-color: #999;
+/*   background-color: #999; */
   transform: scale(1.1);
   opacity: 1;
 }
@@ -115,7 +115,6 @@
   display: flex;
   padding: 10px;
   border: 1px solid #ccc;
-  border-radius: 23px;
   color: #666;
   height: 28px;
   background-color: #ccc;
