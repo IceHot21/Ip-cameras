@@ -14,7 +14,6 @@ interface Camera {
   rtspUrl: string;
   isDisabled: boolean;
   address: string;
-  rotationAngle?: number; // Добавляем свойство для угла поворота
 }
 
 interface GridProps {
@@ -27,7 +26,7 @@ interface GridProps {
   setRotationAngles: React.Dispatch<React.SetStateAction<{ [key: string]: number }>>;
 }
 
-const Grid: FC<GridProps> = ({ onCameraDrop, droppedCameras, activeFloor, onDoubleClickCamera, FlagLocal, rotationAngles, setRotationAngles }) => {
+const Grid: FC<GridProps> = ({ onCameraDrop, droppedCameras, activeFloor, onDoubleClickCamera, FlagLocal, rotationAngles, setRotationAngles}) => {
   const [selectedCameras, setSelectedCameras] = useState<Camera[]>([]);
   const menuClick = "Меню";
   const { show } = useContextMenu({ id: menuClick });
@@ -49,24 +48,10 @@ const Grid: FC<GridProps> = ({ onCameraDrop, droppedCameras, activeFloor, onDoub
 
   const handleItemClick = ({ id, event, props }: ItemParams<any, any>) => {
     const cameraId = props.cameraId;
-    setRotationAngles((prevAngles) => {
-      const newAngle = id === "rotateLeft" ? (prevAngles[cameraId] || 0) - 45 : (prevAngles[cameraId] || 0) + 45;
-      const updatedAngles = {
-        ...prevAngles,
-        [cameraId]: newAngle,
-      };
-
-      // Обновляем угол поворота в localStorage
-      const updatedCameras = { ...droppedCameras };
-      Object.keys(updatedCameras).forEach(key => {
-        if (updatedCameras[key].name === cameraId) {
-          updatedCameras[key].rotationAngle = newAngle;
-        }
-      });
-      localStorage.setItem('droppedCameras', JSON.stringify(updatedCameras));
-
-      return updatedAngles;
-    });
+    setRotationAngles((prevAngles) => ({
+      ...prevAngles,
+      [cameraId]: id === "rotateLeft" ? (prevAngles[cameraId] || 0) - 45 : (prevAngles[cameraId] || 0) + 45,
+    }));
   };
 
   const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
@@ -131,8 +116,7 @@ const Grid: FC<GridProps> = ({ onCameraDrop, droppedCameras, activeFloor, onDoub
         cell: newCellKey,
         initialPosition: { rowIndex, colIndex },
         isDisabled: false,
-        address: camera.address,
-        rotationAngle: rotationAngles[cameraName] || 0, // Добавляем угол поворота
+        address: camera.address
       };
       droppedCameras[newCellKey] = newCamera;
 
@@ -172,9 +156,9 @@ const Grid: FC<GridProps> = ({ onCameraDrop, droppedCameras, activeFloor, onDoub
                     title={cameraId}
                     onContextMenu={(e) => displayMenu(e, cameraId)}
                   >
-                    <BsFillCameraVideoFill style={{ transform: `rotate(${rotationAngle}deg)` }} />
-                    <Menu id={menuClick}>
-                      <Item id='rotateRight' onClick={handleItemClick}>Повернуть вправо</Item>
+                    <BsFillCameraVideoFill  style={{ transform: `rotate(${rotationAngle}deg)`, display: 'none'}} />
+                    <Menu id={menuClick} >
+                      <Item id='rotateRigth' title={cameraId} onClick={handleItemClick}>Повернуть вправо</Item>
                       <Item id='rotateLeft' onClick={handleItemClick}>Повернуть влево</Item>
                     </Menu>
                   </div>

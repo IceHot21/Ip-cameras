@@ -73,9 +73,9 @@
   height: 100%;
 }
 
-.cameraIcon svg {
-  
-}
+/* .cameraIcon svg {
+
+} */
 @keyframes fadeIn {
   from {
     opacity: 0;
