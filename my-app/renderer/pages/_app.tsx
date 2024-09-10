@@ -10,7 +10,6 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
   const hideNavbar = ['/LoginPage/LoginPage'].includes(router.pathname);
   const [numberHome, setNumberHome] = useState<number>(1);
 
-  // Загрузка сохраненного значения из localStorage при первой загрузке приложения
   useEffect(() => {
     const savedNumberHome = localStorage.getItem('numberHome');
     if (savedNumberHome) {

@@ -28,6 +28,7 @@ const Feeding: FC = () => {
   const [isModalStreamOpen, setIsModalStreamOpen] = useState(false);
   const [FlagLocal, setFlagLocal] = useState(true);
   const [movedCameras, setMovedCameras] = useState<Set<number>>(new Set());
+  const [rotationAngles, setRotationAngles] = useState<{ [key: string]: number }>({});
 
   useEffect(() => {
     const storedCameras = localStorage.getItem('droppedCameras');
@@ -131,6 +132,8 @@ const Feeding: FC = () => {
           onFloorChange={handleFloorChange}
           onDoubleClickCamera={handleDoubleClickCamera}
           FlagLocal={() => setFlagLocal(prev => !prev)}
+          rotationAngles={rotationAngles}
+          setRotationAngles={setRotationAngles}
         />
         {isEditing && (
           <div className={FStyles.gridContainer}>
@@ -140,6 +143,8 @@ const Feeding: FC = () => {
               activeFloor={activeFloor}
               onDoubleClickCamera={handleDoubleClickCamera}
               FlagLocal={() => setFlagLocal(prev => !prev)}
+              rotationAngles={rotationAngles}
+              setRotationAngles={setRotationAngles}
             />
           </div>
         )}

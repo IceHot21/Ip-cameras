@@ -2,6 +2,8 @@ import React, { FC, useEffect, useState } from 'react';
 import GStyles from '../styles/Grid.module.css';
 import { BsFillCameraVideoFill } from 'react-icons/bs';
 import StartStream from './StartStream';
+import { Menu, Item, Separator, Submenu, useContextMenu, ItemParams } from 'react-contexify';
+import "react-contexify/dist/ReactContexify.css";
 
 interface Camera {
   id: number;
@@ -12,6 +14,7 @@ interface Camera {
   rtspUrl: string;
   isDisabled: boolean;
   address: string;
+  rotationAngle?: number; // Добавляем свойство для угла поворота
 }
 
 interface GridProps {
@@ -20,10 +23,14 @@ interface GridProps {
   activeFloor: number;
   onDoubleClickCamera: (camera: Camera) => void;
   FlagLocal: () => void;
+  rotationAngles: { [key: string]: number };
+  setRotationAngles: React.Dispatch<React.SetStateAction<{ [key: string]: number }>>;
 }
 
-const Grid: FC<GridProps> = ({ onCameraDrop, droppedCameras, activeFloor, onDoubleClickCamera, FlagLocal }) => {
+const Grid: FC<GridProps> = ({ onCameraDrop, droppedCameras, activeFloor, onDoubleClickCamera, FlagLocal, rotationAngles, setRotationAngles }) => {
   const [selectedCameras, setSelectedCameras] = useState<Camera[]>([]);
+  const menuClick = "Меню";
+  const { show } = useContextMenu({ id: menuClick });
 
   useEffect(() => {
     if (selectedCameras) {
@@ -33,6 +40,33 @@ const Grid: FC<GridProps> = ({ onCameraDrop, droppedCameras, activeFloor, onDoub
 
   const handleDragStart = (e: React.DragEvent<HTMLDivElement>, camera: Camera) => {
     e.dataTransfer.setData('droppedCameras', JSON.stringify(camera));
+  };
+
+  const displayMenu = (e: React.MouseEvent<HTMLDivElement>, cameraId: string) => {
+    e.preventDefault();
+    show({ event: e, props: { cameraId } });
+  };
+
+  const handleItemClick = ({ id, event, props }: ItemParams<any, any>) => {
+    const cameraId = props.cameraId;
+    setRotationAngles((prevAngles) => {
+      const newAngle = id === "rotateLeft" ? (prevAngles[cameraId] || 0) - 45 : (prevAngles[cameraId] || 0) + 45;
+      const updatedAngles = {
+        ...prevAngles,
+        [cameraId]: newAngle,
+      };
+
+      // Обновляем угол поворота в localStorage
+      const updatedCameras = { ...droppedCameras };
+      Object.keys(updatedCameras).forEach(key => {
+        if (updatedCameras[key].name === cameraId) {
+          updatedCameras[key].rotationAngle = newAngle;
+        }
+      });
+      localStorage.setItem('droppedCameras', JSON.stringify(updatedCameras));
+
+      return updatedAngles;
+    });
   };
 
   const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
@@ -51,7 +85,7 @@ const Grid: FC<GridProps> = ({ onCameraDrop, droppedCameras, activeFloor, onDoub
 
   const handleStartStreams = (selectedCameras: Camera[]) => {
     const savedCameras = localStorage.getItem('cameras');
-    let camerasArray = [];
+    let camerasArray: Camera[] = [];
 
     if (savedCameras && savedCameras.length !== 0) {
       camerasArray = JSON.parse(savedCameras);
@@ -61,7 +95,7 @@ const Grid: FC<GridProps> = ({ onCameraDrop, droppedCameras, activeFloor, onDoub
       const cameraName = searchedCamera.name.split(/[^a-zA-Z0-9]/)[0];
       const ipAddress = searchedCamera.address.match(/(?:http:\/\/)?(\d+\.\d+\.\d+\.\d+)/)[1];
       const rtspUrl = `rtsp://admin:Dd7560848@${ipAddress}`;
-      const newCamera = { id: camerasArray.length + 1, rtspUrl, name: cameraName };
+      const newCamera: Camera = { id: camerasArray.length + 1, rtspUrl, name: cameraName, floor: 0, cell: '', initialPosition: { rowIndex: 0, colIndex: 0 }, isDisabled: false, address: '' };
       camerasArray.push(newCamera);
     });
 
@@ -70,6 +104,7 @@ const Grid: FC<GridProps> = ({ onCameraDrop, droppedCameras, activeFloor, onDoub
       FlagLocal();
     }
   };
+
   const handleDrop = (e: React.DragEvent<HTMLDivElement>, rowIndex: number, colIndex: number) => {
     e.preventDefault();
     const cameraData = e.dataTransfer.getData('droppedCameras');
@@ -87,8 +122,8 @@ const Grid: FC<GridProps> = ({ onCameraDrop, droppedCameras, activeFloor, onDoub
           delete droppedCameras[existingCameraKey];
         }
       }
-      
-      const newCamera = {
+
+      const newCamera: Camera = {
         id: Object.keys(droppedCameras).length + 1,
         rtspUrl,
         name: cameraName,
@@ -96,7 +131,8 @@ const Grid: FC<GridProps> = ({ onCameraDrop, droppedCameras, activeFloor, onDoub
         cell: newCellKey,
         initialPosition: { rowIndex, colIndex },
         isDisabled: false,
-        address: camera.address
+        address: camera.address,
+        rotationAngle: rotationAngles[cameraName] || 0, // Добавляем угол поворота
       };
       droppedCameras[newCellKey] = newCamera;
 
@@ -116,6 +152,8 @@ const Grid: FC<GridProps> = ({ onCameraDrop, droppedCameras, activeFloor, onDoub
             const camera = droppedCameras[cellKey];
 
             const cameraId = camera ? `Камера ${camera.name.split(/[^a-zA-Z0-9]/)[0]}` : '';
+            const rotationAngle = rotationAngles[cameraId] || 0;
+
             return (
               <div
                 key={cellKey}
@@ -132,8 +170,13 @@ const Grid: FC<GridProps> = ({ onCameraDrop, droppedCameras, activeFloor, onDoub
                     onDoubleClick={() => handleDoubleClick(droppedCameras[cellKey])}
                     id={cameraId}
                     title={cameraId}
+                    onContextMenu={(e) => displayMenu(e, cameraId)}
                   >
-                    <BsFillCameraVideoFill />
+                    <BsFillCameraVideoFill style={{ transform: `rotate(${rotationAngle}deg)` }} />
+                    <Menu id={menuClick}>
+                      <Item id='rotateRight' onClick={handleItemClick}>Повернуть вправо</Item>
+                      <Item id='rotateLeft' onClick={handleItemClick}>Повернуть влево</Item>
+                    </Menu>
                   </div>
                 )}
               </div>

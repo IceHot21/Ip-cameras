@@ -8,6 +8,7 @@
   justify-content: space-between;
   align-items: center;
   z-index: 1000;
+  gap: 5px;
   -webkit-app-region: drag;
 }
 
@@ -27,7 +28,6 @@
   left: 15px;
   width: 40px;
   height: 40px;
-  border-radius: 50%;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -71,6 +71,12 @@
   transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
+.activeTab{
+background-color: #999 !important;
+color: #333 !important;
+font-weight: bold;
+}
+
 .menuItem:hover {
   transform: translateY(-2px);
   background-color: #555;
@@ -100,7 +106,6 @@
 }
 
 .logoutButton:hover {
-/*   background-color: #999; */
   transform: scale(1.1);
   opacity: 1;
 }
@@ -109,6 +114,11 @@
   display: flex;
   align-items: center;
   -webkit-app-region: no-drag;
+}
+
+.closeTab svg{
+  width: auto !important;
+  z-index: 10001;
 }
 
 .tab {
@@ -121,9 +131,18 @@
   align-items: center;
   width: 200px;
   justify-content: space-between;
-  margin-left: 5px;
 }
 
+.tab svg{
+  width: 20%;
+}
+
+.spanContainer{
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  width: 100%;
+}
 .tab:hover {
   cursor: pointer;
   background-color: #999;
@@ -143,6 +162,7 @@
   display: flex;
   opacity: 0; 
   transition: opacity 0.3s ease; 
+  z-index: 10001;
 }
 
 .tab:hover .closeTab {
@@ -152,6 +172,7 @@
 .closeTab:hover {
   cursor: pointer;
   color: #333;
+  z-index: 10001;
 }
 
 .logoutButton svg {

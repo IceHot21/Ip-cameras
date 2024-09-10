@@ -2,16 +2,28 @@ import { FC, useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/router";
 import NStyles from "../styles/Navbar.module.css";
-import { BiPlay, BiCameraMovie, BiCamera, BiRepeat, BiLogOut, BiSolidHome, BiAccessibility, BiX } from "react-icons/bi";
+import { BiCameraMovie, BiCamera, BiRepeat, BiSolidHome, BiAccessibility, BiX } from "react-icons/bi";
 import { IoIosSettings } from "react-icons/io";
-
 
 type Tab = {
   id: string;
   name: string;
+  icon: any;
   path: string;
   isActive: boolean;
+  isPinned?: boolean;
 };
+
+const HomeTab: Tab = {
+  id: 'home',
+  name: 'Главная',
+  icon: <BiSolidHome size={24} />,
+  path: '/Home/Home',
+  isActive: true,
+  isPinned: true,
+};
+
+const initialTabs = [HomeTab];
 
 const MenuToggle = ({ toggle }) => (
   <button onClick={toggle} className={NStyles.menuToggle}>
@@ -108,7 +120,7 @@ const Navigation = ({ onMenuItemClick }) => {
 
 const Navbar: FC = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [tabs, setTabs] = useState<Tab[]>([]);
+  const [tabs, setTabs] = useState<Tab[]>(initialTabs);
   const containerRef = useRef(null);
   const router = useRouter();
 
@@ -117,19 +129,22 @@ const Navbar: FC = () => {
   };
 
   const handleMenuItemClick = (item) => {
-    const exitingTab = tabs.find((tab) => tab.path === item.action);
-    if (exitingTab) {
+    const existingTab = tabs.find((tab) => tab.path === item.action);
+
+    if (existingTab) {
       setTabs((prevTabs) =>
         prevTabs.map((tab) =>
-          tab.id === exitingTab.id ? { ...tab, isActive: true } : { ...tab, isActive: false }
+          tab.id === existingTab.id ? { ...tab, isActive: true } : { ...tab, isActive: false }
         )
       );
     } else {
       const newTab: Tab = {
         id: String(new Date().getTime()),
         name: item.name,
+        icon: item.icon,
         path: item.action,
         isActive: true,
+        isPinned: false,
       };
       setTabs((prevTabs) =>
         prevTabs.map((tab) => ({ ...tab, isActive: false })).concat(newTab)
@@ -137,24 +152,41 @@ const Navbar: FC = () => {
     }
     router.push(item.action);
     toggleMenu();
-  }
+  };
 
   const handleTabClose = (id) => {
-    setTabs((prevTabs) => prevTabs.filter((tab) => tab.id !== id));
+    const tabToClose = tabs.find((tab) => tab.id === id);
+    
+    if (tabToClose && tabToClose.isActive) {
+      const nextTab = tabs.find((tab) => !tab.isPinned && tab.id !== id); 
+
+      if (nextTab) {
+        router.push(nextTab.path);
+        setTabs((prevTabs) =>
+          prevTabs
+            .filter((tab) => tab.id !== id)
+            .map((tab) => tab.id === nextTab.id ? { ...tab, isActive: true } : { ...tab, isActive: false })
+        );
+      } else {
+        router.push(HomeTab.path);
+        setTabs([HomeTab]);
+      }
+    } else {
+      setTabs((prevTabs) => prevTabs.filter((tab) => tab.id !== id));
+    }
   };
 
   const handleTabClick = (id, path) => {
+    const activeTab = tabs.find((tab) => tab.isActive);
+
+    if (activeTab?.id === id) return;
+
     setTabs((prevTabs) =>
       prevTabs.map((tab) =>
         tab.id === id ? { ...tab, isActive: true } : { ...tab, isActive: false }
       )
     );
     router.push(path);
-  }
-  //TODO: доделать выход из системы
-  const handleLogout = () => {
-    console.log("Выход из системы");
-    router.push("/login");
   };
 
   useEffect(() => {
@@ -163,12 +195,24 @@ const Navbar: FC = () => {
         setIsOpen(false);
       }
     };
-
     document.addEventListener("mousedown", handleOutsideClick);
     return () => {
       document.removeEventListener("mousedown", handleOutsideClick);
     };
   }, [containerRef]);
+
+  useEffect(() => {
+    const currentPath = router.pathname;
+    const currentTab = tabs.find((tab) => tab.path === currentPath);
+
+    if (currentTab) {
+      setTabs((prevTabs) =>
+        prevTabs.map((tab) =>
+          tab.id === currentTab.id ? { ...tab, isActive: true } : { ...tab, isActive: false }
+        )
+      );
+    }
+  }, [router.pathname]);
 
   return (
     <motion.nav
@@ -187,11 +231,13 @@ const Navbar: FC = () => {
         {tabs.map((tab) => (
           <div
             key={tab.id}
-            className={`${NStyles.tab} ${tab.isActive ? NStyles.activeTab : ''}`}
+            className={`${NStyles.tab} ${tab.path === router.pathname ? NStyles.activeTab : ''}`}
             onClick={() => handleTabClick(tab.id, tab.path)}
           >
-            <span>{tab.name}</span>
-            <button className={NStyles.closeTab} onClick={() => handleTabClose(tab.id)}><BiX /></button>
+            <span className={NStyles.spanContainer}>{tab.icon}{tab.name}</span>
+            {!tab.isPinned && (
+              <button className={NStyles.closeTab} onClick={() => handleTabClose(tab.id)}><BiX /></button>
+            )}
           </div>
         ))}
       </div>

@@ -3,6 +3,7 @@
   align-items: center;
   justify-content: center;
   transition: background 0.4s ease-in;
+  animation: fadeIn 1s ease-in;
 }
 
 .container {
@@ -44,9 +45,9 @@
 }
 
 .transparentCell {
-  background-color: transparent; 
-  border: 0px !important; 
-  position: relative; 
+  background-color: transparent;
+  border: 0px !important;
+  position: relative;
 }
 
 .card.active {
@@ -59,14 +60,7 @@
   animation: fadeIn 1s ease-in;
 }
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
+
 .indexText {
   margin-bottom: 10px;
   font-size: 16px;
@@ -77,4 +71,17 @@
   position: absolute;
   top: 0;
   height: 100%;
+}
+
+.cameraIcon svg {
+  
+}
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }

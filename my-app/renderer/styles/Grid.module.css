@@ -41,7 +41,8 @@
   aspect-ratio: 1 / 1;
   width: 50%;
   height: 50%;
-  border-radius: 50%
+  border-radius: 50%;
+  cursor: pointer;
 }
 
 .streamModal {
@@ -63,4 +64,14 @@
   position: relative;
   width: 80%;
   max-width: 800px;
+}
+
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }

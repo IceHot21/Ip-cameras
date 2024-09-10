@@ -2,6 +2,7 @@
   display: flex;
   height: 94vh;
   justify-content: center;
+  animation: fadeIn 1s ease-in;
 }
 
 .carousel {
@@ -96,7 +97,7 @@
 }
 
 .carouselInner span {
-  font-size: 20px;
+  font-size: 32px;
   margin-bottom: 50px;
 }
 
@@ -109,6 +110,7 @@
   border-top-right-radius: 25px;
   box-shadow: 0 4px 10px #006c2a33;
   padding: 10px;
+  cursor:pointer;
 }
 
 .planContainer {
@@ -280,4 +282,13 @@
   border-bottom-left-radius: 25px;
   border-bottom-right-radius: 25px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }

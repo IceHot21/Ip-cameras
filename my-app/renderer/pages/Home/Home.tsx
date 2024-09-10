@@ -3,17 +3,23 @@ import HStyles from "./Home.module.css";
 import { BsBuildingFill } from "react-icons/bs";
 import Svg1 from "../../assets/Svg1.svg";
 import SVG from "../../assets/SVG.svg";
+import { useRouter } from "next/router";
 
 interface HomeProps {
   numberHome: number;
 }
 
 const Home: FC<HomeProps> = ({ numberHome }) => {
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const [currentIndex, setCurrentIndex] = useState(0); 
+  const router = useRouter();
 
   const nextSlide = () => {
     setCurrentIndex((prevIndex) => (prevIndex + 1) % numberHome);
   };
+
+  const roomClick = () => {
+    router.push('/Feeding/Feeding');
+  }
 
   const prevSlide = () => {
     setCurrentIndex((prevIndex) => (prevIndex - 1 + numberHome) % numberHome);
@@ -67,7 +73,7 @@ const Home: FC<HomeProps> = ({ numberHome }) => {
             </div>
           </div>
           <div className={HStyles.planInside}>
-            <Svg1 className={HStyles.plan} />
+            <Svg1 className={HStyles.plan} onClick={roomClick} />
             <span className={HStyles.cameraLabel}>Этаж 1</span>
           </div>
         </div>

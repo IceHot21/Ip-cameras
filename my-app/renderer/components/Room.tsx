@@ -1,10 +1,12 @@
 import React, { FC, useEffect, useState } from 'react';
 import RStyles from '../styles/Room.module.css';
-import GStyles from '../styles/Grid.module.css'; 
+import GStyles from '../styles/Grid.module.css';
 import Svg1 from '../assets/Svg1.svg';
 import Svg2 from '../assets/Svg2.svg';
 import Svg3 from '../assets/Svg3.svg';
 import { BsFillCameraVideoFill } from 'react-icons/bs';
+import { Menu, Item, Separator, Submenu, useContextMenu, ItemParams } from 'react-contexify';
+import "react-contexify/dist/ReactContexify.css";
 
 interface Camera {
   id: number;
@@ -23,13 +25,17 @@ type RoomProps = {
   droppedCameras: { [key: string]: Camera };
   activeFloor: number;
   onFloorChange: (floor: number) => void;
-  onDoubleClickCamera: (camera: Camera) => void; 
+  onDoubleClickCamera: (camera: Camera) => void;
   FlagLocal: () => void;
+  rotationAngles: { [key: string]: number };
+  setRotationAngles: React.Dispatch<React.SetStateAction<{ [key: string]: number }>>;
 };
 
-const Room: FC<RoomProps> = ({ children, svgProps, droppedCameras, activeFloor, onFloorChange, onDoubleClickCamera, FlagLocal }) => {
+const Room: FC<RoomProps> = ({ children, svgProps, droppedCameras, activeFloor, onFloorChange, onDoubleClickCamera, FlagLocal, rotationAngles, setRotationAngles }) => {
   const svgs = [Svg1, Svg2, Svg3];
   const [selectedCameras, setSelectedCameras] = useState<Camera[]>([]);
+  const menuClick = "Меню";
+  const { show } = useContextMenu({ id: menuClick });
 
   useEffect(() => {
     if (selectedCameras) {
@@ -40,9 +46,22 @@ const Room: FC<RoomProps> = ({ children, svgProps, droppedCameras, activeFloor, 
   const handleSvgClick = (index: number) => {
     onFloorChange(index);
   };
-  
+
   const handleDragStart = (e: React.DragEvent<HTMLDivElement>, camera: Camera) => {
     e.dataTransfer.setData('droppedCameras', JSON.stringify(camera));
+  };
+
+  const displayMenu = (e: React.MouseEvent<HTMLDivElement>, cameraId: string) => {
+    e.preventDefault();
+    show({ event: e, props: { cameraId } });
+  };
+
+  const handleItemClick = ({ id, event, props }: ItemParams<any, any>) => {
+    const cameraId = props.cameraId;
+    setRotationAngles((prevAngles) => ({
+      ...prevAngles,
+      [cameraId]: id === "rotateLeft" ? (prevAngles[cameraId] || 0) + 45 : (prevAngles[cameraId] || 0) - 45,
+    }));
   };
 
   const handleDoubleClick = (camera: Camera) => {
@@ -111,7 +130,7 @@ const Room: FC<RoomProps> = ({ children, svgProps, droppedCameras, activeFloor, 
                         const camera = droppedCameras[cellKey];
 
                         const cameraId = camera ? `Камера ${camera.name.split(/[^a-zA-Z0-9]/)[0]}` : '';
-
+                        const rotationAngle = rotationAngles[cameraId] || 0;
                         return (
                           <div
                             key={cellKey}
@@ -124,10 +143,11 @@ const Room: FC<RoomProps> = ({ children, svgProps, droppedCameras, activeFloor, 
                                 draggable
                                 onDragStart={(e) => handleDragStart(e, camera)}
                                 onDoubleClick={() => handleDoubleClick(camera)}
-                                id={cameraId}  
+                                id={cameraId}
                                 title={cameraId}
+                                onContextMenu={(e) => displayMenu(e, cameraId)}
                               >
-                                <BsFillCameraVideoFill />
+                                <BsFillCameraVideoFill style={{ transform: `rotate(${rotationAngle}deg)` }} />
                               </div>
                             )}
                           </div>
