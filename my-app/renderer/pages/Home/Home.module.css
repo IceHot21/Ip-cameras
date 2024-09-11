@@ -1,6 +1,6 @@
 .homeContainer {
   display: flex;
-  height: 94vh;
+  height: 84vh;
   justify-content: center;
   animation: fadeIn 1s ease-in;
 }
@@ -10,8 +10,7 @@
   align-items: center;
   justify-content: center;
   position: relative;
-  width: 50%;
-  margin-bottom: 3%;
+  width: 100vh;
 }
 
 .carouselInner {
@@ -20,6 +19,7 @@
   align-items: center;
   width: 100%;
   position: relative;
+  transform: scale(0.7);
 }
 
 .buildingIcon {
@@ -31,19 +31,17 @@
   transform: scale(0.8);
   transition: opacity 0.5s ease, transform 0.5s ease;
   position: absolute;
-  width: 245px;
+  width: 37%;
   cursor: pointer; /* Добавляем курсор указателя */
 }
 
 
 .buildingIcon svg {
-  font-size: 25rem;
   cursor: pointer;
 }
 
 .active {
   opacity: 1;
-  transform: scale(1);
   z-index: 1;
   transition: transform 0.5s ease;
 }
@@ -55,6 +53,7 @@
 .nearby {
   opacity: 0.1;
   transform: scale(0.9);
+  z-index: 10;
 }
 
 .nearby:hover {
@@ -83,22 +82,15 @@
 }
 
 .prevButton {
-  left: 20px;
+  left: 0vh;
 }
 
 .nextButton {
-  right: 20px;
+  right: 0vh;
 }
 
-.hidden {
-  background-color: transparent !important;
-  color: transparent !important;
-  border: none !important;
-}
-
-.carouselInner span {
-  font-size: 32px;
-  margin-bottom: 50px;
+.hidden{
+opacity:0;
 }
 
 .outSide,
@@ -119,11 +111,12 @@
   flex-direction: row;
   align-items: center;
   width: 100%;
+  gap:30%;
 }
 
 .planOutside {
   display: flex;
-  margin-left: 2%;
+  margin-left: 3%;
   margin-top: 1%;
   width: auto;
   flex-direction: column;
@@ -133,7 +126,7 @@
 
 .planInside {
   display: flex;
-  margin-right: 2%;
+  margin-right: 3%;
   margin-top: 1%;
   width: auto;
   flex-direction: column;
@@ -142,19 +135,15 @@
 }
 
 .tableContainer, .tableContainer1, .tableContainer2 {
-  height: 240px;
   overflow: hidden;
   position: absolute;
-  width: 23.8%;
-  margin-left: 2%;
-  margin-top: 47%;
   border-radius: 23px;
   background-color: #ffffff;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* Более мягкая тень */
   transition: box-shadow 0.3s ease; /* Плавный переход */
 }
-/* .tableContainer {
-  height: 240px;
+.tableContainer {
+ /* height: 240px;
   overflow: hidden;
   position: absolute;
   width: 23.8%;
@@ -163,46 +152,44 @@
   border-radius: 23px;
   background-color: white;
   box-shadow: 0 4px 10px #006c2a33;
-  table-layout: fixed; 
-} */
+  table-layout: fixed; */
+  display: none;
+} 
 
 .tableContainer1 {
-  height: 180px;
- /*  overflow: hidden;
-  position: absolute; */
+  height: 24%;
   width: 40%;
-  margin-top: 41%;
-/*   border-radius: 23px;
-  background-color: white;
-  box-shadow: 0 4px 10px #006c2a33;
-  table-layout: fixed;  */
+  margin-top: 69vh;
 }
 
 .tableContainer2 {
 /*   height: 240px;
   overflow: hidden;
-  position: absolute; */
+  position: absolute;
   width: 23.8%;
   margin-left: 72.2%;
   margin-top: 27.9%;
-/*   border-radius: 23px;
+  border-radius: 23px;
   background-color: white;
   box-shadow: 0 4px 10px #006c2a33;
   table-layout: fixed;  */
+  display:none;
 }
 
 .tableContainer:hover, .tableContainer1:hover, .tableContainer2:hover {
   box-shadow: 0 6px 25px rgba(0, 0, 0, 0.2); /* Эффект увеличенной тени при наведении */
 }
 
-
-
 .tableHeaderWrapper {
+  background-color: #006c2a;
+  color: #ffffff;
+  border-top-left-radius: 23px;
+  border-top-right-radius: 23px;
+}
+
+.tableHeaderWrapper table {
   width: 100%;
-  overflow: hidden;
-  position: sticky;
-  top: 0;
-  z-index: 1;
+  border-collapse: collapse;
 }
 
 .tableBodyWrapper {
@@ -213,46 +200,12 @@
 
 .tableBodyWrapper table {
   width: 100%;
-  table-layout: fixed; /* Фиксированная ширина для всей таблицы */
   border-collapse: collapse;
 }
 
 .tableHeader th {
-  padding: 12px 15px;
   background-color: #006c2a;
-  color: #000;
   text-align: center;
-  border: 1px solid #006c2a;
-}
-
-.tableHeader th:first-child {
-  width: 15%; /* Первый столбец (меньше) */
-}
-
-.tableHeader th:nth-child(2) {
-  width: 20%; /* Второй столбец (меньше) */
-}
-
-.tableHeader th:last-child {
-  width: 65%; /* Последний столбец (больше) */
-}
-
-.tableBody td {
-  text-align: center;
-  color: #555;
-  padding: 12px 15px;
-}
-
-.tableBody td:first-child {
-  width: 15%; /* Первый столбец (меньше) */
-}
-
-.tableBody td:nth-child(2) {
-  width: 20%; /* Второй столбец (меньше) */
-}
-
-.tableBody td:last-child {
-  width: 65%; /* Последний столбец (больше) */
 }
 
 .tableBodyWrapper::-webkit-scrollbar {
@@ -270,6 +223,13 @@
 
 .tableBodyWrapper::-webkit-scrollbar-thumb:hover {
   background: #555;
+}
+
+.tableContainer1 th,
+.tableContainer1 td {
+  border: 1px solid #ddd;
+  text-align: center;
+  padding: 10px;
 }
 
 .cameraLabel {
