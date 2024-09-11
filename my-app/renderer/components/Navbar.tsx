@@ -2,8 +2,9 @@ import { FC, useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/router";
 import NStyles from "../styles/Navbar.module.css";
-import { BiCameraMovie, BiCamera, BiRepeat, BiSolidHome, BiAccessibility, BiX } from "react-icons/bi";
-import { IoIosSettings } from "react-icons/io";
+import { BiCameraMovie, BiCamera, BiRepeat, BiSolidHome, BiX, BiHome, BiCarousel } from "react-icons/bi";
+import { MdAppRegistration } from "react-icons/md";
+import { IoSettingsOutline } from "react-icons/io5";
 
 type Tab = {
   id: string;
@@ -17,7 +18,7 @@ type Tab = {
 const HomeTab: Tab = {
   id: 'home',
   name: 'Главная',
-  icon: <BiSolidHome size={24} />,
+  icon: <BiHome size={24} />,
   path: '/Home/Home',
   isActive: true,
   isPinned: true,
@@ -63,12 +64,13 @@ const MenuToggle = ({ toggle }) => (
 
 const Navigation = ({ onMenuItemClick }) => {
   const menuItems = [
-    { name: "Главная", action: "/Home/Home", icon: <BiSolidHome size={24} /> },
-    { name: "Схема здания", action: "/Feeding/Feeding", icon: <BiAccessibility size={24} /> },
+    { name: "Главная", action: "/Home/Home", icon: <BiHome size={24} /> },
+    { name: "Схема здания", action: "/Feeding/Feeding", icon: <BiCarousel size={24} /> },
     { name: "Видеоархив", action: "/Videoarchive/Videoarchive", icon: <BiCameraMovie size={24} /> },
     { name: "Фотоархив", action: "/Photoarchive/Photoarchive", icon: <BiCamera size={24} /> },
-    { name: "Регистрация", action: "/LoginPage/LoginPage", icon: <BiRepeat size={24} /> },
-    { name: "Настройки", action: "/Setting/Setting", icon: <IoIosSettings size={24} /> },
+    { name: "Настройки", action: "/Setting/Setting", icon: <IoSettingsOutline size={24} /> },
+    { name: "Регистрация", action: "/Registration/Registration", icon: <MdAppRegistration size={24} /> },
+    { name: "Перезагрузка", action: "/LoginPage/LoginPage", icon: <BiRepeat size={24} /> },
   ];
 
   return (
@@ -79,10 +81,14 @@ const Navigation = ({ onMenuItemClick }) => {
       exit="closed"
       variants={{
         open: {
-          transition: { staggerChildren: 0.07, delayChildren: 0.2 }
+          opacity: 1,
+          y: 0,
+          transition: { staggerChildren: 0.07, delayChildren: 0.2, duration: 1.3, ease: "easeOut", }
         },
         closed: {
-          transition: { staggerChildren: 0.05, staggerDirection: -1 }
+          opacity: 0,
+          y: 0,
+          transition: { staggerChildren: 0.05, staggerDirection: -1, duration: 0.3, ease: "easeIn",}
         }
       }}
     >

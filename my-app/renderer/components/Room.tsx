@@ -43,6 +43,28 @@ const Room: FC<RoomProps> = ({ children, svgProps, droppedCameras, activeFloor, 
     }
   }, [selectedCameras]);
 
+
+  useEffect(() => {
+    const savedDroppedCameras = localStorage.getItem('droppedCameras');
+
+    if (savedDroppedCameras) {
+      const parsedDroppedCameras = JSON.parse(savedDroppedCameras);
+
+      // Создаем объект для хранения углов поворота
+      const initialRotationAngles: { [key: string]: number } = {};
+
+      Object.keys(parsedDroppedCameras).forEach((cameraKey) => {
+        const camera = parsedDroppedCameras[cameraKey];
+        if (camera.rotationAngle !== undefined) {
+          const cameraId = `Камера ${camera.name.split(/[^a-zA-Z0-9]/)[0]}`;
+          initialRotationAngles[cameraId] = camera.rotationAngle;
+        }
+      });
+
+      // Устанавливаем начальные углы поворота в состояние
+      setRotationAngles(initialRotationAngles);
+    }
+  }, []);
   const handleSvgClick = (index: number) => {
     onFloorChange(index);
   };
@@ -148,6 +170,13 @@ const Room: FC<RoomProps> = ({ children, svgProps, droppedCameras, activeFloor, 
                                 onContextMenu={(e) => displayMenu(e, cameraId)}
                               >
                                 <BsFillCameraVideoFill style={{ transform: `rotate(${rotationAngle}deg)` }} />
+                                <div
+                                  className={GStyles.cameraViewSector}
+                                  style={{
+                                    transform: `rotate(${rotationAngle}deg)`,
+                                    clipPath: `polygon(50% 50%, 100% 0%, 100% 100%)`,
+                                  }}
+                                />
                               </div>
                             )}
                           </div>
