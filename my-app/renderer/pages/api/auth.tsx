@@ -1,34 +1,35 @@
-import axios from 'axios';
+import { fetchWithRetry } from '../../refreshToken';
 
+// Создайте экземпляр Axios с базовым URL и настройками по умолчанию
+// const api = axios.create({
+//   baseURL: 'http://localhost:4200',
+//   withCredentials: true, // Важно для отправки cookies
+// });
+
+// Пример функции для входа
 export const login = async (username, password) => {
   try {
-    const response = await axios.post('http://localhost:4200/api/auth/login', {
-      username,
-      password,
-    });
+    const response = await fetchWithRetry('https://192.168.0.147:4200/api/login', 'POST', {
+      name: username,
+      password: password,
+    }, '/login');
+    console.log(response.data); // Проверьте ответ сервера
     return response.data;
   } catch (error) {
+    console.error('Login failed', error);
     throw error;
   }
 };
 
-export const pisya = async () => {
+export const register = async (username, password, ROLES) => {
   try {
-    const response = await axios.post('http://localhost:4200/api/auth/pisya', {}, {
-      withCredentials: true, // Это включает передачу куки
-    });
-    console.log(response);
-    return response.data;
-  } catch (error) {
-    throw error;
-  }
-};
+    const response = await fetchWithRetry('https://localhost:4200/users/register', 'POST', null, {
 
-export const register = async (username, password) => {
-  try {
-    const response = await axios.post('http://localhost:4200/api/auth/register', {
-      username,
-      password,
+        "name":username,
+        "password": password,
+        "roles": [
+          ROLES
+        ]
     });
     return response.data;
   } catch (error) {
@@ -36,27 +37,27 @@ export const register = async (username, password) => {
   }
 };
 
-const refreshAccessToken = async () => {
-    try {
-      const response = await axios.post('http://localhost:4200/api/auth/refresh', {}, {
-        withCredentials: true, // Убедитесь, что куки включены в запрос
-      });
-      return response.data.access_token;
-    } catch (error) {
-      throw error;
-    }
-  };
+// const refreshAccessToken = async () => {
+//     try {
+//       const response = await axios.post('https://localhost:4200/api//refresh-token', {}, {
+//         withCredentials: true, // Убедитесь, что куки включены в запрос
+//       });
+//       return response.data.access_token;
+//     } catch (error) {
+//       throw error;
+//     }
+//   };
   
-  axios.interceptors.response.use(
-    (response) => response,
-    async (error) => {
-      const originalRequest = error.config;
-      if (error.response.status === 401 && !originalRequest._retry) {
-        originalRequest._retry = true;
-        const access_token = await refreshAccessToken();
-        axios.defaults.headers.common['Authorization'] = `Bearer ${access_token}`;
-        return axios(originalRequest);
-      }
-      return Promise.reject(error);
-    }
-  );
+//   axios.interceptors.response.use(
+//     (response) => response,
+//     async (error) => {
+//       const originalRequest = error.config;
+//       if (error.response.status === 401 && !originalRequest._retry) {
+//         originalRequest._retry = true;
+//         const access_token = await refreshAccessToken();
+//         axios.defaults.headers.common['Authorization'] = `Bearer ${access_token}`;
+//         return axios(originalRequest);
+//       }
+//       return Promise.reject(error);
+//     }
+//   );

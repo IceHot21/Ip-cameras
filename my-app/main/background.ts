@@ -72,6 +72,10 @@ app.on('window-all-closed', () => {
   app.quit()
 })
 
+app.on('ready', () => {
+  app.commandLine.appendSwitch('ignore-certificate-errors', 'true')
+})
+
 ipcMain.on('message', async (event, arg) => {
   event.reply('message', `${arg} World!`)
 })

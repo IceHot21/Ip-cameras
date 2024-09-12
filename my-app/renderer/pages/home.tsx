@@ -61,7 +61,7 @@ export default function HomePage() {
         </Button>
         <Button color="primary"
           onClick={() => {
-            axios.post('http://localhost:4200/')
+            axios.post('https://localhost:4200/')
           }}
         >
           Test IPC

@@ -3,6 +3,7 @@ import LCStyles from '../styles/ListCamera.module.css';
 import { BsFillCameraVideoFill } from "react-icons/bs";
 import { BiX, BiRevision, BiSolidLayerPlus } from "react-icons/bi";
 import { FaCheck } from 'react-icons/fa';
+import { fetchWithRetry } from '../refreshToken';
 
 interface ListCameraProps {
   open: boolean;
@@ -60,8 +61,16 @@ const ListCamera: FC<ListCameraProps> = ({
     setLoading(true);
     setError(null);
 
+// Создайте экземпляр Axios с базовым URL и настройками по умолчанию
+// const api = axios.create({
+//   baseURL: 'http://localhost:4200',
+//   withCredentials: true, // Важно для отправки cookies
+// });
+
+// Пример функции для входа
     try {
-      const response = await fetch('http://localhost:4200/ip/cameras-list');
+      const response = await fetchWithRetry('https://192.168.0.147:4200/stream/cameras', 'GET', null, '/list-cameras');
+      console.log('Cameras discovered:', response);
       if (response.ok) {
         const discoveredCameras: Camera[] = await response.json();
         const storedCameras = localStorage.getItem('droppedCameras');

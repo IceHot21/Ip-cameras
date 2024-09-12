@@ -31,7 +31,7 @@ const StartStream: FC<StartStreamProps> = ({ rtspUrl, id, cameraName, setCam }) 
   useEffect(() => {
     const startStream = async () => {
       try {
-        const response = await fetch('http://localhost:4200/ip/start-stream', {
+        const response = await fetch('https://localhost:4200/ip/start-stream', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -90,7 +90,7 @@ const StartStream: FC<StartStreamProps> = ({ rtspUrl, id, cameraName, setCam }) 
     if (!camera) return;
 
     const port = 9999 + id;
-    const response = await fetch('http://localhost:4200/ip/stop-stream', {
+    const response = await fetch('https://localhost:4200/ip/stop-stream', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -110,7 +110,7 @@ const StartStream: FC<StartStreamProps> = ({ rtspUrl, id, cameraName, setCam }) 
   };
 
   const handleStartRecording = () => {
-    fetch('http://localhost:4200/ip/start-recording', {
+    fetch('https://localhost:4200/ip/start-recording', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -135,7 +135,7 @@ const StartStream: FC<StartStreamProps> = ({ rtspUrl, id, cameraName, setCam }) 
   };
 
   const handleStopRecording = () => {
-    fetch('http://localhost:4200/ip/stop-recording', {
+    fetch('https://localhost:4200/ip/stop-recording', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
