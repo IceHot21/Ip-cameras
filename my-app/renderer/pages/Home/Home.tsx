@@ -2,15 +2,18 @@ import { FC, useState } from "react";
 import HStyles from "./Home.module.css";
 import { BsBuildingFill } from "react-icons/bs";
 import Svg1 from "../../assets/Svg1.svg";
+import Svg2 from '../../assets/Svg2.svg';
+import Svg3 from '../../assets/Svg3.svg';
 import SVG from "../../assets/SVG.svg";
 import { useRouter } from "next/router";
+import Build123 from '../../assets/Build123.svg'
 
 interface HomeProps {
   numberHome: number;
 }
 
 const Home: FC<HomeProps> = ({ numberHome }) => {
-  const [currentIndex, setCurrentIndex] = useState(0); 
+  const [currentIndex, setCurrentIndex] = useState(0);
   const router = useRouter();
 
   const nextSlide = () => {
@@ -38,6 +41,8 @@ const Home: FC<HomeProps> = ({ numberHome }) => {
     return HStyles.hidden;
   };
 
+  const svgImages = [Svg1, Svg2, Svg3];
+
   return (
     <div>
       <div className={HStyles.homeContainer}>
@@ -46,34 +51,9 @@ const Home: FC<HomeProps> = ({ numberHome }) => {
             <SVG className={HStyles.outSide} />
             <span className={HStyles.cameraLabel}>Уличные камеры</span>
           </div>
-          <div className={HStyles.tableContainer}>
-            <div className={HStyles.tableHeaderWrapper} style={{ backgroundColor: '#006c2a' }}>
-              <table>
-                <thead className={HStyles.tableHeader}>
-                  <tr>
-                    <th>№</th>
-                    <th>Индикатор</th>
-                    <th>Наименование ошибок</th>
-                  </tr>
-                </thead>
-              </table>
-            </div>
-            <div className={HStyles.tableBodyWrapper}>
-              <table>
-                <tbody className={HStyles.tableBody}>
-                  {Array.from({ length: numberHome }, (_, index) => (
-                    <tr key={index}>
-                      <td>{index + 1}</td>
-                      <td>Ошибка {index + 1}</td>
-                      <td>Описание ошибки для здания №{index + 1}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
+          
           <div className={HStyles.planInside}>
-            <Svg1 className={HStyles.plan} onClick={roomClick} />
+            {svgImages[currentIndex] && <svgImages[currentIndex] className={HStyles.plan} onClick={roomClick} />}
             <span className={HStyles.cameraLabel}>Этаж 1</span>
           </div>
         </div>
@@ -90,8 +70,8 @@ const Home: FC<HomeProps> = ({ numberHome }) => {
                 className={`${HStyles.buildingIcon} ${getSlideClass(index)}`}
                 onClick={() => setCurrentIndex(index)}
               >
-                {index === currentIndex && <span>Здание №{index + 1}</span>}
-                <BsBuildingFill />
+                {index === currentIndex && <span style={{ fontSize: '50px' }}>Здание №{index + 1}</span>}
+                <Build123 />
               </div>
             ))}
           </div>
@@ -102,57 +82,31 @@ const Home: FC<HomeProps> = ({ numberHome }) => {
           )}
         </div>
         <div className={HStyles.tableContainer1}>
-            <div className={HStyles.tableHeaderWrapper} style={{ backgroundColor: '#006c2a' }}>
-              <table>
-                <thead className={HStyles.tableHeader}>
-                  <tr>
-                    <th>№</th>
-                    <th>Индикатор</th>
-                    <th>Наименование ошибок</th>
-                  </tr>
-                </thead>
-              </table>
-            </div>
-            <div className={HStyles.tableBodyWrapper}>
-              <table>
-                <tbody className={HStyles.tableBody}>
-                  {Array.from({ length: numberHome }, (_, index) => (
-                    <tr key={index}>
-                      <td>{index + 1}</td>
-                      <td>Ошибка {index + 1}</td>
-                      <td>Описание ошибки для здания №{index + 1}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+          <div className={HStyles.tableHeaderWrapper}>
+            <table>
+              <thead className={HStyles.tableHeader}>
+                <tr>
+                  <th style={{ width: '20%' }}>Здание</th>
+                  <th style={{ width: '20%' }}>Номер этажа</th>
+                  <th style={{ width: '60%' }}>Событие</th>
+                </tr>
+              </thead>
+            </table>
           </div>
-          <div className={HStyles.tableContainer2}>
-            <div className={HStyles.tableHeaderWrapper} style={{ backgroundColor: '#006c2a' }}>
-              <table>
-                <thead className={HStyles.tableHeader}>
-                  <tr>
-                    <th>№</th>
-                    <th>Индикатор</th>
-                    <th>Наименование ошибок</th>
+          <div className={HStyles.tableBodyWrapper}>
+            <table>
+              <tbody className={HStyles.tableBody}>
+                {Array.from({ length: numberHome }, (_, index) => (
+                  <tr key={index}>
+                    <td style={{ width: '20%' }}>Здание №{index + 1}</td>
+                    <td style={{ width: '20%' }}>Этаж {index + 1}</td>
+                    <td style={{ width: '60%' }}>Описание ошибки для здания №{index + 1}</td>
                   </tr>
-                </thead>
-              </table>
-            </div>
-            <div className={HStyles.tableBodyWrapper}>
-              <table>
-                <tbody className={HStyles.tableBody}>
-                  {Array.from({ length: numberHome }, (_, index) => (
-                    <tr key={index}>
-                      <td>{index + 1}</td>
-                      <td>Ошибка {index + 1}</td>
-                      <td>Описание ошибки для здания №{index + 1}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                ))}
+              </tbody>
+            </table>
           </div>
+        </div>
       </div>
     </div>
   );

@@ -16,6 +16,7 @@ interface Camera {
   initialPosition: { rowIndex: number; colIndex: number };
   rtspUrl: string;
   isDisabled: boolean;
+  rotationAngle: number;
 }
 
 const Feeding: FC = () => {
