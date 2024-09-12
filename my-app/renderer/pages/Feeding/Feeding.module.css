@@ -1,21 +1,22 @@
 .listIcon {
-    font-size: 34px;
-    cursor: pointer;
-    z-index: 1001;
+  font-size: 34px;
+  cursor: pointer;
+  z-index: 1001;
+  margin-right: 2%;
 }
 
 .listIcon:hover {
-    transform: scale(1.1);
+  transform: scale(1.1);
 }
 
 .listContainer {
-    display: flex;
-    justify-content: flex-end;
-    padding: 35px; 
-    opacity: 0;
-    transform: translateY(20px);
-    animation: fadeIn 0.5s forwards;
-  
+  display: flex;
+  justify-content: flex-end;
+  padding: 35px;
+  padding-right: 0px;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeIn 0.5s forwards;
 }
 
 /* @keyframes fadeIn {
@@ -28,54 +29,54 @@
   } */
 
 .roomContainer {
-    position: relative;
-    height: 100%;
+  position: relative;
+  height: 100%;
 }
 
 .listButton {
-    position: absolute;
-    width: 100%;
-    display: flex;
-    text-align: center;
-    align-items: center;
-    justify-content: space-evenly;
+  position: absolute;
+  width: 100%;
+  display: flex;
+  text-align: center;
+  align-items: center;
+  justify-content: space-evenly;
 }
 
 .listLabel {
-    height: 34px;
-    margin: 0;
+  height: 34px;
+  margin: 0;
 }
 
-.listButton svg{
-    height: 34px;
-    width: 34px;
-    font-size: 31px;
-    opacity: 0.6;
-    color: #333;
+.listButton svg {
+  height: 34px;
+  width: 34px;
+  font-size: 31px;
+  opacity: 0.6;
+  color: #333;
 }
 
-.listButton svg:hover{
-    transform: scale(1.1);
-    cursor: pointer;
-    opacity:1;
+.listButton svg:hover {
+  transform: scale(1.1);
+  cursor: pointer;
+  opacity: 1;
 }
 
 .leftSvg,
 .rightSvg {
-  cursor: pointer; 
+  cursor: pointer;
   transition: color 0.3s ease;
 }
 
 .leftSvg.disabled,
 .rightSvg.disabled {
-  color: #aaa; 
+  color: #aaa;
   opacity: 0.2;
-  pointer-events: none; 
+  pointer-events: none;
 }
 
 @keyframes fadeIn {
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
+}

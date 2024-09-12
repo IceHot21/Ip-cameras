@@ -6,6 +6,7 @@ import Grid from '../../components/Grid';
 import ListCamera from '../../components/ListCamera';
 import ModalStream from '../../components/ModalStream';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
+import { useRouter } from 'next/router';
 
 interface Camera {
   id: number;
@@ -23,13 +24,21 @@ const Feeding: FC = () => {
   const [isListCameraOpen, setIsListCameraOpen] = useState(false);
   const [isGridOpen, setIsGridOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
-  const [activeFloor, setActiveFloor] = useState(0);
   const [droppedCameras, setDroppedCameras] = useState<{ [key: string]: Camera }>({});
   const [selectedCameras, setSelectedCameras] = useState<Camera[]>([]);
   const [isModalStreamOpen, setIsModalStreamOpen] = useState(false);
   const [FlagLocal, setFlagLocal] = useState(true);
   const [movedCameras, setMovedCameras] = useState<Set<number>>(new Set());
   const [rotationAngles, setRotationAngles] = useState<{ [key: string]: number }>({});
+  const router = useRouter();
+  const { floor } = router.query; 
+  const [activeFloor, setActiveFloor] = useState<number>(0);
+
+  useEffect(() => {
+    if (floor) {
+      setActiveFloor(Number(floor)); 
+    }
+  }, [floor]);
 
   useEffect(() => {
     const storedCameras = localStorage.getItem('droppedCameras');

@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { createElement, FC, useState } from "react";
 import HStyles from "./Home.module.css";
 import { BsBuildingFill } from "react-icons/bs";
 import Svg1 from "../../assets/Svg1.svg";
@@ -7,6 +7,7 @@ import Svg3 from '../../assets/Svg3.svg';
 import SVG from "../../assets/SVG.svg";
 import { useRouter } from "next/router";
 import Build123 from '../../assets/Build123.svg'
+import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 
 interface HomeProps {
   numberHome: number;
@@ -14,18 +15,31 @@ interface HomeProps {
 
 const Home: FC<HomeProps> = ({ numberHome }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [currentSvgIndex, setCurrentSvgIndex] = useState(0);
   const router = useRouter();
+  const svgImages = [Svg1, Svg2, Svg3];
 
   const nextSlide = () => {
     setCurrentIndex((prevIndex) => (prevIndex + 1) % numberHome);
   };
 
   const roomClick = () => {
-    router.push('/Feeding/Feeding');
+    router.push({
+      pathname: '/Feeding/Feeding',
+      query: { floor: currentSvgIndex }, 
+    });
   }
 
   const prevSlide = () => {
     setCurrentIndex((prevIndex) => (prevIndex - 1 + numberHome) % numberHome);
+  };
+
+  const nextFloor = () => {
+    setCurrentSvgIndex((prevSvgIndex) => (prevSvgIndex + 1) % svgImages.length);
+  };
+
+  const prevFloor = () => {
+    setCurrentSvgIndex((prevSvgIndex) => (prevSvgIndex - 1 + svgImages.length) % svgImages.length);
   };
 
   const getSlideClass = (index: number) => {
@@ -41,8 +55,6 @@ const Home: FC<HomeProps> = ({ numberHome }) => {
     return HStyles.hidden;
   };
 
-  const svgImages = [Svg1, Svg2, Svg3];
-
   return (
     <div>
       <div className={HStyles.homeContainer}>
@@ -51,16 +63,23 @@ const Home: FC<HomeProps> = ({ numberHome }) => {
             <SVG className={HStyles.outSide} />
             <span className={HStyles.cameraLabel}>Уличные камеры</span>
           </div>
-          
+
           <div className={HStyles.planInside}>
-            {svgImages[currentIndex] && <svgImages[currentIndex] className={HStyles.plan} onClick={roomClick} />}
-            <span className={HStyles.cameraLabel}>Этаж 1</span>
+          {createElement(svgImages[currentSvgIndex], {
+              className: HStyles.plan,
+              onClick: roomClick
+            })}
+            <span className={HStyles.cameraLabel}>
+              <button className={HStyles.prevFloor} onClick={prevFloor}><FaChevronLeft /></button>
+                Этаж {currentSvgIndex + 1}
+              <button className={HStyles.nextFloor} onClick={nextFloor}><FaChevronRight /></button>
+            </span>
           </div>
         </div>
         <div className={HStyles.carousel}>
           {numberHome > 1 && (
             <button className={HStyles.prevButton} onClick={prevSlide}>
-              {"<"}
+              <FaChevronLeft />
             </button>
           )}
           <div className={HStyles.carouselInner}>
@@ -77,7 +96,7 @@ const Home: FC<HomeProps> = ({ numberHome }) => {
           </div>
           {numberHome > 2 && (
             <button className={HStyles.nextButton} onClick={nextSlide}>
-              {">"}
+              <FaChevronRight />
             </button>
           )}
         </div>
@@ -100,7 +119,7 @@ const Home: FC<HomeProps> = ({ numberHome }) => {
                   <tr key={index}>
                     <td style={{ width: '20%' }}>Здание №{index + 1}</td>
                     <td style={{ width: '20%' }}>Этаж {index + 1}</td>
-                    <td style={{ width: '60%' }}>Описание ошибки для здания №{index + 1}</td>
+                    <td style={{ width: '60%' }}>Описание события для здания №{index + 1}</td>
                   </tr>
                 ))}
               </tbody>

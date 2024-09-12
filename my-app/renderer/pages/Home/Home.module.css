@@ -11,6 +11,7 @@
   justify-content: center;
   position: relative;
   width: 100vh;
+  margin-bottom: 3%;
 }
 
 .carouselInner {
@@ -78,6 +79,7 @@
   font-size: 2rem;
   cursor: pointer;
   outline: none;
+  z-index: 1001;
   width: 50px;
 }
 
@@ -89,6 +91,10 @@
   right: 0vh;
 }
 
+.prevButton svg:hover, .nextButton svg:hover {
+  transform: scale(1.1);
+  color: #999;
+}
 .hidden{
 opacity:0;
 }
@@ -157,7 +163,7 @@ opacity:0;
 } 
 
 .tableContainer1 {
-  height: 24%;
+  height: 23.9%;
   width: 40%;
   margin-top: 69vh;
 }
@@ -235,7 +241,7 @@ opacity:0;
 .cameraLabel {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   height: 40px;
   border: 2px solid #006c2ab3;
   border-top: none;
@@ -251,4 +257,19 @@ opacity:0;
   to {
     opacity: 1;
   }
+}
+
+.prevFloor, .nextFloor {
+  border:none;
+  cursor: pointer;
+  background-color: transparent !important;
+}
+
+.planOutside .cameraLabel {
+  justify-content: center;
+}
+
+.prevFloor:hover, .nextFloor:hover {
+  transform: scale(1.1);
+  color: #999;
 }
