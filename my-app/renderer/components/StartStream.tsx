@@ -13,51 +13,22 @@ interface Camera {
   rtspUrl: string;
 }
 interface StartStreamProps {
+  port: number;
   rtspUrl: string;
   id: number;
   cameraName: string;
   setCam: (cameras: Camera[]) => void;
+  onClose: () => void;
 }
 
-const StartStream: FC<StartStreamProps> = ({ rtspUrl, id, cameraName, setCam }) => {
-  const [port, setPort] = useState(9999 + id);
-  const [streamStarted, setStreamStarted] = useState(false);
+const StartStream: FC<StartStreamProps> = ({ port, rtspUrl, id, cameraName, setCam, onClose }) => {
   const [error, setError] = useState(null);
-  const [cameras, setCameras] = useState<Camera[]>([]);
   const [players, setPlayers] = useState(null);
   const [isRecording, setIsRecording] = useState(false);
 
 
   useEffect(() => {
-    const startStream = async () => {
-      try {
-        const response = await fetch('https://localhost:4200/ip/start-stream', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ rtspUrl, port }),
-        });
-
-        if (response.ok) {
-          setStreamStarted(true);
-          console.log('Stream started successfully.');
-        } else {
-          setError(`Failed to start stream for camera ${cameraName}`);
-          console.error('Failed response:', response);
-        }
-      } catch (error) {
-        setError(`Error starting stream for camera ${cameraName}: ${error}`);
-        console.error('Error:', error);
-      }
-    };
-
-    startStream();
-  }, [rtspUrl, id, cameraName]);
-
-  useEffect(() => {
-    if (streamStarted) {
-      const url = `ws://localhost:${port}`;
+      const url = `ws://192.168.0.147:${port}`;
       const player = new JSMpeg.Player(url, {
         canvas: document.getElementById(`canvas${id}`),
         autoplay: true,
@@ -73,40 +44,16 @@ const StartStream: FC<StartStreamProps> = ({ rtspUrl, id, cameraName, setCam }) 
       setPlayers(player);
 
       console.log(`Stream started for camera ${cameraName} on canvas ${id}`);
-      return () => {
-        if (player) {
-          player.destroy();
-        }
-      };
-    }
-  }, [streamStarted, port, id]);
+      // return () => {
+      //   if (player) {
+      //     player.destroy();
+      //   }
+      // };
+  }, [port, id]);
 
   const handleDelete = async () => {
-    const savedCameras = localStorage.getItem('cameras');
-    if (!savedCameras) return;
-    
-    let newCameras: Camera[] = JSON.parse(savedCameras); 
-    const camera = newCameras.find((camera) => camera.id === id);console.log(camera);
-    if (!camera) return;
-
-    const port = 9999 + id;
-    const response = await fetch('https://localhost:4200/ip/stop-stream', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ port }),
-    });
-
-    if (!response.ok) {
-      console.error(`Failed to stop stream: ${response.statusText}`);
-      return;
-    }
-
-    newCameras = newCameras.filter((camera) => camera.id !== id);
-    localStorage.setItem('cameras', JSON.stringify(newCameras));
-    setCam(newCameras);
-   
+    players.destroy()
+    onClose();
   };
 
   const handleStartRecording = () => {

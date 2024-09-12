@@ -33,7 +33,7 @@
   transition: opacity 0.5s ease, transform 0.5s ease;
   position: absolute;
   width: 37%;
-  cursor: pointer; /* Добавляем курсор указателя */
+  cursor: pointer; 
 }
 
 
@@ -140,103 +140,6 @@ opacity:0;
   flex-wrap: wrap;
 }
 
-.tableContainer, .tableContainer1, .tableContainer2 {
-  overflow: hidden;
-  position: absolute;
-  border-radius: 23px;
-  background-color: #ffffff;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* Более мягкая тень */
-  transition: box-shadow 0.3s ease; /* Плавный переход */
-}
-.tableContainer {
- /* height: 240px;
-  overflow: hidden;
-  position: absolute;
-  width: 23.8%;
-  margin-left: 2%;
-  margin-top: 47%;
-  border-radius: 23px;
-  background-color: white;
-  box-shadow: 0 4px 10px #006c2a33;
-  table-layout: fixed; */
-  display: none;
-} 
-
-.tableContainer1 {
-  height: 23.9%;
-  width: 40%;
-  margin-top: 69vh;
-}
-
-.tableContainer2 {
-/*   height: 240px;
-  overflow: hidden;
-  position: absolute;
-  width: 23.8%;
-  margin-left: 72.2%;
-  margin-top: 27.9%;
-  border-radius: 23px;
-  background-color: white;
-  box-shadow: 0 4px 10px #006c2a33;
-  table-layout: fixed;  */
-  display:none;
-}
-
-.tableContainer:hover, .tableContainer1:hover, .tableContainer2:hover {
-  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.2); /* Эффект увеличенной тени при наведении */
-}
-
-.tableHeaderWrapper {
-  background-color: #006c2a;
-  color: #ffffff;
-  border-top-left-radius: 23px;
-  border-top-right-radius: 23px;
-}
-
-.tableHeaderWrapper table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.tableBodyWrapper {
-  width: 100%;
-  height: calc(100% - 40px); /* Высота заголовка */
-  overflow-y: auto;
-}
-
-.tableBodyWrapper table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.tableHeader th {
-  background-color: #006c2a;
-  text-align: center;
-}
-
-.tableBodyWrapper::-webkit-scrollbar {
-  width: 8px;
-}
-
-.tableBodyWrapper::-webkit-scrollbar-track {
-  background: #f1f1f1;
-}
-
-.tableBodyWrapper::-webkit-scrollbar-thumb {
-  background: #006c2a;
-  border-radius: 4px;
-}
-
-.tableBodyWrapper::-webkit-scrollbar-thumb:hover {
-  background: #555;
-}
-
-.tableContainer1 th,
-.tableContainer1 td {
-  border: 1px solid #ddd;
-  text-align: center;
-  padding: 10px;
-}
 
 .cameraLabel {
   display: flex;
@@ -272,4 +175,105 @@ opacity:0;
 .prevFloor:hover, .nextFloor:hover {
   transform: scale(1.1);
   color: #999;
+}
+
+.containerT {
+  height: 32%;
+  width: 54%;
+  margin-top: 62vh;
+  position: absolute;
+  border: 1px solid #ccc;
+  border-radius: 23px;
+  background-color: white;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.panelContainer{
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.panelTitle {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 15px;
+}
+
+.selectContainer {
+  display: flex;
+  gap: 10px;
+}
+
+.title{
+  font-size: 20px;
+}
+
+.tableContainer {
+  flex: 1; 
+  overflow: hidden; 
+  padding-bottom: 60px;
+}
+
+.tableContainer table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.tableHeader th {
+  padding: 10px;
+  background-color: #f4f4f4;
+  border-bottom: 2px solid #ccc;
+}
+
+.tableBody td {
+  padding: 7px;
+  border-bottom: 1px solid #ddd;
+  text-align: center;
+}
+
+.panelDown {
+  position: absolute; 
+  bottom: 0; 
+  left: 0;
+  right: 0;
+  padding: 10px;
+}
+
+.rowContainer ul {
+  display: flex;
+  gap: 10px;
+  list-style: none;
+  padding: 0;
+}
+
+.rowContainer ul li a {
+  text-decoration: none;
+  font-size: 12px;
+  padding: 8px 12px;
+  color: #333;
+  border-radius: 5px;
+}
+
+.rowContainer ul li a:hover {
+  color: #999;
+  font-weight: bold;
+}
+
+.activePage {
+  font-weight: bold;
+  color: #006c2a;
+  border-bottom: 2px solid #006c2a;
+  padding:2px;
+}
+
+.rowContainer{
+  display: flex;
+  height: 25px;
+  flex-direction: row;
+  gap: 4vh;
+  justify-content: space-between;
+  align-items: center;
 }

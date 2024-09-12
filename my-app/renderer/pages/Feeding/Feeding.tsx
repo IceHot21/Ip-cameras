@@ -10,6 +10,7 @@ import { useRouter } from 'next/router';
 
 interface Camera {
   id: number;
+  port: number;
   name: string;
   address: string;
   floor: number;
@@ -55,12 +56,6 @@ const Feeding: FC = () => {
 
   useEffect(() => {
     if (FlagLocal) {
-      const savedCameras = localStorage.getItem('cameras');
-      if (savedCameras) {
-        const cameras = JSON.parse(savedCameras);
-        setSelectedCameras(cameras);
-      }
-      console.log(savedCameras);
       setIsModalStreamOpen(true);
     }
   }, [FlagLocal]);
@@ -163,6 +158,7 @@ const Feeding: FC = () => {
         <ModalStream
           selectedCameras={selectedCameras}
           setCam={setSelectedCameras}
+          onClose={() => setIsModalStreamOpen(false)}
         />
       )}
     </div>

@@ -17,6 +17,7 @@ interface ListCameraProps {
 
 interface Camera {
   id: number;
+  port: number;
   name: string;
   address: string;
   floor?: number;
@@ -49,7 +50,7 @@ const ListCamera: FC<ListCameraProps> = ({
 
   useEffect(() => {
     if (selectedCameras) {
-      handleStartStreams();
+      FlagLocal();
     }
   }, [selectedCameras]);
 
@@ -71,26 +72,24 @@ const ListCamera: FC<ListCameraProps> = ({
     try {
       const response = await fetchWithRetry('https://192.168.0.147:4200/stream/cameras', 'GET', null, '/list-cameras');
       console.log('Cameras discovered:', response);
-      if (response.ok) {
-        const discoveredCameras: Camera[] = await response.json();
-        const storedCameras = localStorage.getItem('droppedCameras');
-        let droppedCameras = storedCameras ? JSON.parse(storedCameras) : {};
+      if (response.length > 0) {
+        // let droppedCameras = JSON.parse(response);
+        
 
-        const camerasInGrid = Object.values(droppedCameras).reduce((acc: { [key: string]: boolean }, camera: Camera) => {
-          const ipAddress = camera.address.match(/(?:http:\/\/)?(\d+\.\d+\.\d+\.\d+)/)?.[1];
-          if (ipAddress && camera.initialPosition && camera.initialPosition.rowIndex !== -1 && camera.initialPosition.colIndex !== -1) {
-            acc[ipAddress] = true;
-          }
-          return acc;
-        }, {});
+        // const camerasInGrid = Object.values(droppedCameras).reduce((acc: { [key: string]: boolean }, camera: Camera) => {
+        //   const ipAddress = camera.address.match(/(?:http:\/\/)?(\d+\.\d+\.\d+\.\d+)/)?.[1];
+        //   if (ipAddress && camera.initialPosition && camera.initialPosition.rowIndex !== -1 && camera.initialPosition.colIndex !== -1) {
+        //     acc[ipAddress] = true;
+        //   }
+        //   return acc;
+        // }, {});
 
-        const filteredCameras = discoveredCameras.filter((camera) => {
-          const ipAddress = camera.address.match(/(?:http:\/\/)?(\d+\.\d+\.\d+\.\d+)/)?.[1];
-          return ipAddress && !camerasInGrid[ipAddress];
-        });
+        // const filteredCameras = response.filter((camera) => {
+        //   const ipAddress = camera.address.match(/(?:http:\/\/)?(\d+\.\d+\.\d+\.\d+)/)?.[1];
+        //   return ipAddress && !camerasInGrid[ipAddress];
+        // });
 
-        setCameras(filteredCameras);
-        localStorage.setItem('droppedCameras', JSON.stringify(droppedCameras));
+        setCameras(response);
       } else {
         console.error('Failed to discover cameras');
       }
@@ -105,13 +104,13 @@ const ListCamera: FC<ListCameraProps> = ({
     if (!selectedCameras.some(c => c.id === camera.id)) {
       setSelectedCameras([camera]);
       onDoubleClickCamera(camera);
-      handleStartStreams();
+      FlagLocal();
     } else {
       setSelectedCameras([]);
     }
   };
 
-  const handleStartStreams = () => {
+  /* const handleStartStreams = () => {
     const savedCameras = localStorage.getItem('cameras');
     let camerasArray = [];
 
@@ -130,7 +129,7 @@ const ListCamera: FC<ListCameraProps> = ({
     if (localStorage.getItem('cameras')) {
       FlagLocal();
     }
-  };
+  }; */
 
   const handleDragStart = (e: React.DragEvent<HTMLDivElement>, camera: Camera) => {
     e.dataTransfer.setData('droppedCameras', JSON.stringify(camera));
@@ -172,7 +171,7 @@ const ListCamera: FC<ListCameraProps> = ({
             </thead>
             <tbody className={LCStyles.tableBody}>
               {cameras.map((camera) => {
-                const cameraId = `Камера ${camera.name.split(/[^a-zA-Z0-9]/)[0]}`;
+                const cameraId = `${camera.port}`;
                 const isDisabled = movedCameras.has(camera.id) || (camera.initialPosition && (camera.initialPosition.rowIndex !== -1 || camera.initialPosition.colIndex !== -1));
                 return (
                   <tr
@@ -181,8 +180,8 @@ const ListCamera: FC<ListCameraProps> = ({
                     id={cameraId}
                     className={isDisabled ? `${LCStyles.tableRow} ${LCStyles.disabledRow}` : LCStyles.tableRow}
                   >
-                    <td>{camera.name.split(/[^a-zA-Z0-9]/)[0]}</td>
-                    <td>{camera.address ? camera.address.match(/(?:http:\/\/)?(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})/)?.[1] : "N/A"}</td>
+                    <td>{camera.name}</td>
+                    <td>{camera.rtspUrl}</td>
                     <td>
                       <div
                         draggable
