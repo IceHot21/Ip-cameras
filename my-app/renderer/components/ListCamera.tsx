@@ -62,32 +62,10 @@ const ListCamera: FC<ListCameraProps> = ({
     setLoading(true);
     setError(null);
 
-// Создайте экземпляр Axios с базовым URL и настройками по умолчанию
-// const api = axios.create({
-//   baseURL: 'http://localhost:4200',
-//   withCredentials: true, // Важно для отправки cookies
-// });
-
-// Пример функции для входа
     try {
       const response = await fetchWithRetry('https://192.168.0.147:4200/stream/cameras', 'GET', null, '/list-cameras');
       console.log('Cameras discovered:', response);
       if (response.length > 0) {
-        // let droppedCameras = JSON.parse(response);
-        
-
-        // const camerasInGrid = Object.values(droppedCameras).reduce((acc: { [key: string]: boolean }, camera: Camera) => {
-        //   const ipAddress = camera.address.match(/(?:http:\/\/)?(\d+\.\d+\.\d+\.\d+)/)?.[1];
-        //   if (ipAddress && camera.initialPosition && camera.initialPosition.rowIndex !== -1 && camera.initialPosition.colIndex !== -1) {
-        //     acc[ipAddress] = true;
-        //   }
-        //   return acc;
-        // }, {});
-
-        // const filteredCameras = response.filter((camera) => {
-        //   const ipAddress = camera.address.match(/(?:http:\/\/)?(\d+\.\d+\.\d+\.\d+)/)?.[1];
-        //   return ipAddress && !camerasInGrid[ipAddress];
-        // });
 
         setCameras(response);
       } else {
@@ -109,27 +87,6 @@ const ListCamera: FC<ListCameraProps> = ({
       setSelectedCameras([]);
     }
   };
-
-  /* const handleStartStreams = () => {
-    const savedCameras = localStorage.getItem('cameras');
-    let camerasArray = [];
-
-    if (savedCameras && savedCameras.length !== 0) {
-      camerasArray = JSON.parse(savedCameras);
-    }
-
-    selectedCameras.forEach((searchedCamera, index) => {
-      const cameraName = searchedCamera.name.split(/[^a-zA-Z0-9]/)[0];
-      const ipAddress = searchedCamera.address.match(/(?:http:\/\/)?(\d+\.\d+\.\d+\.\d+)/)[1];
-      const rtspUrl = `rtsp://admin:Dd7560848@${ipAddress}`;
-      const newCamera = { id: camerasArray.length + 1, rtspUrl, name: cameraName };
-      camerasArray.push(newCamera);
-    });
-    localStorage.setItem('cameras', JSON.stringify(camerasArray));
-    if (localStorage.getItem('cameras')) {
-      FlagLocal();
-    }
-  }; */
 
   const handleDragStart = (e: React.DragEvent<HTMLDivElement>, camera: Camera) => {
     e.dataTransfer.setData('droppedCameras', JSON.stringify(camera));
