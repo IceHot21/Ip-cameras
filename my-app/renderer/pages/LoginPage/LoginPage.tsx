@@ -6,7 +6,6 @@ import { Box, FormControl, IconButton, Input, InputAdornment, InputLabel, TextFi
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import AtisLogo from '../../components/AtisLogo';
 import { login } from '../api/auth';
-import Cookies from 'js-cookie';
 
 const LoginPage: FC = () => {
   const router = useRouter();
@@ -23,7 +22,6 @@ const LoginPage: FC = () => {
   const handleLogin = async () => {
     try {
       const data = await login(username, password);
-      console.log(data); // 'Login successful'
       // Перенаправление на защищенную страницу
       router.push('/Home/Home');
     } catch (error) {
