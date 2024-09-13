@@ -115,12 +115,13 @@ const Room: FC<RoomProps> = ({ children, svgProps, droppedCameras, activeFloor, 
             ))}
           </div>
           {svgs.map((SvgComponent, index) => (
-            index === 2 && (
+            index === activeFloor && (
               <div
                 key={index}
                 className={`${RStyles.card} ${RStyles.active}`}
                 onClick={() => handleSvgClick(index)}
               >
+                <SvgComponent {...svgProps} />
                 <div className={GStyles.gridContainer}>
                   <div className={GStyles.grid}>
                     {Array.from({ length: 30 }).map((_, rowIndex) => (
