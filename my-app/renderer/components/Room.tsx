@@ -115,17 +115,16 @@ const Room: FC<RoomProps> = ({ children, svgProps, droppedCameras, activeFloor, 
             ))}
           </div>
           {svgs.map((SvgComponent, index) => (
-            index === activeFloor && (
+            index === 2 && (
               <div
                 key={index}
                 className={`${RStyles.card} ${RStyles.active}`}
                 onClick={() => handleSvgClick(index)}
               >
-                <SvgComponent {...svgProps} />
                 <div className={GStyles.gridContainer}>
                   <div className={GStyles.grid}>
-                    {Array.from({ length: 15 }).map((_, rowIndex) => (
-                      Array.from({ length: 20 }).map((_, colIndex) => {
+                    {Array.from({ length: 30 }).map((_, rowIndex) => (
+                      Array.from({ length: 40 }).map((_, colIndex) => {
                         const cellKey = `${activeFloor}-${rowIndex}-${colIndex}`;
                         const camera = droppedCameras[cellKey];
                         const cameraId = camera ? `Камера ${camera.name}` : '';

@@ -7,7 +7,8 @@ import Svg3 from '../../assets/Svg3.svg';
 import SVG from "../../assets/SVG.svg";
 import { useRouter } from "next/router";
 import Build123 from '../../assets/Build123.svg'
-import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import { FaBell, FaChevronLeft, FaChevronRight, FaInfoCircle } from "react-icons/fa";
+import { Button } from "@mui/material";
 
 interface HomeProps {
   numberHome: number;
@@ -85,7 +86,7 @@ const Home: FC<HomeProps> = ({ numberHome }) => {
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
   };
-  
+
   return (
     <div>
       <div className={HStyles.homeContainer}>
@@ -93,6 +94,29 @@ const Home: FC<HomeProps> = ({ numberHome }) => {
           <div className={HStyles.planOutside}>
             <SVG className={HStyles.outSide} />
             <span className={HStyles.cameraLabel}>Уличные камеры</span>
+            <div>
+            <div className={HStyles.iconTabs}>
+                  <FaBell className={HStyles.tabIcon} />
+                  <FaInfoCircle className={HStyles.tabIcon} />
+                </div>
+            <div className={HStyles.tableWrapper}>
+              <div className={HStyles.panelTitle1}>
+                
+              </div>
+              <div className={HStyles.tableContainer1}>
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Дата и время</th>
+                      <th>Событие</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
           </div>
 
           <div className={HStyles.planInside}>
@@ -134,14 +158,17 @@ const Home: FC<HomeProps> = ({ numberHome }) => {
 
 
 
+
+
+
         <div className={HStyles.containerT}>
           <div className={HStyles.panelContainer}>
             <div className={HStyles.panelHeading}>
               <div className={HStyles.panelTitle}>
                 <label className={HStyles.title}>Журнал всех событий</label>
                 <div className={HStyles.selectContainer}>
-                  <button><BsArrowDownUp /></button>
-                  <div>
+                  <Button><BsArrowDownUp /></Button>
+                  <div className={HStyles.selectObject}>
                     <select>
                       <option>1</option>
                       <option>2</option>
@@ -154,7 +181,6 @@ const Home: FC<HomeProps> = ({ numberHome }) => {
                 </div>
               </div>
             </div>
-
             <div className={HStyles.tableContainer}>
               <div className={HStyles.tableHeaderWrapper}>
                 <table>
@@ -172,42 +198,43 @@ const Home: FC<HomeProps> = ({ numberHome }) => {
                 </table>
               </div>
             </div>
-
             <div className={HStyles.panelDown}>
-            <div className={HStyles.rowContainer}>
-              <label>Показано событий {Math.min(numberHome, itemsPerPage)} из {numberHome}</label>
-              <ul>
-                <li>
-                  <a href="#" onClick={() => handlePageChange(Math.max(currentPage - 1, 1))}>
-                    <FaChevronLeft />
-                  </a>
-                </li>
-                {Array.from({ length: totalPages }, (_, index) => (
-                  <li key={index} className={currentPage === index + 1 ? HStyles.activePage : ''}>
-                    <a href="#" onClick={() => handlePageChange(index + 1)}>
-                      {index + 1}
+              <div className={HStyles.rowContainer}>
+                <label>Показано событий {Math.min(numberHome, itemsPerPage)} из {numberHome}</label>
+                <ul>
+                  <li>
+                    <a href="#" onClick={() => handlePageChange(Math.max(currentPage - 1, 1))}>
+                      <FaChevronLeft />
                     </a>
                   </li>
-                ))}
-                <li>
-                  <a href="#" onClick={() => handlePageChange(Math.min(currentPage + 1, totalPages))}>
-                    <FaChevronRight />
-                  </a>
-                </li>
-              </ul>
+                  {Array.from({ length: totalPages }, (_, index) => (
+                    <li key={index} className={currentPage === index + 1 ? HStyles.activePage : ''}>
+                      <a href="#" onClick={() => handlePageChange(index + 1)}>
+                        {index + 1}
+                      </a>
+                    </li>
+                  ))}
+                  <li>
+                    <a href="#" onClick={() => handlePageChange(Math.min(currentPage + 1, totalPages))}>
+                      <FaChevronRight />
+                    </a>
+                  </li>
+                </ul>
+              </div>
             </div>
           </div>
-          </div>
         </div>
-
-
-
-
-
-
       </div>
     </div>
   );
 };
 
 export default Home;
+
+
+//TODO: 1) сделать сортировку по этажу, помещению, дате и времени
+//TODO: 2) внизу показывать какие позиции видны (показаны 1-5/6-10 и т.д.)
+//TODO: 3) правильно заносить данные из настроек
+//TODO: 4) карусель внизу сделать чтобы вне зависимости от количества страниц показывалось 1, 2...предпоследнее и послежднее (не больше 4 значений)
+//TODO: 5) добавить дату и время ?????
+//TODO: 6) Figma поиграться 

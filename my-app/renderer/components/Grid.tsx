@@ -6,6 +6,7 @@ import "react-contexify/dist/ReactContexify.css";
 
 interface Camera {
   id: number;
+  port: number;
   name: string;
   floor: number;
   cell: string;
@@ -104,6 +105,7 @@ const Grid: FC<GridProps> = ({ onCameraDrop, droppedCameras, activeFloor, onDoub
     const cameraData = e.dataTransfer.getData('droppedCameras');
     if (cameraData) {
       const camera: Camera = JSON.parse(cameraData);
+      const port = camera.port;
       const cameraName = camera.name;
       const ipAddress = camera.rtspUrl;
       const rtspUrl = `rtsp://admin:Dd7560848@${ipAddress}`;
@@ -116,6 +118,7 @@ const Grid: FC<GridProps> = ({ onCameraDrop, droppedCameras, activeFloor, onDoub
       }
       const newCamera: Camera = {
         id: Object.keys(droppedCameras).length + 1,
+        port,
         rtspUrl,
         name: cameraName,
         floor: activeFloor,
@@ -134,8 +137,8 @@ const Grid: FC<GridProps> = ({ onCameraDrop, droppedCameras, activeFloor, onDoub
   return (
     <div className={GStyles.gridContainer}>
       <div className={GStyles.grid}>
-        {Array.from({ length: 15 }).map((_, rowIndex) =>
-          Array.from({ length: 20 }).map((_, colIndex) => {
+        {Array.from({ length: 30 }).map((_, rowIndex) =>
+          Array.from({ length: 40 }).map((_, colIndex) => {
             const cellKey = `${activeFloor}-${rowIndex}-${colIndex}`;
             const camera = droppedCameras[cellKey];
             const cameraId = camera ? `Камера ${camera.name}` : '';

@@ -45,6 +45,7 @@ const ListCamera: FC<ListCameraProps> = ({
   useEffect(() => {
     if (open) {
       handleDiscoverCameras();
+
     }
   }, [open]);
 
@@ -64,10 +65,19 @@ const ListCamera: FC<ListCameraProps> = ({
 
     try {
       const response = await fetchWithRetry('https://192.168.0.147:4200/stream/cameras', 'GET', null, '/list-cameras');
-      console.log('Cameras discovered:', response);
+      console.log(response)
+      console.log(droppedCameras);
       if (response.length > 0) {
+            // Преобразуем объект droppedCameras в массив
+        const droppedCamerasArray = Object.values(droppedCameras);
+        // Получаем камеры из localStorage
+        // Добавляем флаг isDisabled для камер, которые есть в localStorage
+        const updatedCameras = response.map((camera) => {
+          const isStored = droppedCamerasArray.some(storedCamera => storedCamera.port === camera.port);
+          return { ...camera, isDisabled: isStored };
+        });
 
-        setCameras(response);
+        setCameras(updatedCameras);
       } else {
         console.error('Failed to discover cameras');
       }
@@ -77,7 +87,6 @@ const ListCamera: FC<ListCameraProps> = ({
       setLoading(false);
     }
   };
-
   const handleDoubleClick = (camera: Camera) => {
     if (!selectedCameras.some(c => c.id === camera.id)) {
       setSelectedCameras([camera]);
@@ -129,7 +138,8 @@ const ListCamera: FC<ListCameraProps> = ({
             <tbody className={LCStyles.tableBody}>
               {cameras.map((camera) => {
                 const cameraId = `${camera.port}`;
-                const isDisabled = movedCameras.has(camera.id) || (camera.initialPosition && (camera.initialPosition.rowIndex !== -1 || camera.initialPosition.colIndex !== -1));
+                const isDisabled = movedCameras.has(camera.id) || camera.isDisabled || (camera.initialPosition && (camera.initialPosition.rowIndex !== -1 || camera.initialPosition.colIndex !== -1));
+
                 return (
                   <tr
                     key={camera.id}
