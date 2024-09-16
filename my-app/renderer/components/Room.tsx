@@ -39,7 +39,7 @@ const Room: FC<RoomProps> = ({ children, svgProps, droppedCameras, activeFloor, 
 
   useEffect(() => {
     if (selectedCameras) {
-      handleStartStreams([]);
+      FlagLocal();
     }
   }, [selectedCameras]);
 
@@ -90,31 +90,9 @@ const Room: FC<RoomProps> = ({ children, svgProps, droppedCameras, activeFloor, 
     if (!selectedCameras.some(c => c.id === camera.id)) {
       setSelectedCameras([camera]);
       onDoubleClickCamera(camera);
-      handleStartStreams([camera]);
+      FlagLocal();
     } else {
       setSelectedCameras([]);
-    }
-  };
-
-  const handleStartStreams = (selectedCameras: Camera[]) => {
-    const savedCameras = localStorage.getItem('cameras');
-    let camerasArray = [];
-
-    if (savedCameras && savedCameras.length !== 0) {
-      camerasArray = JSON.parse(savedCameras);
-    }
-
-    selectedCameras.forEach((searchedCamera) => {
-      const cameraName = searchedCamera.name.split(/[^a-zA-Z0-9]/)[0];
-      const ipAddress = searchedCamera.address.match(/(?:http:\/\/)?(\d+\.\d+\.\d+\.\d+)/)[1];
-      const rtspUrl = `rtsp://admin:Dd7560848@${ipAddress}`;
-      const newCamera = { id: camerasArray.length + 1, rtspUrl, name: cameraName };
-      camerasArray.push(newCamera);
-    });
-
-    localStorage.setItem('cameras', JSON.stringify(camerasArray));
-    if (localStorage.getItem('cameras')) {
-      FlagLocal();
     }
   };
 
@@ -146,12 +124,11 @@ const Room: FC<RoomProps> = ({ children, svgProps, droppedCameras, activeFloor, 
                 <SvgComponent {...svgProps} />
                 <div className={GStyles.gridContainer}>
                   <div className={GStyles.grid}>
-                    {Array.from({ length: 15 }).map((_, rowIndex) => (
-                      Array.from({ length: 20 }).map((_, colIndex) => {
+                    {Array.from({ length: 30 }).map((_, rowIndex) => (
+                      Array.from({ length: 40 }).map((_, colIndex) => {
                         const cellKey = `${activeFloor}-${rowIndex}-${colIndex}`;
                         const camera = droppedCameras[cellKey];
-
-                        const cameraId = camera ? `Камера ${camera.name.split(/[^a-zA-Z0-9]/)[0]}` : '';
+                        const cameraId = camera ? `Камера ${camera.name}` : '';
                         const rotationAngle = rotationAngles[cameraId] || 0;
                         return (
                           <div

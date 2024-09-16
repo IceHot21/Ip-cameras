@@ -17,6 +17,7 @@ interface ListCameraProps {
 
 interface Camera {
   id: number;
+  port: number;
   name: string;
   address: string;
   floor?: number;
@@ -44,12 +45,13 @@ const ListCamera: FC<ListCameraProps> = ({
   useEffect(() => {
     if (open) {
       handleDiscoverCameras();
+
     }
   }, [open]);
 
   useEffect(() => {
     if (selectedCameras) {
-      handleStartStreams();
+      FlagLocal();
     }
   }, [selectedCameras]);
 
@@ -61,30 +63,21 @@ const ListCamera: FC<ListCameraProps> = ({
     setLoading(true);
     setError(null);
 
-// Пример функции для входа
     try {
-      const response = await fetchWithRetry('https://192.168.0.147:4200/stream/cameras', 'GET', null, 'components/ListCamera');
-      console.log('Cameras discovered:', response);
-      if (response.ok) {
-        const discoveredCameras: Camera[] = await response.json();
-        const storedCameras = localStorage.getItem('droppedCameras');
-        let droppedCameras = storedCameras ? JSON.parse(storedCameras) : {};
-
-        const camerasInGrid = Object.values(droppedCameras).reduce((acc: { [key: string]: boolean }, camera: Camera) => {
-          const ipAddress = camera.address.match(/(?:http:\/\/)?(\d+\.\d+\.\d+\.\d+)/)?.[1];
-          if (ipAddress && camera.initialPosition && camera.initialPosition.rowIndex !== -1 && camera.initialPosition.colIndex !== -1) {
-            acc[ipAddress] = true;
-          }
-          return acc;
-        }, {});
-
-        const filteredCameras = discoveredCameras.filter((camera) => {
-          const ipAddress = camera.address.match(/(?:http:\/\/)?(\d+\.\d+\.\d+\.\d+)/)?.[1];
-          return ipAddress && !camerasInGrid[ipAddress];
+      const response = await fetchWithRetry('https://192.168.0.147:4200/stream/cameras', 'GET', null, '/list-cameras');
+      console.log(response)
+      console.log(droppedCameras);
+      if (response.length > 0) {
+            // Преобразуем объект droppedCameras в массив
+        const droppedCamerasArray = Object.values(droppedCameras);
+        // Получаем камеры из localStorage
+        // Добавляем флаг isDisabled для камер, которые есть в localStorage
+        const updatedCameras = response.map((camera) => {
+          const isStored = droppedCamerasArray.some(storedCamera => storedCamera.port === camera.port);
+          return { ...camera, isDisabled: isStored };
         });
 
-        setCameras(filteredCameras);
-        localStorage.setItem('droppedCameras', JSON.stringify(droppedCameras));
+        setCameras(updatedCameras);
       } else {
         console.error('Failed to discover cameras');
       }
@@ -94,35 +87,13 @@ const ListCamera: FC<ListCameraProps> = ({
       setLoading(false);
     }
   };
-
   const handleDoubleClick = (camera: Camera) => {
     if (!selectedCameras.some(c => c.id === camera.id)) {
       setSelectedCameras([camera]);
       onDoubleClickCamera(camera);
-      handleStartStreams();
+      FlagLocal();
     } else {
       setSelectedCameras([]);
-    }
-  };
-
-  const handleStartStreams = () => {
-    const savedCameras = localStorage.getItem('cameras');
-    let camerasArray = [];
-
-    if (savedCameras && savedCameras.length !== 0) {
-      camerasArray = JSON.parse(savedCameras);
-    }
-
-    selectedCameras.forEach((searchedCamera, index) => {
-      const cameraName = searchedCamera.name.split(/[^a-zA-Z0-9]/)[0];
-      const ipAddress = searchedCamera.address.match(/(?:http:\/\/)?(\d+\.\d+\.\d+\.\d+)/)[1];
-      const rtspUrl = `rtsp://admin:Dd7560848@${ipAddress}`;
-      const newCamera = { id: camerasArray.length + 1, rtspUrl, name: cameraName };
-      camerasArray.push(newCamera);
-    });
-    localStorage.setItem('cameras', JSON.stringify(camerasArray));
-    if (localStorage.getItem('cameras')) {
-      FlagLocal();
     }
   };
 
@@ -166,8 +137,9 @@ const ListCamera: FC<ListCameraProps> = ({
             </thead>
             <tbody className={LCStyles.tableBody}>
               {cameras.map((camera) => {
-                const cameraId = `Камера ${camera.name.split(/[^a-zA-Z0-9]/)[0]}`;
-                const isDisabled = movedCameras.has(camera.id) || (camera.initialPosition && (camera.initialPosition.rowIndex !== -1 || camera.initialPosition.colIndex !== -1));
+                const cameraId = `${camera.port}`;
+                const isDisabled = movedCameras.has(camera.id) || camera.isDisabled || (camera.initialPosition && (camera.initialPosition.rowIndex !== -1 || camera.initialPosition.colIndex !== -1));
+
                 return (
                   <tr
                     key={camera.id}
@@ -175,8 +147,8 @@ const ListCamera: FC<ListCameraProps> = ({
                     id={cameraId}
                     className={isDisabled ? `${LCStyles.tableRow} ${LCStyles.disabledRow}` : LCStyles.tableRow}
                   >
-                    <td>{camera.name.split(/[^a-zA-Z0-9]/)[0]}</td>
-                    <td>{camera.address ? camera.address.match(/(?:http:\/\/)?(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})/)?.[1] : "N/A"}</td>
+                    <td>{camera.name}</td>
+                    <td>{camera.rtspUrl}</td>
                     <td>
                       <div
                         draggable

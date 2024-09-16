@@ -6,6 +6,7 @@ import "react-contexify/dist/ReactContexify.css";
 
 interface Camera {
   id: number;
+  port: number;
   name: string;
   floor: number;
   cell: string;
@@ -33,7 +34,7 @@ const Grid: FC<GridProps> = ({ onCameraDrop, droppedCameras, activeFloor, onDoub
 
   useEffect(() => {
     if (selectedCameras) {
-      handleStartStreams([]);
+      FlagLocal();
     }
   }, [selectedCameras]);
 
@@ -93,28 +94,9 @@ const Grid: FC<GridProps> = ({ onCameraDrop, droppedCameras, activeFloor, onDoub
     if (!selectedCameras.some(c => c.id === camera.id)) {
       setSelectedCameras([camera]);
       onDoubleClickCamera(camera);
-      handleStartStreams([camera]);
+      FlagLocal();
     } else {
       setSelectedCameras([]);
-    }
-  };
-
-  const handleStartStreams = (selectedCameras: Camera[]) => {
-    const savedCameras = localStorage.getItem('cameras');
-    let camerasArray: Camera[] = [];
-    if (savedCameras && savedCameras.length !== 0) {
-      camerasArray = JSON.parse(savedCameras);
-    }
-    selectedCameras.forEach((searchedCamera) => {
-      const cameraName = searchedCamera.name.split(/[^a-zA-Z0-9]/)[0];
-      const ipAddress = searchedCamera.address.match(/(?:http:\/\/)?(\d+\.\d+\.\d+\.\d+)/)[1];
-      const rtspUrl = `rtsp://admin:Dd7560848@${ipAddress}`;
-      const newCamera: Camera = { id: camerasArray.length + 1, rtspUrl, name: cameraName, floor: 0, cell: '', initialPosition: { rowIndex: 0, colIndex: 0 }, isDisabled: false, address: '', rotationAngle: 0};
-      camerasArray.push(newCamera);
-    });
-    localStorage.setItem('cameras', JSON.stringify(camerasArray));
-    if (localStorage.getItem('cameras')) {
-      FlagLocal();
     }
   };
 
@@ -123,8 +105,9 @@ const Grid: FC<GridProps> = ({ onCameraDrop, droppedCameras, activeFloor, onDoub
     const cameraData = e.dataTransfer.getData('droppedCameras');
     if (cameraData) {
       const camera: Camera = JSON.parse(cameraData);
-      const cameraName = camera.name.split(/[^a-zA-Z0-9]/)[0];
-      const ipAddress = camera.address.match(/(?:http:\/\/)?(\d+\.\d+\.\d+\.\d+)/)[1];
+      const port = camera.port;
+      const cameraName = camera.name;
+      const ipAddress = camera.rtspUrl;
       const rtspUrl = `rtsp://admin:Dd7560848@${ipAddress}`;
       const newCellKey = `${activeFloor}-${rowIndex}-${colIndex}`;
       const existingCameraKey = Object.keys(droppedCameras).find(key => droppedCameras[key].name === cameraName);
@@ -135,6 +118,7 @@ const Grid: FC<GridProps> = ({ onCameraDrop, droppedCameras, activeFloor, onDoub
       }
       const newCamera: Camera = {
         id: Object.keys(droppedCameras).length + 1,
+        port,
         rtspUrl,
         name: cameraName,
         floor: activeFloor,
@@ -153,11 +137,11 @@ const Grid: FC<GridProps> = ({ onCameraDrop, droppedCameras, activeFloor, onDoub
   return (
     <div className={GStyles.gridContainer}>
       <div className={GStyles.grid}>
-        {Array.from({ length: 15 }).map((_, rowIndex) =>
-          Array.from({ length: 20 }).map((_, colIndex) => {
+        {Array.from({ length: 30 }).map((_, rowIndex) =>
+          Array.from({ length: 40 }).map((_, colIndex) => {
             const cellKey = `${activeFloor}-${rowIndex}-${colIndex}`;
             const camera = droppedCameras[cellKey];
-            const cameraId = camera ? `Камера ${camera.name.split(/[^a-zA-Z0-9]/)[0]}` : '';
+            const cameraId = camera ? `Камера ${camera.name}` : '';
             const rotationAngle = rotationAngles[cameraId] || 0;
 
             return (

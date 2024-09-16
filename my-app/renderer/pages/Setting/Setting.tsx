@@ -29,7 +29,7 @@ const Setting: FC<SettingProps> = ({ numberHome, setNumberHome }) => {
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const newValue = parseInt(event.target.value);
   
-    if (newValue >= 1 && newValue <= 10) {
+    if (newValue >= 1 && newValue <= 12) {
       setInputValue(newValue); // Обновляем временное состояние
     } else if (newValue > 10) {
       alert("Больше 10 не может быть");
