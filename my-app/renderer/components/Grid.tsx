@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC, useState, useEffect, lazy, Suspense } from 'react';
 import GStyles from '../styles/Grid.module.css';
 import { BsFillCameraVideoFill } from 'react-icons/bs';
 import { Menu, Item, useContextMenu, ItemParams } from 'react-contexify';
@@ -17,9 +17,17 @@ interface Camera {
   rotationAngle: number;
 }
 
+interface SVGItem {
+  id: number;
+  name: string;
+  svg: string; // Теперь это строка, а не JSX.Element
+}
+
 interface GridProps {
   onCameraDrop: (camera: Camera, rowIndex: number, colIndex: number) => void;
+  onSVGDrop: (svg: SVGItem, rowIndex: number, colIndex: number) => void;
   droppedCameras: { [key: string]: Camera };
+  droppedSVGs: { [key: string]: SVGItem };
   activeFloor: number;
   onDoubleClickCamera: (camera: Camera) => void;
   FlagLocal: () => void;
@@ -27,7 +35,7 @@ interface GridProps {
   setRotationAngles: React.Dispatch<React.SetStateAction<{ [key: string]: number }>>;
 }
 
-const Grid: FC<GridProps> = ({ onCameraDrop, droppedCameras, activeFloor, onDoubleClickCamera, FlagLocal, rotationAngles, setRotationAngles}) => {
+const Grid: FC<GridProps> = ({ onCameraDrop, onSVGDrop, droppedCameras, droppedSVGs, activeFloor, onDoubleClickCamera, FlagLocal, rotationAngles, setRotationAngles}) => {
   const [selectedCameras, setSelectedCameras] = useState<Camera[]>([]);
   const menuClick = "Меню";
   const { show } = useContextMenu({ id: menuClick });
@@ -54,8 +62,9 @@ const Grid: FC<GridProps> = ({ onCameraDrop, droppedCameras, activeFloor, onDoub
     }
   }, []);
 
-  const handleDragStart = (e: React.DragEvent<HTMLDivElement>, camera: Camera) => {
-    e.dataTransfer.setData('droppedCameras', JSON.stringify(camera));
+  const handleDragStart = (e: React.DragEvent<HTMLDivElement>, item: Camera | SVGItem) => {
+    console.log('Drag start:', item);
+    e.dataTransfer.setData('droppedItem', JSON.stringify(item));
   };
 
   const displayMenu = (e: React.MouseEvent<HTMLDivElement>, cameraId: string) => {
@@ -102,45 +111,71 @@ const Grid: FC<GridProps> = ({ onCameraDrop, droppedCameras, activeFloor, onDoub
 
   const handleDrop = (e: React.DragEvent<HTMLDivElement>, rowIndex: number, colIndex: number) => {
     e.preventDefault();
-    const cameraData = e.dataTransfer.getData('droppedCameras');
-    if (cameraData) {
-      const camera: Camera = JSON.parse(cameraData);
-      const port = camera.port;
-      const cameraName = camera.name;
-      const ipAddress = camera.rtspUrl;
-      const rtspUrl = `rtsp://admin:Dd7560848@${ipAddress}`;
-      const newCellKey = `${activeFloor}-${rowIndex}-${colIndex}`;
-      const existingCameraKey = Object.keys(droppedCameras).find(key => droppedCameras[key].name === cameraName);
-      if (existingCameraKey) {
-        if (existingCameraKey !== newCellKey) {
-          delete droppedCameras[existingCameraKey];
+    const itemDataCamera = e.dataTransfer.getData('droppedItem');
+    const itemDataSVG = e.dataTransfer.getData('svgItem');
+    console.log('Dropped item data:', itemDataSVG);
+    if (itemDataCamera) {
+      const item: Camera = JSON.parse(itemDataCamera);
+      console.log('Parsed item:', item);
+      if ('port' in item) {
+        // Это камера
+        const camera = item as Camera;
+        const port = camera.port;
+        const cameraName = camera.name;
+        const ipAddress = camera.rtspUrl;
+        const rtspUrl = `rtsp://admin:Dd7560848@${ipAddress}`;
+        const newCellKey = `${activeFloor}-${rowIndex}-${colIndex}`;
+        const existingCameraKey = Object.keys(droppedCameras).find(key => droppedCameras[key].name === cameraName);
+        if (existingCameraKey) {
+          if (existingCameraKey !== newCellKey) {
+            delete droppedCameras[existingCameraKey];
+          }
         }
+        const newCamera: Camera = {
+          id: Object.keys(droppedCameras).length + 1,
+          port,
+          rtspUrl,
+          name: cameraName,
+          floor: activeFloor,
+          cell: newCellKey,
+          initialPosition: { rowIndex, colIndex },
+          isDisabled: false,
+          address: camera.address,
+          rotationAngle: rotationAngles[cameraName] || 0
+        };
+        droppedCameras[newCellKey] = newCamera;
+        camera.initialPosition = { rowIndex, colIndex };
+        onCameraDrop(newCamera, rowIndex, colIndex);
       }
-      const newCamera: Camera = {
-        id: Object.keys(droppedCameras).length + 1,
-        port,
-        rtspUrl,
-        name: cameraName,
-        floor: activeFloor,
-        cell: newCellKey,
-        initialPosition: { rowIndex, colIndex },
-        isDisabled: false,
-        address: camera.address,
-        rotationAngle: rotationAngles[cameraName] || 0
-      };
-      droppedCameras[newCellKey] = newCamera;
-      camera.initialPosition = { rowIndex, colIndex };
-      onCameraDrop(newCamera, rowIndex, colIndex);
     }
+    if (itemDataSVG) {
+      // Это SVG
+      const item: SVGItem = JSON.parse(itemDataSVG);
+      const svg = item as SVGItem;
+      const newCellKey = `${activeFloor}-${rowIndex}-${colIndex}`;
+      droppedSVGs[newCellKey] = svg;
+      onSVGDrop(svg, rowIndex, colIndex);
+      localStorage.setItem('droppedSVGs', JSON.stringify(droppedSVGs));
+    }
+  };
+
+  const renderSVG = (svgName: string) => {
+    const SVGComponent = lazy(() => import(`../assets/${svgName}.svg`));
+    return (
+      <Suspense fallback={<div>Loading...</div>}>
+        <SVGComponent />
+      </Suspense>
+    );
   };
 
   return (
     <div className={GStyles.gridContainer}>
       <div className={GStyles.grid}>
-        {Array.from({ length: 30 }).map((_, rowIndex) =>
-          Array.from({ length: 40 }).map((_, colIndex) => {
+        {Array.from({ length: 15 }).map((_, rowIndex) =>
+          Array.from({ length: 20 }).map((_, colIndex) => {
             const cellKey = `${activeFloor}-${rowIndex}-${colIndex}`;
             const camera = droppedCameras[cellKey];
+            const svg = droppedSVGs[cellKey];
             const cameraId = camera ? `Камера ${camera.name}` : '';
             const rotationAngle = rotationAngles[cameraId] || 0;
 
@@ -152,12 +187,12 @@ const Grid: FC<GridProps> = ({ onCameraDrop, droppedCameras, activeFloor, onDoub
                 onDragOver={handleDragOver}
                 onDrop={(e) => handleDrop(e, rowIndex, colIndex)}
               >
-                {droppedCameras[cellKey] && (
+                {camera && (
                   <div
                     className={GStyles.cameraIcon}
                     draggable
-                    onDragStart={(e) => handleDragStart(e, droppedCameras[cellKey])}
-                    onDoubleClick={() => handleDoubleClick(droppedCameras[cellKey])}
+                    onDragStart={(e) => handleDragStart(e, camera)}
+                    onDoubleClick={() => handleDoubleClick(camera)}
                     id={cameraId}
                     title={cameraId}
                     onContextMenu={(e) => displayMenu(e, cameraId)}
@@ -174,6 +209,16 @@ const Grid: FC<GridProps> = ({ onCameraDrop, droppedCameras, activeFloor, onDoub
                       <Item className={GStyles.menuItem} id='rotateRigth' title={cameraId} onClick={handleItemClick}>Поворот вправо</Item>
                       <Item className={GStyles.menuItem} id='rotateLeft' onClick={handleItemClick}>Поворот влево</Item>
                     </Menu>
+                  </div>
+                )}
+                {svg && (
+                  <div
+                    className={GStyles.svgIcon}
+                    draggable
+                    onDragStart={(e) => handleDragStart(e, svg)}
+                    title={svg.name}
+                  >
+                    {renderSVG(svg.name)}
                   </div>
                 )}
               </div>

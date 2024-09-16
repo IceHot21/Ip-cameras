@@ -4,6 +4,7 @@ import FStyles from './Feeding.module.css';
 import Room from '../../components/Room';
 import Grid from '../../components/Grid';
 import ListCamera from '../../components/ListCamera';
+import ListSVG from '../../components/ListSVG';
 import ModalStream from '../../components/ModalStream';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import { useRouter } from 'next/router';
@@ -21,11 +22,19 @@ interface Camera {
   rotationAngle: number;
 }
 
+interface SVGItem {
+  id: number;
+  name: string;
+  svg: JSX.Element;
+}
+
 const Feeding: FC = () => {
   const [isListCameraOpen, setIsListCameraOpen] = useState(false);
+  const [isListSVGOpen, setIsListSVGOpen] = useState(false);
   const [isGridOpen, setIsGridOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [droppedCameras, setDroppedCameras] = useState<{ [key: string]: Camera }>({});
+  const [droppedSVGs, setDroppedSVGs] = useState<{ [key: string]: SVGItem }>({});
   const [selectedCameras, setSelectedCameras] = useState<Camera[]>([]);
   const [isModalStreamOpen, setIsModalStreamOpen] = useState(false);
   const [FlagLocal, setFlagLocal] = useState(true);
@@ -64,6 +73,10 @@ const Feeding: FC = () => {
     setIsListCameraOpen(!isListCameraOpen);
   };
 
+  const handleListSVGToggle = () => {
+    setIsListSVGOpen(!isListSVGOpen);
+  };
+
   const handleGridOpen = () => {
     setIsGridOpen((prev) => !prev);
     setIsEditing(!isGridOpen);
@@ -79,6 +92,11 @@ const Feeding: FC = () => {
     };
     setDroppedCameras((prev) => ({ ...prev, [cellKey]: updatedCamera }));
     setMovedCameras((prev) => new Set(prev).add(camera.id));
+  };
+
+  const handleSVGDrop = (svg: SVGItem, rowIndex: number, colIndex: number) => {
+    const cellKey = `${activeFloor}-${rowIndex}-${colIndex}`;
+    setDroppedSVGs((prev) => ({ ...prev, [cellKey]: svg }));
   };
 
   const handleFloorChange = (floor: number) => {
@@ -115,6 +133,11 @@ const Feeding: FC = () => {
           onClick={handleListCameraToggle}
           title="Открыть список камер"
         />
+        <BsLayoutTextWindow
+          className={FStyles.listIcon}
+          onClick={handleListSVGToggle}
+          title="Открыть список SVG"
+        />
       </div>
       {isListCameraOpen && (
         <ListCamera
@@ -125,6 +148,14 @@ const Feeding: FC = () => {
           onDoubleClickCamera={handleDoubleClickCamera}
           movedCameras={movedCameras}
           droppedCameras={droppedCameras}
+        />
+      )}
+      {isListSVGOpen && (
+        <ListSVG
+          open={isListSVGOpen}
+          onClose={() => setIsListSVGOpen(false)}
+          onGridOpen={handleGridOpen}
+          onSVGDrop={(svg) => handleSVGDrop(svg, 0, 0)} // Вы можете изменить индексы ячейки
         />
       )}
       <div className={`${FStyles.roomContainer} ${isGridOpen ? FStyles.transparentBackground : ''}`}>
@@ -144,7 +175,9 @@ const Feeding: FC = () => {
           <div className={FStyles.gridContainer}>
             <Grid
               onCameraDrop={handleCameraDrop}
+              onSVGDrop={handleSVGDrop}
               droppedCameras={droppedCameras}
+              droppedSVGs={droppedSVGs}
               activeFloor={activeFloor}
               onDoubleClickCamera={handleDoubleClickCamera}
               FlagLocal={() => setFlagLocal(prev => !prev)}
