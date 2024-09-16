@@ -63,7 +63,7 @@ const Grid: FC<GridProps> = ({ onCameraDrop, onSVGDrop, droppedCameras, droppedS
 
   const handleDragStart = (e: React.DragEvent<HTMLDivElement>, item: Camera | SVGItem) => {
     console.log('Drag start:', item);
-    e.dataTransfer.setData('droppedItem', JSON.stringify(item));
+    e.dataTransfer.setData('droppedCameras', JSON.stringify(item));
   };
 
   const displayMenu = (e: React.MouseEvent<HTMLDivElement>, cameraId: string) => {
@@ -110,9 +110,10 @@ const Grid: FC<GridProps> = ({ onCameraDrop, onSVGDrop, droppedCameras, droppedS
 
   const handleDrop = (e: React.DragEvent<HTMLDivElement>, rowIndex: number, colIndex: number) => {
     e.preventDefault();
-    const itemDataCamera = e.dataTransfer.getData('droppedItem');
+    const itemDataCamera = e.dataTransfer.getData('droppedCameras');
     const itemDataSVG = e.dataTransfer.getData('svgItem');
-    console.log('Dropped item data:', itemDataSVG);
+    console.log('Dropped item itemDataSVG:', itemDataSVG);
+    console.log('Dropped item itemDataCamera:', itemDataCamera);
     if (itemDataCamera) {
       const item: Camera = JSON.parse(itemDataCamera);
       console.log('Parsed item:', item);
