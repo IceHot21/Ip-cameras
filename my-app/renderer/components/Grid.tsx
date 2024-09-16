@@ -20,7 +20,6 @@ interface Camera {
 interface SVGItem {
   id: number;
   name: string;
-  svg: string; // Теперь это строка, а не JSX.Element
 }
 
 interface GridProps {
@@ -162,7 +161,7 @@ const Grid: FC<GridProps> = ({ onCameraDrop, onSVGDrop, droppedCameras, droppedS
   const renderSVG = (svgName: string) => {
     const SVGComponent = lazy(() => import(`../assets/${svgName}.svg`));
     return (
-      <Suspense fallback={<div>Loading...</div>}>
+      <Suspense>
         <SVGComponent />
       </Suspense>
     );

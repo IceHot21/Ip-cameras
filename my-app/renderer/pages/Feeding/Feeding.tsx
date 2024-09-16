@@ -1,5 +1,5 @@
 import React, { FC, useState, useEffect } from 'react';
-import { BsLayoutTextWindow } from "react-icons/bs";
+import { BsLayoutTextWindow, BsWrenchAdjustable } from "react-icons/bs";
 import FStyles from './Feeding.module.css';
 import Room from '../../components/Room';
 import Grid from '../../components/Grid';
@@ -25,7 +25,6 @@ interface Camera {
 interface SVGItem {
   id: number;
   name: string;
-  svg: JSX.Element;
 }
 
 const Feeding: FC = () => {
@@ -54,6 +53,10 @@ const Feeding: FC = () => {
     const storedCameras = localStorage.getItem('droppedCameras');
     if (storedCameras) {
       setDroppedCameras(JSON.parse(storedCameras));
+    }
+    const storedSVGs = localStorage.getItem('droppedSVGs');
+    if (storedSVGs) {
+      setDroppedSVGs(JSON.parse(storedSVGs));
     }
   }, []);
 
@@ -133,7 +136,7 @@ const Feeding: FC = () => {
           onClick={handleListCameraToggle}
           title="Открыть список камер"
         />
-        <BsLayoutTextWindow
+        <BsWrenchAdjustable 
           className={FStyles.listIcon}
           onClick={handleListSVGToggle}
           title="Открыть список SVG"
@@ -155,7 +158,7 @@ const Feeding: FC = () => {
           open={isListSVGOpen}
           onClose={() => setIsListSVGOpen(false)}
           onGridOpen={handleGridOpen}
-          onSVGDrop={(svg) => handleSVGDrop(svg, 0, 0)} // Вы можете изменить индексы ячейки
+          onSVGDrop={(svg) => handleSVGDrop(svg, 0, 0)} 
         />
       )}
       <div className={`${FStyles.roomContainer} ${isGridOpen ? FStyles.transparentBackground : ''}`}>
@@ -170,6 +173,8 @@ const Feeding: FC = () => {
           FlagLocal={() => setFlagLocal(prev => !prev)}
           rotationAngles={rotationAngles}
           setRotationAngles={setRotationAngles}
+          droppedSVGs={droppedSVGs}
+          onSVGDrop={handleSVGDrop}
         />
         {isEditing && (
           <div className={FStyles.gridContainer}>

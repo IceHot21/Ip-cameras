@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC, lazy, Suspense, useEffect, useState } from 'react';
 import RStyles from '../styles/Room.module.css';
 import GStyles from '../styles/Grid.module.css';
 import Svg1 from '../assets/Svg1.svg';
@@ -10,12 +10,18 @@ import "react-contexify/dist/ReactContexify.css";
 
 interface Camera {
   id: number;
+  port: number;
   name: string;
   address: string;
   floor?: number;
   cell?: string;
   initialPosition?: { rowIndex: number; colIndex: number };
   rtspUrl: string;
+}
+
+interface SVGItem {
+  id: number;
+  name: string;
 }
 
 type RoomProps = {
@@ -29,9 +35,11 @@ type RoomProps = {
   FlagLocal: () => void;
   rotationAngles: { [key: string]: number };
   setRotationAngles: React.Dispatch<React.SetStateAction<{ [key: string]: number }>>;
+  droppedSVGs: { [key: string]: SVGItem };
+  onSVGDrop: (svg: SVGItem, rowIndex: number, colIndex: number) => void;
 };
 
-const Room: FC<RoomProps> = ({ children, svgProps, droppedCameras, activeFloor, onFloorChange, onDoubleClickCamera, FlagLocal, rotationAngles, setRotationAngles }) => {
+const Room: FC<RoomProps> = ({ children, svgProps, droppedCameras, activeFloor, onFloorChange, onDoubleClickCamera, FlagLocal, rotationAngles, setRotationAngles, droppedSVGs, onSVGDrop }) => {
   const svgs = [Svg1, Svg2, Svg3];
   const [selectedCameras, setSelectedCameras] = useState<Camera[]>([]);
   const menuClick = "Меню";
@@ -50,7 +58,6 @@ const Room: FC<RoomProps> = ({ children, svgProps, droppedCameras, activeFloor, 
     if (savedDroppedCameras) {
       const parsedDroppedCameras = JSON.parse(savedDroppedCameras);
 
-      // Создаем объект для хранения углов поворота
       const initialRotationAngles: { [key: string]: number } = {};
 
       Object.keys(parsedDroppedCameras).forEach((cameraKey) => {
@@ -69,8 +76,9 @@ const Room: FC<RoomProps> = ({ children, svgProps, droppedCameras, activeFloor, 
     onFloorChange(index);
   };
 
-  const handleDragStart = (e: React.DragEvent<HTMLDivElement>, camera: Camera) => {
-    e.dataTransfer.setData('droppedCameras', JSON.stringify(camera));
+  const handleDragStart = (e: React.DragEvent<HTMLDivElement>, item: Camera | SVGItem) => {
+    console.log('Drag start:', item);
+    e.dataTransfer.setData('droppedItem', JSON.stringify(item));
   };
 
   const displayMenu = (e: React.MouseEvent<HTMLDivElement>, cameraId: string) => {
@@ -96,6 +104,66 @@ const Room: FC<RoomProps> = ({ children, svgProps, droppedCameras, activeFloor, 
     }
   };
 
+  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+  };
+
+  const renderSVG = (svgName: string) => {
+    const SVGComponent = lazy(() => import(`../assets/${svgName}.svg`));
+    return (
+      <Suspense>
+        <SVGComponent />
+      </Suspense>
+    );
+  };
+
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>, rowIndex: number, colIndex: number) => {
+    e.preventDefault();
+    const itemDataCamera = e.dataTransfer.getData('droppedItem');
+    const itemDataSVG = e.dataTransfer.getData('svgItem');
+    console.log('Dropped item data:', itemDataSVG);
+    if (itemDataCamera) {
+      const item: Camera = JSON.parse(itemDataCamera);
+      console.log('Parsed item:', item);
+      if ('port' in item) {
+        // Это камера
+        const camera = item as Camera;
+        const port = camera.port;
+        const cameraName = camera.name;
+        const ipAddress = camera.rtspUrl;
+        const rtspUrl = `rtsp://admin:Dd7560848@${ipAddress}`;
+        const newCellKey = `${activeFloor}-${rowIndex}-${colIndex}`;
+        const existingCameraKey = Object.keys(droppedCameras).find(key => droppedCameras[key].name === cameraName);
+        if (existingCameraKey) {
+          if (existingCameraKey !== newCellKey) {
+            delete droppedCameras[existingCameraKey];
+          }
+        }
+        const newCamera: Camera = {
+          id: Object.keys(droppedCameras).length + 1,
+          port,
+          rtspUrl,
+          name: cameraName,
+          floor: activeFloor,
+          cell: newCellKey,
+          initialPosition: { rowIndex, colIndex },
+          address: camera.address,
+        };
+        droppedCameras[newCellKey] = newCamera;
+        camera.initialPosition = { rowIndex, colIndex };
+      }
+    }
+    if (itemDataSVG) {
+      // Это SVG
+      const item: SVGItem = JSON.parse(itemDataSVG);
+      const svg = item as SVGItem;
+      const newCellKey = `${activeFloor}-${rowIndex}-${colIndex}`;
+      droppedSVGs[newCellKey] = svg;
+      onSVGDrop(svg, rowIndex, colIndex);
+      localStorage.setItem('droppedSVGs', JSON.stringify(droppedSVGs));
+    }
+  };
+
   return (
     <div className={RStyles.body}>
       <div className={RStyles.container}>
@@ -116,25 +184,28 @@ const Room: FC<RoomProps> = ({ children, svgProps, droppedCameras, activeFloor, 
           </div>
           {svgs.map((SvgComponent, index) => (
             index === 2 && (
-              <div
+              <div    
                 key={index}
                 className={`${RStyles.card} ${RStyles.active}`}
                 onClick={() => handleSvgClick(index)}
               >
-                {/* <SvgComponent {...svgProps} /> */}
                 <div className={GStyles.gridContainer}>
                   <div className={GStyles.grid}>
-                    {Array.from({ length: 30 }).map((_, rowIndex) => (
-                      Array.from({ length: 40 }).map((_, colIndex) => {
+                    {Array.from({ length: 15 }).map((_, rowIndex) =>
+                      Array.from({ length: 20 }).map((_, colIndex) => {
                         const cellKey = `${activeFloor}-${rowIndex}-${colIndex}`;
                         const camera = droppedCameras[cellKey];
+                        const svg = droppedSVGs[cellKey];
                         const cameraId = camera ? `Камера ${camera.name}` : '';
                         const rotationAngle = rotationAngles[cameraId] || 0;
+
                         return (
                           <div
                             key={cellKey}
                             id={cellKey}
                             className={`${GStyles.gridCell} ${RStyles.transparentCell}`}
+                            onDragOver={handleDragOver}
+                            onDrop={(e) => handleDrop(e, rowIndex, colIndex)}
                           >
                             {camera && (
                               <div
@@ -154,12 +225,26 @@ const Room: FC<RoomProps> = ({ children, svgProps, droppedCameras, activeFloor, 
                                     clipPath: `polygon(50% 50%, 100% 0%, 100% 100%)`,
                                   }}
                                 />
+                                <Menu className={GStyles.menuContainer} id={menuClick} >
+                                  <Item className={GStyles.menuItem} id='rotateRigth' title={cameraId} onClick={handleItemClick}>Поворот вправо</Item>
+                                  <Item className={GStyles.menuItem} id='rotateLeft' onClick={handleItemClick}>Поворот влево</Item>
+                                </Menu>
+                              </div>
+                            )}
+                            {svg && (
+                              <div
+                                className={GStyles.svgIcon}
+                                draggable
+                                onDragStart={(e) => handleDragStart(e, svg)}
+                                title={svg.name}
+                              >
+                                {renderSVG(svg.name)}
                               </div>
                             )}
                           </div>
                         );
                       })
-                    ))}
+                    )}
                   </div>
                 </div>
               </div>

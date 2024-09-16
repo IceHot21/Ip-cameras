@@ -16,9 +16,12 @@ interface ListSVGProps {
 }
 
 const svgItems: SVGItem[] = [
-  { id: 1, name: 'WallGoriz'},
-  { id: 2, name: 'WallVert'},
-  // Добавьте остальные SVG-изображения
+  { id: 1, name: 'doorL'},
+  { id: 2, name: 'doorR'},
+  { id: 3, name: 'ugolLV'},
+  { id: 4, name: 'wallG'},
+  { id: 5, name: 'wallV'},
+  { id: 6, name: 'window'},
 ];
 
 const ListSVG: FC<ListSVGProps> = ({
@@ -42,7 +45,7 @@ const ListSVG: FC<ListSVGProps> = ({
   const renderSVG = (svgName: string) => {
     const SVGComponent = lazy(() => import(`../assets/${svgName}.svg`));
     return (
-      <Suspense fallback={<div>Loading...</div>}>
+      <Suspense >
         <SVGComponent />
       </Suspense>
     );
@@ -78,6 +81,7 @@ const ListSVG: FC<ListSVGProps> = ({
                 <td>
                   <div
                     draggable
+                    className={LCStyles.cccccc}
                     onDragStart={(e) => handleDragStart(e, svg)}
                     title={svg.name}
                   >

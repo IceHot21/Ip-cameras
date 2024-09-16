@@ -36,6 +36,8 @@
   align-items: center;
   transition: transform 0.4s ease, opacity 0.4s ease;
   cursor: pointer;
+  height: 600px;
+  width: 800px;
 }
 
 .card.inactive {
