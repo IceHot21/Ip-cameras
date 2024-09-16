@@ -248,7 +248,7 @@ const Navbar: FC = () => {
         ))}
       </div>
 
-      <button onClick={() => router.push("/LoginPage/LoginPage")} className={NStyles.logoutButton}><BiX /></button>
+      <button onClick={() => window.ipc.closeWindow()} className={NStyles.logoutButton}><BiX /></button>
     </motion.nav>
   );
 };

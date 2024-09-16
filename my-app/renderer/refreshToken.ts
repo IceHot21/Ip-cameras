@@ -1,4 +1,5 @@
 import axios from "axios";
+import { useRouter } from 'next/router';
 
 /**
  * Функция для обновления токена
@@ -8,7 +9,7 @@ import axios from "axios";
  * @returns {Promise<string | null>} - Promise, который выполняется с новым токеном
  *                                     или null, если обновление токена не удалось
  */
-export const refreshToken = async (navigate) => {
+export const refreshToken = async () => {
     try {
         // Отправляем запрос на обновление токена
         const response = await axios.post('https://192.168.0.147:4200/api/refresh-token', null, { withCredentials: true });
@@ -20,8 +21,8 @@ export const refreshToken = async (navigate) => {
         if (error.response?.status === 401) {
             // Если код ошибки 401 (Unauthorized), сохраняем информацию о том,
             // что пользователь не авторизован, и перенаправляем на страницу входа
-            localStorage.setItem('isLoggedIn', 'false');
-            //navigate("/login");
+            const router = useRouter();
+            router.push('/LoginPage/LoginPage');
         } else {
             // Если код ошибки не 401, выводим сообщение об ошибке
             console.error('Error refreshing token:', error);
@@ -53,11 +54,13 @@ export const fetchWithRetry = async (url, method, data, navigate) => {
         // Если возникла ошибка, проверяем ее код
         if (error.response && error.response.status === 401) {
             // Если код ошибки 401 (Unauthorized), пытаемся обновить токен
-            const tokenRefreshed = await refreshToken(navigate);
+            const tokenRefreshed = await refreshToken();
 
             if (tokenRefreshed) {
                 // Если обновление токена прошло успешно, повторяем запрос
                 const response = await axios({ method, url, data, withCredentials: true });
+                const router = useRouter();
+                router.push(navigate);
                 return response.data;
             } else {
                 // Если обновление токена не прошло успешно, выбрасываем ошибку

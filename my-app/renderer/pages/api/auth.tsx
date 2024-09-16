@@ -12,7 +12,7 @@ export const login = async (username, password) => {
     const response = await fetchWithRetry('https://192.168.0.147:4200/api/login', 'POST', {
       name: username,
       password: password,
-    }, '/login');
+    }, '/Home/Home');
     console.log(response.data); // Проверьте ответ сервера
     return response.data;
   } catch (error) {
@@ -23,14 +23,14 @@ export const login = async (username, password) => {
 
 export const register = async (username, password, ROLES) => {
   try {
-    const response = await fetchWithRetry('https://localhost:4200/users/register', 'POST', null, {
+    const response = await fetchWithRetry('https://localhost:4200/users/register', 'POST', {
 
         "name":username,
         "password": password,
         "roles": [
           ROLES
         ]
-    });
+    }, '/Home/Home');
     return response.data;
   } catch (error) {
     throw error;
