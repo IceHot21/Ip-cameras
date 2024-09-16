@@ -51,10 +51,10 @@ const Feeding: FC = () => {
 
   useEffect(() => {
     const storedCameras = localStorage.getItem('droppedCameras');
+    const storedSVGs = localStorage.getItem('droppedSVGs');
     if (storedCameras) {
       setDroppedCameras(JSON.parse(storedCameras));
     }
-    const storedSVGs = localStorage.getItem('droppedSVGs');
     if (storedSVGs) {
       setDroppedSVGs(JSON.parse(storedSVGs));
     }
@@ -65,6 +65,12 @@ const Feeding: FC = () => {
       localStorage.setItem('droppedCameras', JSON.stringify(droppedCameras));
     }
   }, [droppedCameras]);
+
+  useEffect(() => {
+    if (Object.keys(droppedSVGs).length > 0) {
+      localStorage.setItem('droppedSVGs', JSON.stringify(droppedSVGs));
+    }
+  }, [droppedSVGs]);
 
   useEffect(() => {
     if (FlagLocal) {

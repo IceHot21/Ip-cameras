@@ -4,6 +4,9 @@ import GStyles from '../styles/Grid.module.css';
 import { BsFillCameraVideoFill } from 'react-icons/bs';
 import { Menu, Item, Separator, Submenu, useContextMenu, ItemParams } from 'react-contexify';
 import "react-contexify/dist/ReactContexify.css";
+import Svg1 from '../assets/Svg1.svg';
+import Svg2 from '../assets/Svg1.svg';
+import Svg3 from '../assets/Svg1.svg';
 
 interface Camera {
   id: number;
@@ -23,6 +26,7 @@ interface SVGItem {
 
 type RoomProps = {
   children: React.ReactNode;
+  svgProps: any;
   onCameraDropped: (camera: Camera, rowIndex: number, colIndex: number) => void;
   droppedCameras: { [key: string]: Camera };
   activeFloor: number;
@@ -35,10 +39,12 @@ type RoomProps = {
   onSVGDrop: (svg: SVGItem, rowIndex: number, colIndex: number) => void;
 };
 
-const Room: FC<RoomProps> = ({ children, droppedCameras, activeFloor, onFloorChange, onDoubleClickCamera, FlagLocal, rotationAngles, setRotationAngles, droppedSVGs, onSVGDrop }) => {
+const Room: FC<RoomProps> = ({ children, svgProps, droppedCameras, activeFloor, onFloorChange, onDoubleClickCamera, FlagLocal, rotationAngles, setRotationAngles, droppedSVGs, onSVGDrop }) => {
   const [selectedCameras, setSelectedCameras] = useState<Camera[]>([]);
   const menuClick = "Меню";
   const { show } = useContextMenu({ id: menuClick });
+
+  const svgs = [Svg1, Svg2, Svg3];
 
   useEffect(() => {
     if (selectedCameras) {
@@ -164,7 +170,7 @@ const Room: FC<RoomProps> = ({ children, droppedCameras, activeFloor, onFloorCha
       <div className={RStyles.container}>
         <div className={RStyles.cards}>
           <div className={RStyles.inactiveContainer}>
-            {Array.from({ length: 3 }).map((_, index) => (
+            {svgs.map((SvgComponent, index) => (
               index !== activeFloor && (
                 <div
                   key={index}
@@ -172,70 +178,75 @@ const Room: FC<RoomProps> = ({ children, droppedCameras, activeFloor, onFloorCha
                   onClick={() => handleSvgClick(index)}
                 >
                   <div className={RStyles.indexText}>{index + 1}</div>
+                  <SvgComponent {...svgProps} />
                 </div>
               )
             ))}
           </div>
-          <div className={`${RStyles.card} ${RStyles.active}`}>
-            <div className={GStyles.gridContainer}>
-              <div className={GStyles.grid}>
-                {Array.from({ length: 15 }).map((_, rowIndex) =>
-                  Array.from({ length: 20 }).map((_, colIndex) => {
-                    const cellKey = `${activeFloor}-${rowIndex}-${colIndex}`;
-                    const camera = droppedCameras[cellKey];
-                    const svg = droppedSVGs[cellKey];
-                    const cameraId = camera ? `Камера ${camera.name}` : '';
-                    const rotationAngle = rotationAngles[cameraId] || 0;
-
-                    return (
-                      <div
-                        key={cellKey}
-                        id={cellKey}
-                        className={`${GStyles.gridCell} ${RStyles.transparentCell}`}
-                        onDragOver={handleDragOver}
-                        onDrop={(e) => handleDrop(e, rowIndex, colIndex)}
-                      >
-                        {camera && (
+          {svgs.map((SvgComponent, index) => (
+            index === activeFloor && (
+              <div
+                key={index}
+                className={`${RStyles.card} ${RStyles.active}`}
+                onClick={() => handleSvgClick(index)}
+              >
+                <SvgComponent className={RStyles.fonContainer}{...svgProps} />
+                <div className={GStyles.gridContainer}>
+                  <div className={GStyles.grid}>
+                    {Array.from({ length: 15 }).map((_, rowIndex) =>
+                      Array.from({ length: 20 }).map((_, colIndex) => {
+                        const cellKey = `${activeFloor}-${rowIndex}-${colIndex}`;
+                        const camera = droppedCameras[cellKey];
+                        const svg = droppedSVGs[cellKey];
+                        const cameraId = camera ? `Камера ${camera.name}` : '';
+                        const rotationAngle = rotationAngles[cameraId] || 0;
+                        return (
                           <div
-                            className={GStyles.cameraIcon}
-                            draggable
-                            onDragStart={(e) => handleDragStart(e, camera)}
-                            onDoubleClick={() => handleDoubleClick(camera)}
-                            id={cameraId}
-                            title={cameraId}
-                            onContextMenu={(e) => displayMenu(e, cameraId)}
+                            key={cellKey}
+                            id={cellKey}
+                            className={`${GStyles.gridCell} ${RStyles.transparentCell}`}
+                            onDragOver={handleDragOver}
+                            onDrop={(e) => handleDrop(e, rowIndex, colIndex)}
                           >
-                            <BsFillCameraVideoFill style={{ transform: `rotate(${rotationAngle}deg)` }} />
-                            <div
-                              className={GStyles.cameraViewSector}
-                              style={{
-                                transform: `rotate(${rotationAngle}deg)`,
-                                clipPath: `polygon(50% 50%, 100% 0%, 100% 100%)`,
-                              }}
-                            />
-                            <Menu className={GStyles.menuContainer} id={menuClick} >
-                              <Item className={GStyles.menuItem} id='rotateRigth' title={cameraId} onClick={handleItemClick}>Поворот вправо</Item>
-                              <Item className={GStyles.menuItem} id='rotateLeft' onClick={handleItemClick}>Поворот влево</Item>
-                            </Menu>
-                          </div>
-                        )}
-                        {svg && (
-                          <div
-                            className={GStyles.svgIcon}
-                            draggable
-                            onDragStart={(e) => handleDragStart(e, svg)}
-                            title={svg.name}
-                          >
+                            {camera && (
+                              <div
+                                className={GStyles.cameraIcon}
+                                draggable
+                                onDragStart={(e) => handleDragStart(e, camera)}
+                                onDoubleClick={() => handleDoubleClick(camera)}
+                                id={cameraId}
+                                title={cameraId}
+                                onContextMenu={(e) => displayMenu(e, cameraId)}
+                              >
+                                <BsFillCameraVideoFill style={{ transform: `rotate(${rotationAngle}deg)`, height: '50%', width: '100%' }} />
+                                <div
+                                  className={GStyles.cameraViewSector}
+                                  style={{
+                                    transform: `rotate(${rotationAngle}deg)`,
+                                    clipPath: `polygon(50% 50%, 100% 0%, 100% 100%)`,
+                                  }}
+                                />
+                              </div>
+                            )}
+                            {svg && (
+                              <div
+                                className={GStyles.svgIcon}
+                                draggable
+                                onDragStart={(e) => handleDragStart(e, svg)}
+                                title={svg.name}
+                              >
                                 {renderSVG(svg.name)}
+                              </div>
+                            )}
                           </div>
-                        )}
-                      </div>
-                    );
-                  })
-                )}
+                        );
+                      })
+                    )}
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
+            )
+          ))}
         </div>
         {children}
       </div>
