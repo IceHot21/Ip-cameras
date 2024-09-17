@@ -31,7 +31,7 @@ const Home: FC<HomeProps> = ({ numberHome }) => {
     setCurrentIndex((prevIndex) => (prevIndex + 1) % numberHome);
   };
 
-  const roomClick = () => {
+  const FloorClick = () => {
     router.push({
       pathname: '/Feeding/Feeding',
       query: { floor: currentSvgIndex },
@@ -122,7 +122,7 @@ const Home: FC<HomeProps> = ({ numberHome }) => {
           <div className={HStyles.planInside}>
             {createElement(svgImages[currentSvgIndex], {
               className: HStyles.plan,
-              onClick: roomClick
+              onClick: FloorClick
             })}
             <span className={HStyles.cameraLabel}>
               <button className={HStyles.prevFloor} onClick={prevFloor}><FaChevronLeft /></button>

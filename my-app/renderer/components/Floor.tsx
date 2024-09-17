@@ -1,5 +1,5 @@
-import React, { FC, lazy, Suspense, useEffect, useState } from 'react';
-import RStyles from '../styles/Room.module.css';
+import React, { FC, lazy, Suspense, useEffect, useState, useCallback } from 'react';
+import RStyles from '../styles/Floor.module.css';
 import GStyles from '../styles/Grid.module.css';
 import { BsFillCameraVideoFill } from 'react-icons/bs';
 import { Menu, Item, Separator, Submenu, useContextMenu, ItemParams } from 'react-contexify';
@@ -24,7 +24,7 @@ interface SVGItem {
   name: string;
 }
 
-type RoomProps = {
+type FloorProps = {
   children: React.ReactNode;
   svgProps: any;
   onCameraDropped: (camera: Camera, rowIndex: number, colIndex: number) => void;
@@ -39,7 +39,7 @@ type RoomProps = {
   onSVGDrop: (svg: SVGItem, rowIndex: number, colIndex: number) => void;
 };
 
-const Room: FC<RoomProps> = ({ children, svgProps, droppedCameras, activeFloor, onFloorChange, onDoubleClickCamera, FlagLocal, rotationAngles, setRotationAngles, droppedSVGs, onSVGDrop }) => {
+const Floor: FC<FloorProps> = ({ children, svgProps, droppedCameras, activeFloor, onFloorChange, onDoubleClickCamera, FlagLocal, rotationAngles, setRotationAngles, droppedSVGs, onSVGDrop }) => {
   const [selectedCameras, setSelectedCameras] = useState<Camera[]>([]);
   const menuClick = "Меню";
   const { show } = useContextMenu({ id: menuClick });
@@ -73,38 +73,38 @@ const Room: FC<RoomProps> = ({ children, svgProps, droppedCameras, activeFloor, 
     }
   }, []);
 
-  const handleSvgClick = (index: number) => {
+  const handleSvgClick = useCallback((index: number) => {
     onFloorChange(index);
-  };
+  }, [onFloorChange]);
 
-  const handleDragStart = (e: React.DragEvent<HTMLDivElement>, item: Camera | SVGItem) => {
+  const handleDragStart = useCallback((e: React.DragEvent<HTMLDivElement>, item: Camera | SVGItem) => {
     console.log('Drag start:', item);
     e.dataTransfer.setData('droppedItem', JSON.stringify(item));
-  };
+  }, []);
 
-  const renderSVG = (svgName: string) => {
+  const renderSVG = useCallback((svgName: string) => {
     const SVGComponent = lazy(() => import(`../assets/${svgName}.svg`));
     return (
       <Suspense>
         <SVGComponent />
       </Suspense>
     );
-  };
+  }, []);
 
-  const displayMenu = (e: React.MouseEvent<HTMLDivElement>, cameraId: string) => {
+  const displayMenu = useCallback((e: React.MouseEvent<HTMLDivElement>, cameraId: string) => {
     e.preventDefault();
     show({ event: e, props: { cameraId } });
-  };
+  }, [show]);
 
-  const handleItemClick = ({ id, event, props }: ItemParams<any, any>) => {
+  const handleItemClick = useCallback(({ id, event, props }: ItemParams<any, any>) => {
     const cameraId = props.cameraId;
     setRotationAngles((prevAngles) => ({
       ...prevAngles,
       [cameraId]: id === "rotateLeft" ? (prevAngles[cameraId] || 0) + 45 : (prevAngles[cameraId] || 0) - 45,
     }));
-  };
+  }, [setRotationAngles]);
 
-  const handleDoubleClick = (camera: Camera) => {
+  const handleDoubleClick = useCallback((camera: Camera) => {
     if (!selectedCameras.some(c => c.id === camera.id)) {
       setSelectedCameras([camera]);
       onDoubleClickCamera(camera);
@@ -112,13 +112,13 @@ const Room: FC<RoomProps> = ({ children, svgProps, droppedCameras, activeFloor, 
     } else {
       setSelectedCameras([]);
     }
-  };
+  }, [selectedCameras, onDoubleClickCamera, FlagLocal]);
 
-  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+  const handleDragOver = useCallback((e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
-  };
+  }, []);
 
-  const handleDrop = (e: React.DragEvent<HTMLDivElement>, rowIndex: number, colIndex: number) => {
+  const handleDrop = useCallback((e: React.DragEvent<HTMLDivElement>, rowIndex: number, colIndex: number) => {
     e.preventDefault();
     const itemDataCamera = e.dataTransfer.getData('droppedItem');
     const itemDataSVG = e.dataTransfer.getData('svgItem');
@@ -163,26 +163,12 @@ const Room: FC<RoomProps> = ({ children, svgProps, droppedCameras, activeFloor, 
       onSVGDrop(svg, rowIndex, colIndex);
       localStorage.setItem('droppedSVGs', JSON.stringify(droppedSVGs));
     }
-  };
+  }, [activeFloor, droppedCameras, droppedSVGs, onSVGDrop]);
 
   return (
     <div className={RStyles.body}>
       <div className={RStyles.container}>
         <div className={RStyles.cards}>
-          <div className={RStyles.inactiveContainer}>
-            {svgs.map((SvgComponent, index) => (
-              index !== activeFloor && (
-                <div
-                  key={index}
-                  className={`${RStyles.card} ${RStyles.inactive}`}
-                  onClick={() => handleSvgClick(index)}
-                >
-                  <div className={RStyles.indexText}>{index + 1}</div>
-                  <SvgComponent {...svgProps} />
-                </div>
-              )
-            ))}
-          </div>
           {svgs.map((SvgComponent, index) => (
             index === activeFloor && (
               <div
@@ -254,4 +240,4 @@ const Room: FC<RoomProps> = ({ children, svgProps, droppedCameras, activeFloor, 
   );
 };
 
-export default Room;
+export default Floor;

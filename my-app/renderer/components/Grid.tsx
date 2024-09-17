@@ -1,4 +1,4 @@
-import React, { FC, useState, useEffect, lazy, Suspense } from 'react';
+import React, { FC, useState, useEffect, lazy, Suspense, useCallback } from 'react';
 import GStyles from '../styles/Grid.module.css';
 import { BsFillCameraVideoFill } from 'react-icons/bs';
 import { Menu, Item, useContextMenu, ItemParams } from 'react-contexify';
@@ -34,7 +34,7 @@ interface GridProps {
   setRotationAngles: React.Dispatch<React.SetStateAction<{ [key: string]: number }>>;
 }
 
-const Grid: FC<GridProps> = ({ onCameraDrop, onSVGDrop, droppedCameras, droppedSVGs, activeFloor, onDoubleClickCamera, FlagLocal, rotationAngles, setRotationAngles}) => {
+const Grid: FC<GridProps> = ({ onCameraDrop, onSVGDrop, droppedCameras, droppedSVGs, activeFloor, onDoubleClickCamera, FlagLocal, rotationAngles, setRotationAngles }) => {
   const [selectedCameras, setSelectedCameras] = useState<Camera[]>([]);
   const menuClick = "Меню";
   const { show } = useContextMenu({ id: menuClick });
@@ -61,17 +61,17 @@ const Grid: FC<GridProps> = ({ onCameraDrop, onSVGDrop, droppedCameras, droppedS
     }
   }, []);
 
-  const handleDragStart = (e: React.DragEvent<HTMLDivElement>, item: Camera | SVGItem) => {
+  const handleDragStart = useCallback((e: React.DragEvent<HTMLDivElement>, item: Camera | SVGItem) => {
     console.log('Drag start:', item);
     e.dataTransfer.setData('droppedCameras', JSON.stringify(item));
-  };
+  }, []);
 
-  const displayMenu = (e: React.MouseEvent<HTMLDivElement>, cameraId: string) => {
+  const displayMenu = useCallback((e: React.MouseEvent<HTMLDivElement>, cameraId: string) => {
     e.preventDefault();
     show({ event: e, props: { cameraId } });
-  };
+  }, [show]);
 
-  const handleItemClick = ({ id, event, props }: ItemParams<any, any>) => {
+  const handleItemClick = useCallback(({ id, event, props }: ItemParams<any, any>) => {
     const cameraId = props.cameraId;
     setRotationAngles((prevAngles) => {
       const newAngle = id === "rotateLeft" ? (prevAngles[cameraId] || 0) - 45 : (prevAngles[cameraId] || 0) + 45;
@@ -92,13 +92,13 @@ const Grid: FC<GridProps> = ({ onCameraDrop, onSVGDrop, droppedCameras, droppedS
         [cameraId]: newAngle,
       };
     });
-  };
+  }, [droppedCameras, setRotationAngles]);
 
-  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+  const handleDragOver = useCallback((e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
-  };
+  }, []);
 
-  const handleDoubleClick = (camera: Camera) => {
+  const handleDoubleClick = useCallback((camera: Camera) => {
     if (!selectedCameras.some(c => c.id === camera.id)) {
       setSelectedCameras([camera]);
       onDoubleClickCamera(camera);
@@ -106,9 +106,9 @@ const Grid: FC<GridProps> = ({ onCameraDrop, onSVGDrop, droppedCameras, droppedS
     } else {
       setSelectedCameras([]);
     }
-  };
+  }, [selectedCameras, onDoubleClickCamera, FlagLocal]);
 
-  const handleDrop = (e: React.DragEvent<HTMLDivElement>, rowIndex: number, colIndex: number) => {
+  const handleDrop = useCallback((e: React.DragEvent<HTMLDivElement>, rowIndex: number, colIndex: number) => {
     e.preventDefault();
     const itemDataCamera = e.dataTransfer.getData('droppedCameras');
     const itemDataSVG = e.dataTransfer.getData('svgItem');
@@ -157,16 +157,16 @@ const Grid: FC<GridProps> = ({ onCameraDrop, onSVGDrop, droppedCameras, droppedS
       onSVGDrop(svg, rowIndex, colIndex);
       localStorage.setItem('droppedSVGs', JSON.stringify(droppedSVGs));
     }
-  };
+  }, [activeFloor, droppedCameras, droppedSVGs, onCameraDrop, onSVGDrop, rotationAngles]);
 
-  const renderSVG = (svgName: string) => {
+  const renderSVG = useCallback((svgName: string) => {
     const SVGComponent = lazy(() => import(`../assets/${svgName}.svg`));
     return (
       <Suspense>
         <SVGComponent />
       </Suspense>
     );
-  };
+  }, []);
 
   return (
     <div className={GStyles.gridContainer}>
@@ -198,13 +198,6 @@ const Grid: FC<GridProps> = ({ onCameraDrop, onSVGDrop, droppedCameras, droppedS
                     onContextMenu={(e) => displayMenu(e, cameraId)}
                   >
                     <BsFillCameraVideoFill style={{ transform: `rotate(${rotationAngle}deg)` }} />
-                    <div
-                      className={GStyles.cameraViewSector}
-                      style={{
-                        transform: `rotate(${rotationAngle}deg)`,
-                        clipPath: `polygon(50% 50%, 100% 0%, 100% 100%)`,
-                      }}
-                    />
                     <Menu className={GStyles.menuContainer} id={menuClick} >
                       <Item className={GStyles.menuItem} id='rotateRigth' title={cameraId} onClick={handleItemClick}>Поворот вправо</Item>
                       <Item className={GStyles.menuItem} id='rotateLeft' onClick={handleItemClick}>Поворот влево</Item>
