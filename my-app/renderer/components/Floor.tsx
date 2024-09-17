@@ -7,6 +7,7 @@ import "react-contexify/dist/ReactContexify.css";
 import Svg1 from '../assets/Svg1.svg';
 import Svg2 from '../assets/Svg1.svg';
 import Svg3 from '../assets/Svg1.svg';
+import { Height } from '@mui/icons-material';
 
 interface Camera {
   id: number;
@@ -176,7 +177,7 @@ const Floor: FC<FloorProps> = ({ children, svgProps, droppedCameras, activeFloor
                 className={`${RStyles.card} ${RStyles.active}`}
                 onClick={() => handleSvgClick(index)}
               >
-                <SvgComponent className={RStyles.fonContainer}{...svgProps} />
+                <SvgComponent className={RStyles.fonContainer} style={{height: '100% !important', width: '90% !important'}}{...svgProps} />
                 <div className={GStyles.gridContainer}>
                   <div className={GStyles.grid}>
                     {Array.from({ length: 15 }).map((_, rowIndex) =>
