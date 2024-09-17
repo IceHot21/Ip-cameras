@@ -1,6 +1,6 @@
 import React, { FC, useState, lazy, Suspense } from 'react';
 import LCStyles from '../styles/ListCamera.module.css';
-import { BiX, BiRevision, BiSolidLayerPlus } from "react-icons/bi";
+import { BiX, BiSolidLayerPlus } from "react-icons/bi";
 import { FaCheck } from 'react-icons/fa';
 
 interface SVGItem {
@@ -12,7 +12,12 @@ interface ListSVGProps {
   open: boolean;
   onClose: () => void;
   onGridOpen: () => void;
+  activeFloor: number;
   onSVGDrop: (svg: SVGItem) => void;
+  isSelecting: boolean; // Добавляем пропс isSelecting
+  selectedCells: number[][];
+  setIsSelecting: React.Dispatch<React.SetStateAction<boolean>>; // Добавляем пропс setIsSelecting
+  setSelectedCells: React.Dispatch<React.SetStateAction<number[][]>>;
 }
 
 const svgItems: SVGItem[] = [
@@ -29,8 +34,15 @@ const ListSVG: FC<ListSVGProps> = ({
   onClose,
   onGridOpen,
   onSVGDrop,
+  isSelecting, // Добавляем пропс isSelecting
+  setIsSelecting, // Добавляем пропс setIsSelecting
+  selectedCells,
+  setSelectedCells,
+  activeFloor
 }) => {
   const [isAddingSVG, setIsAddingSVG] = useState(false);
+  const [roomName, setRoomName] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
 
   const handleDragStart = (e: React.DragEvent<HTMLDivElement>, svg: SVGItem) => {
     console.log('Drag start1:', svg);
@@ -45,10 +57,41 @@ const ListSVG: FC<ListSVGProps> = ({
   const renderSVG = (svgName: string) => {
     const SVGComponent = lazy(() => import(`../assets/${svgName}.svg`));
     return (
-      <Suspense >
+      <Suspense>
         <SVGComponent />
       </Suspense>
     );
+  };
+
+  const handleSelectClick = () => {
+    setErrorMessage('');
+    setIsSelecting(!isSelecting);
+  };
+
+  const handleSaveRoom = () => {
+    const storedRooms = JSON.parse(localStorage.getItem('selectedRooms') || '[]');
+    const allPositions = storedRooms.flatMap((room: { positions: number[][] }) => room.positions);
+
+    // Проверка на пересечение ячеек
+    const hasIntersection = selectedCells.some(selectedPos =>
+      allPositions.some(storedPos => storedPos[0] === selectedPos[0] && storedPos[1] === selectedPos[1])
+    );
+
+    if (hasIntersection) {
+      setErrorMessage('Ошибка: Выбранные ячейки уже заняты другой комнатой.');
+      setRoomName('');
+      setIsSelecting(false);
+      setSelectedCells([]);
+      return;
+    }
+
+    const newRoom = { activeFloor, roomName, positions: selectedCells };
+    const updatedRooms = [...storedRooms, newRoom];
+    localStorage.setItem('selectedRooms', JSON.stringify(updatedRooms));
+    setRoomName('');
+    setIsSelecting(false);
+    setSelectedCells([]); // Очищаем selectedCells после сохранения
+    setErrorMessage(''); // Очищаем сообщение об ошибке
   };
 
   if (!open) return null;
@@ -58,7 +101,7 @@ const ListSVG: FC<ListSVGProps> = ({
       <div className={LCStyles.buttonContainer}>
         <button onClick={onClose} className={LCStyles.closeButton} title="Закрыть"><BiX /></button>
         <div style={{ display: 'flex' }}>
-          <button onClick={handleAddSVGClick} className={LCStyles.plusButton} >
+          <button onClick={handleAddSVGClick} className={LCStyles.plusButton}>
             {isAddingSVG ? <FaCheck title="Сохранить SVG" /> : <BiSolidLayerPlus title="Добавить SVG" />}
           </button>
         </div>
@@ -67,8 +110,8 @@ const ListSVG: FC<ListSVGProps> = ({
         <table>
           <thead className={LCStyles.tableHeader}>
             <tr>
-              <th>Название SVG</th>
-              <th></th>
+              <th>Название</th>
+              <th>SVG</th>
             </tr>
           </thead>
           <tbody className={LCStyles.tableBody}>
@@ -92,6 +135,24 @@ const ListSVG: FC<ListSVGProps> = ({
             ))}
           </tbody>
         </table>
+        <div className={LCStyles.roomSelectionContainer}>
+          <input
+            type="text"
+            placeholder="Название комнаты"
+            value={roomName}
+            onChange={(e) => setRoomName(e.target.value)}
+            className={LCStyles.roomNameInput}
+          />
+          <button onClick={handleSelectClick} className={LCStyles.selectButton}>
+            {isSelecting ? <FaCheck title="Сохранить комнату" /> : "Выбрать"}
+          </button>
+          {isSelecting && (
+            <button onClick={handleSaveRoom} className={LCStyles.saveButton}>
+              Сохранить комнату
+            </button>
+          )}
+          {errorMessage && <div className={LCStyles.errorMessage}>{errorMessage}</div>}
+        </div>
       </div>
     </div>
   );

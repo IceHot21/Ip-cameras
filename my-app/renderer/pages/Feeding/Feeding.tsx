@@ -42,6 +42,8 @@ const Feeding: FC = () => {
   const router = useRouter();
   const { floor } = router.query; 
   const [activeFloor, setActiveFloor] = useState<number>(0);
+  const [isSelecting, setIsSelecting] = useState(false);
+  const [selectedCells, setSelectedCells] = useState<number[][]>([]);
 
   useEffect(() => {
     if (floor) {
@@ -158,13 +160,17 @@ const Feeding: FC = () => {
           open={isListSVGOpen}
           onClose={() => setIsListSVGOpen(false)}
           onGridOpen={handleGridOpen}
-          onSVGDrop={(svg) => handleSVGDrop(svg, 0, 0)} 
+          onSVGDrop={(svg) => handleSVGDrop(svg, 0, 0)}
+          activeFloor={activeFloor}
+          isSelecting={isSelecting} // Передаем isSelecting
+          setIsSelecting={setIsSelecting} // Передаем SetIsSelecting
+          selectedCells={selectedCells}
+          setSelectedCells={setSelectedCells}
         />
       )}
       <div className={`${FStyles.roomContainer} ${isGridOpen ? FStyles.transparentBackground : ''}`}>
         <Room
           children={null}
-          svgProps={{}}
           onCameraDropped={handleCameraDrop}
           droppedCameras={droppedCameras}
           activeFloor={activeFloor}
@@ -179,6 +185,7 @@ const Feeding: FC = () => {
         {isEditing && (
           <div className={FStyles.gridContainer}>
             <Grid
+              isSelecting={isSelecting}// Передаем SetIsSelecting
               onCameraDrop={handleCameraDrop}
               onSVGDrop={handleSVGDrop}
               droppedCameras={droppedCameras}
@@ -188,6 +195,8 @@ const Feeding: FC = () => {
               FlagLocal={() => setFlagLocal(prev => !prev)}
               rotationAngles={rotationAngles}
               setRotationAngles={setRotationAngles}
+              selectedCells={selectedCells}
+              setSelectedCells={setSelectedCells}
             />
           </div>
         )}

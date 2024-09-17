@@ -32,10 +32,27 @@ interface GridProps {
   FlagLocal: () => void;
   rotationAngles: { [key: string]: number };
   setRotationAngles: React.Dispatch<React.SetStateAction<{ [key: string]: number }>>;
+  isSelecting: boolean;
+  selectedCells: number[][];
+  setSelectedCells: React.Dispatch<React.SetStateAction<number[][]>>;
 }
 
-const Grid: FC<GridProps> = ({ onCameraDrop, onSVGDrop, droppedCameras, droppedSVGs, activeFloor, onDoubleClickCamera, FlagLocal, rotationAngles, setRotationAngles}) => {
+const Grid: FC<GridProps> = ({
+  onCameraDrop,
+  onSVGDrop,
+  droppedCameras,
+  droppedSVGs,
+  activeFloor,
+  onDoubleClickCamera,
+  FlagLocal,
+  rotationAngles,
+  setRotationAngles,
+  isSelecting,
+  selectedCells,
+  setSelectedCells,
+}) => {
   const [selectedCameras, setSelectedCameras] = useState<Camera[]>([]);
+  const [savedCells, setSavedCells] = useState<number[][]>([]);
   const menuClick = "Меню";
   const { show } = useContextMenu({ id: menuClick });
 
@@ -61,6 +78,13 @@ const Grid: FC<GridProps> = ({ onCameraDrop, onSVGDrop, droppedCameras, droppedS
     }
   }, []);
 
+  useEffect(() => {
+    const storedRooms = JSON.parse(localStorage.getItem('selectedRooms') || '[]');
+    const allPositions = storedRooms.flatMap((room: { positions: number[][] }) => room.positions);
+    console.log(storedRooms)
+    console.log(allPositions)
+    setSavedCells(allPositions);
+  }, [isSelecting]);
   const handleDragStart = (e: React.DragEvent<HTMLDivElement>, item: Camera | SVGItem) => {
     console.log('Drag start:', item);
     e.dataTransfer.setData('droppedCameras', JSON.stringify(item));
@@ -159,6 +183,18 @@ const Grid: FC<GridProps> = ({ onCameraDrop, onSVGDrop, droppedCameras, droppedS
     }
   };
 
+  const handleCellClick = (rowIndex: number, colIndex: number) => {
+    if (isSelecting) { // Проверяем состояние isSelecting
+      const newPosition = [rowIndex, colIndex];
+      if (selectedCells.some(pos => pos[0] === rowIndex && pos[1] === colIndex)) {
+        setSelectedCells(selectedCells.filter(pos => pos[0] !== rowIndex || pos[1] !== colIndex));
+      } else {
+        setSelectedCells([...selectedCells, newPosition]);
+      }
+      console.log(selectedCells);
+    }
+  };
+
   const renderSVG = (svgName: string) => {
     const SVGComponent = lazy(() => import(`../assets/${svgName}.svg`));
     return (
@@ -178,14 +214,17 @@ const Grid: FC<GridProps> = ({ onCameraDrop, onSVGDrop, droppedCameras, droppedS
             const svg = droppedSVGs[cellKey];
             const cameraId = camera ? `Камера ${camera.name}` : '';
             const rotationAngle = rotationAngles[cameraId] || 0;
+            const isSelected = selectedCells.some(pos => pos[0] === rowIndex && pos[1] === colIndex);
+            const isSaved = savedCells.some(pos => pos[0] === rowIndex && pos[1] === colIndex);
 
             return (
               <div
                 key={cellKey}
                 id={cellKey}
-                className={GStyles.gridCell}
+                className={`${GStyles.gridCell} ${isSaved ? GStyles.savedCell : ''} ${isSelected ? GStyles.selectedCell : ''}`}
                 onDragOver={handleDragOver}
                 onDrop={(e) => handleDrop(e, rowIndex, colIndex)}
+                onClick={() => handleCellClick(rowIndex, colIndex)}
               >
                 {camera && (
                   <div
