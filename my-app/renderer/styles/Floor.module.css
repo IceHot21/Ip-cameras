@@ -24,6 +24,8 @@
 
 .fonContainer{
   border: 1px solid red;
+  height: 100% !important;
+  width: 90% !important;
 }
 .cards {
   display: grid;
