@@ -1,7 +1,7 @@
-import React, { FC, useState, useEffect } from 'react';
+import React, { FC, useState, useEffect, useCallback } from 'react';
 import { BsLayoutTextWindow, BsWrenchAdjustable } from "react-icons/bs";
 import FStyles from './Feeding.module.css';
-import Room from '../../components/Room';
+import Floor from '../../components/Floor';
 import Grid from '../../components/Grid';
 import ListCamera from '../../components/ListCamera';
 import ListSVG from '../../components/ListSVG';
@@ -53,10 +53,10 @@ const Feeding: FC = () => {
 
   useEffect(() => {
     const storedCameras = localStorage.getItem('droppedCameras');
+    const storedSVGs = localStorage.getItem('droppedSVGs');
     if (storedCameras) {
       setDroppedCameras(JSON.parse(storedCameras));
     }
-    const storedSVGs = localStorage.getItem('droppedSVGs');
     if (storedSVGs) {
       setDroppedSVGs(JSON.parse(storedSVGs));
     }
@@ -69,25 +69,31 @@ const Feeding: FC = () => {
   }, [droppedCameras]);
 
   useEffect(() => {
+    if (Object.keys(droppedSVGs).length > 0) {
+      localStorage.setItem('droppedSVGs', JSON.stringify(droppedSVGs));
+    }
+  }, [droppedSVGs]);
+
+  useEffect(() => {
     if (FlagLocal) {
       setIsModalStreamOpen(true);
     }
   }, [FlagLocal]);
 
-  const handleListCameraToggle = () => {
+  const handleListCameraToggle = useCallback(() => {
     setIsListCameraOpen(!isListCameraOpen);
-  };
+  }, [isListCameraOpen]);
 
-  const handleListSVGToggle = () => {
+  const handleListSVGToggle = useCallback(() => {
     setIsListSVGOpen(!isListSVGOpen);
-  };
+  }, [isListSVGOpen]);
 
-  const handleGridOpen = () => {
+  const handleGridOpen = useCallback(() => {
     setIsGridOpen((prev) => !prev);
     setIsEditing(!isGridOpen);
-  };
+  }, [isGridOpen]);
 
-  const handleCameraDrop = (camera: Camera, rowIndex: number, colIndex: number) => {
+  const handleCameraDrop = useCallback((camera: Camera, rowIndex: number, colIndex: number) => {
     const cellKey = `${activeFloor}-${rowIndex}-${colIndex}`;
     const updatedCamera: Camera = {
       ...camera,
@@ -97,33 +103,33 @@ const Feeding: FC = () => {
     };
     setDroppedCameras((prev) => ({ ...prev, [cellKey]: updatedCamera }));
     setMovedCameras((prev) => new Set(prev).add(camera.id));
-  };
+  }, [activeFloor]);
 
-  const handleSVGDrop = (svg: SVGItem, rowIndex: number, colIndex: number) => {
+  const handleSVGDrop = useCallback((svg: SVGItem, rowIndex: number, colIndex: number) => {
     const cellKey = `${activeFloor}-${rowIndex}-${colIndex}`;
     setDroppedSVGs((prev) => ({ ...prev, [cellKey]: svg }));
-  };
+  }, [activeFloor]);
 
-  const handleFloorChange = (floor: number) => {
+  const handleFloorChange = useCallback((floor: number) => {
     setActiveFloor(floor);
-  };
+  }, []);
 
-  const handleLeftClick = () => {
+  const handleLeftClick = useCallback(() => {
     if (activeFloor > 0) {
       setActiveFloor(prevFloor => prevFloor - 1);
     }
-  };
+  }, [activeFloor]);
 
-  const handleRightClick = () => {
+  const handleRightClick = useCallback(() => {
     if (activeFloor < 2) {
       setActiveFloor(prevFloor => prevFloor + 1);
     }
-  };
+  }, [activeFloor]);
 
-  const handleDoubleClickCamera = (camera: Camera) => {
+  const handleDoubleClickCamera = useCallback((camera: Camera) => {
     setSelectedCameras([camera]);
     setIsModalStreamOpen(true);
-  };
+  }, []);
 
   return (
     <div>
@@ -168,8 +174,8 @@ const Feeding: FC = () => {
           setSelectedCells={setSelectedCells}
         />
       )}
-      <div className={`${FStyles.roomContainer} ${isGridOpen ? FStyles.transparentBackground : ''}`}>
-        <Room
+      <div className={`${FStyles.FloorContainer} ${isGridOpen ? FStyles.transparentBackground : ''}`}>
+        <Floor
           children={null}
           onCameraDropped={handleCameraDrop}
           droppedCameras={droppedCameras}
