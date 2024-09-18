@@ -27,6 +27,7 @@ const LoginPage: FC<LoginPageProps> = ({ navigate }) => {
   const handleLogin = async () => {
     try {
       const data = await login(username, password);
+      localStorage.setItem('username', username);
       // Перенаправление на защищенную страницу
       router.push('/Home/Home');
     } catch (error) {
