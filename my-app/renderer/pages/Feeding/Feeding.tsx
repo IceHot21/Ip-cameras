@@ -131,6 +131,8 @@ const Feeding: FC = () => {
     setIsModalStreamOpen(true);
   }, []);
 
+  const floors = [0, 1, 2]; // Массив этажей
+
   return (
     <div>
       <div className={FStyles.listContainer}>
@@ -175,19 +177,28 @@ const Feeding: FC = () => {
         />
       )}
       <div className={`${FStyles.FloorContainer} ${isGridOpen ? FStyles.transparentBackground : ''}`}>
-        <Floor
-          children={null}
-          onCameraDropped={handleCameraDrop}
-          droppedCameras={droppedCameras}
-          activeFloor={activeFloor}
-          onFloorChange={handleFloorChange}
-          onDoubleClickCamera={handleDoubleClickCamera}
-          FlagLocal={() => setFlagLocal(prev => !prev)}
-          rotationAngles={rotationAngles}
-          setRotationAngles={setRotationAngles}
-          droppedSVGs={droppedSVGs}
-          onSVGDrop={handleSVGDrop}
-        />
+        {floors.map(floorIndex => (
+          <div
+            key={floorIndex}
+            className={`${FStyles.floorWrapper} ${floorIndex === activeFloor ? FStyles.active : FStyles.inactive}`}
+          >
+            <Floor
+              children={null}
+              onCameraDropped={handleCameraDrop}
+              droppedCameras={droppedCameras}
+              activeFloor={activeFloor}
+              onFloorChange={handleFloorChange}
+              onDoubleClickCamera={handleDoubleClickCamera}
+              FlagLocal={() => setFlagLocal(prev => !prev)}
+              rotationAngles={rotationAngles}
+              setRotationAngles={setRotationAngles}
+              droppedSVGs={droppedSVGs}
+              onSVGDrop={handleSVGDrop}
+              floorIndex={floorIndex}
+              isActive={floorIndex === activeFloor}
+            />
+          </div>
+        ))}
         {isEditing && (
           <div className={FStyles.gridContainer}>
             <Grid

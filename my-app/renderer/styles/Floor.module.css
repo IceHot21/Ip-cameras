@@ -16,22 +16,10 @@
   position: relative;
 }
 
-/* .container svg {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-} */
-
-.fonContainer{
+.fonContainer {
   border: 1px solid red;
   height: 100% !important;
   width: 90% !important;
-}
-.cards {
-  display: grid;
-  grid-template-columns: 23% 54%;
-  align-items: center;
-  justify-items: center;
 }
 
 .card {
@@ -43,28 +31,11 @@
   cursor: pointer;
 }
 
-.card.inactive {
-  transform: scale(0.8);
-  opacity: 0.1;
-  margin-right: 10px;
-}
-
 .transparentCell {
   background-color: transparent;
   border: 0px !important;
   position: relative;
 }
-
-.card.active {
-  grid-column: 2 / 3;
-  grid-row: 1;
-  transform: translateX(0) scale(1);
-  opacity: 1;
-  z-index: 1;
-  position: relative;
-  animation: fadeIn 1s ease-in;
-}
-
 
 .indexText {
   margin-bottom: 10px;
@@ -78,9 +49,6 @@
   height: 100%;
 }
 
-/* .cameraIcon svg {
-
-} */
 @keyframes fadeIn {
   from {
     opacity: 0;
