@@ -1,4 +1,4 @@
-import { createElement, FC, useState } from "react";
+import { createElement, FC, useState, useEffect } from "react";
 import HStyles from "./Home.module.css";
 import { BsArrowDownUp } from "react-icons/bs";
 import Svg1 from "../../assets/Svg1.svg";
@@ -9,16 +9,38 @@ import { useRouter } from "next/router";
 import Build123 from '../../assets/Build123.svg'
 import { FaBell, FaChevronLeft, FaChevronRight, FaInfoCircle } from "react-icons/fa";
 import { Button } from "@mui/material";
+import Floor from '../../components/Floor'; // Импортируем компонент Floor
 
 interface HomeProps {
   numberHome: number;
   navigate: (path: string) => Promise<boolean>;
 }
 
+interface Camera {
+  id: number;
+  port: number;
+  name: string;
+  address: string;
+  floor: number;
+  cell: string;
+  initialPosition: { rowIndex: number; colIndex: number };
+  rtspUrl: string;
+  isDisabled: boolean;
+  rotationAngle: number;
+}
+
+interface SVGItem {
+  id: number;
+  name: string;
+}
+
+
 const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [currentSvgIndex, setCurrentSvgIndex] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
+  const [droppedCameras, setDroppedCameras] = useState<{ [key: string]: Camera }>({});
+  const [droppedSVGs, setDroppedSVGs] = useState<{ [key: string]: SVGItem }>({});
   const itemsPerPage = 5;
 
   const totalPages = Math.ceil(numberHome / itemsPerPage);
@@ -31,6 +53,17 @@ const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
   const nextSlide = () => {
     setCurrentIndex((prevIndex) => (prevIndex + 1) % numberHome);
   };
+
+  useEffect(() => {
+    const storedCameras = localStorage.getItem('droppedCameras');
+    const storedSVGs = localStorage.getItem('droppedSVGs');
+    if (storedCameras) {
+      setDroppedCameras(JSON.parse(storedCameras));
+    }
+    if (storedSVGs) {
+      setDroppedSVGs(JSON.parse(storedSVGs));
+    }
+  }, []);
 
   const FloorClick = () => {
     router.push({
@@ -96,35 +129,46 @@ const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
             <SVG className={HStyles.outSide} />
             <span className={HStyles.cameraLabel}>Уличные камеры</span>
             <div>
-            <div className={HStyles.iconTabs}>
-                  <FaBell className={HStyles.tabIcon} />
-                  <FaInfoCircle className={HStyles.tabIcon} />
-                </div>
-            <div className={HStyles.tableWrapper}>
-              <div className={HStyles.panelTitle1}>
-                
+              <div className={HStyles.iconTabs}>
+                <FaBell className={HStyles.tabIcon} />
+                <FaInfoCircle className={HStyles.tabIcon} />
               </div>
-              <div className={HStyles.tableContainer1}>
-                <table>
-                  <thead>
-                    <tr>
-                      <th>Дата и время</th>
-                      <th>Событие</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                  </tbody>
-                </table>
+              <div className={HStyles.tableWrapper}>
+                <div className={HStyles.panelTitle1}>
+                </div>
+                <div className={HStyles.tableContainer1}>
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Дата и время</th>
+                        <th>Событие</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </div>
           </div>
-          </div>
 
           <div className={HStyles.planInside}>
-            {createElement(svgImages[currentSvgIndex], {
-              className: HStyles.plan,
-              onClick: FloorClick
-            })}
+            <Floor
+              navigate={navigate}
+              children={null}
+              onCameraDropped={() => {}}
+              droppedCameras={droppedCameras}
+              activeFloor={currentSvgIndex}
+              onFloorChange={setCurrentSvgIndex}
+              onDoubleClickCamera={() => {}}
+              FlagLocal={() => {}}
+              rotationAngles={{}}
+              setRotationAngles={() => {}}
+              droppedSVGs={droppedSVGs}
+              onSVGDrop={() => {}}
+              floorIndex={currentSvgIndex}
+              isActive={true}
+            />
             <span className={HStyles.cameraLabel}>
               <button className={HStyles.prevFloor} onClick={prevFloor}><FaChevronLeft /></button>
               Этаж {currentSvgIndex + 1}
@@ -156,11 +200,6 @@ const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
             </button>
           )}
         </div>
-
-
-
-
-
 
         <div className={HStyles.containerT}>
           <div className={HStyles.panelContainer}>
@@ -231,11 +270,3 @@ const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
 };
 
 export default Home;
-
-
-//TODO: 1) сделать сортировку по этажу, помещению, дате и времени
-//TODO: 2) внизу показывать какие позиции видны (показаны 1-5/6-10 и т.д.)
-//TODO: 3) правильно заносить данные из настроек
-//TODO: 4) карусель внизу сделать чтобы вне зависимости от количества страниц показывалось 1, 2...предпоследнее и послежднее (не больше 4 значений)
-//TODO: 5) добавить дату и время ?????
-//TODO: 6) Figma поиграться 
