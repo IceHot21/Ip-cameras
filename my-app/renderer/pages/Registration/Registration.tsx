@@ -123,7 +123,7 @@ const Registration: FC<RegistrationProps> = ({ navigate, users, fetchUsers }) =>
                         </MenuItem>
                     ))}
                 </Select>
-                <button type="submit" className={RPStyles.submitButton}>Зарегистрироваться</button>
+                <button type="submit" className={RPStyles.submitButton}>Зарегистрировать</button>
             </form>
         </div>
     );
