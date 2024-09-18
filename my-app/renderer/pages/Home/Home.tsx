@@ -12,9 +12,10 @@ import { Button } from "@mui/material";
 
 interface HomeProps {
   numberHome: number;
+  navigate: (path: string) => Promise<boolean>;
 }
 
-const Home: FC<HomeProps> = ({ numberHome }) => {
+const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [currentSvgIndex, setCurrentSvgIndex] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);

@@ -27,7 +27,11 @@ interface SVGItem {
   name: string;
 }
 
-const Feeding: FC = () => {
+interface FeedingProps {
+  navigate: (path: string) => Promise<boolean>;
+}
+
+const Feeding: FC<FeedingProps> = ({navigate}) => {
   const [isListCameraOpen, setIsListCameraOpen] = useState(false);
   const [isListSVGOpen, setIsListSVGOpen] = useState(false);
   const [isGridOpen, setIsGridOpen] = useState(false);
@@ -154,6 +158,7 @@ const Feeding: FC = () => {
       </div>
       {isListCameraOpen && (
         <ListCamera
+          navigate={navigate}
           open={isListCameraOpen}
           onClose={() => setIsListCameraOpen(false)}
           FlagLocal={() => setFlagLocal(prev => !prev)}
@@ -165,6 +170,7 @@ const Feeding: FC = () => {
       )}
       {isListSVGOpen && (
         <ListSVG
+          navigate={navigate}
           open={isListSVGOpen}
           onClose={() => setIsListSVGOpen(false)}
           onGridOpen={handleGridOpen}
@@ -183,6 +189,7 @@ const Feeding: FC = () => {
             className={`${FStyles.floorWrapper} ${floorIndex === activeFloor ? FStyles.active : FStyles.inactive}`}
           >
             <Floor
+              navigate={navigate}
               children={null}
               onCameraDropped={handleCameraDrop}
               droppedCameras={droppedCameras}
@@ -202,6 +209,7 @@ const Feeding: FC = () => {
         {isEditing && (
           <div className={FStyles.gridContainer}>
             <Grid
+              navigate={navigate}
               isSelecting={isSelecting}// Передаем SetIsSelecting
               onCameraDrop={handleCameraDrop}
               onSVGDrop={handleSVGDrop}
@@ -220,6 +228,7 @@ const Feeding: FC = () => {
       </div>
       {isModalStreamOpen && (
         <ModalStream
+          navigate={navigate}
           selectedCameras={selectedCameras}
           setCam={setSelectedCameras}
           onClose={() => setIsModalStreamOpen(false)}

@@ -6,11 +6,12 @@ import MStyles from "../styles/Modal.module.css";
 import "react-datepicker/dist/react-datepicker.css";
 
 interface ModalViewProps {
+  navigate: (path: string) => Promise<boolean>;
   open: boolean;
   onClose: () => void;
 }
 
-const ModalView: FC<ModalViewProps> = ({ open, onClose }) => {
+const ModalView: FC<ModalViewProps> = ({ open, onClose, navigate }) => {
 
   return (
     <AnimatePresence>

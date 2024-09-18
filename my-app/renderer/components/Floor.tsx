@@ -23,6 +23,7 @@ interface SVGItem {
 }
 
 type FloorProps = {
+  navigate: (path: string) => Promise<boolean>;
   children: React.ReactNode;
   onCameraDropped: (camera: Camera, rowIndex: number, colIndex: number) => void;
   droppedCameras: { [key: string]: Camera };
@@ -38,7 +39,7 @@ type FloorProps = {
   isActive: boolean;
 };
 
-const Floor: FC<FloorProps> = ({ children, droppedCameras, activeFloor, onFloorChange, onDoubleClickCamera, FlagLocal, rotationAngles, setRotationAngles, droppedSVGs, onSVGDrop, floorIndex, isActive }) => {
+const Floor: FC<FloorProps> = ({ children, droppedCameras, activeFloor, navigate, onFloorChange, onDoubleClickCamera, FlagLocal, rotationAngles, setRotationAngles, droppedSVGs, onSVGDrop, floorIndex, isActive }) => {
   const [selectedCameras, setSelectedCameras] = useState<Camera[]>([]);
   const menuClick = "Меню";
   const { show } = useContextMenu({ id: menuClick });

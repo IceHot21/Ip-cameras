@@ -9,6 +9,7 @@ interface SVGItem {
 }
 
 interface ListSVGProps {
+  navigate: (path: string) => Promise<boolean>;
   open: boolean;
   onClose: () => void;
   onGridOpen: () => void;
@@ -30,6 +31,7 @@ const svgItems: SVGItem[] = [
 ];
 
 const ListSVG: FC<ListSVGProps> = ({
+  navigate,
   open,
   onClose,
   onGridOpen,

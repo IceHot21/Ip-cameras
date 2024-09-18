@@ -5,11 +5,12 @@ import MStyles from "../styles/Modal.module.css";
 import { FormControl, InputLabel, MenuItem, Select, SelectChangeEvent } from "@mui/material";
 
 interface ModalSortProps {
+  navigate: (path: string) => Promise<boolean>;
   open: boolean;
   onClose: () => void;
 }
 
-const ModalSort: FC<ModalSortProps> = ({ open, onClose }) => {
+const ModalSort: FC<ModalSortProps> = ({ open, onClose, navigate }) => {
   const [sortCriteria, setSortCriteria] = useState("date");
   const [sortOrder, setSortOrder] = useState("down");
   const [isFocused, setIsFocused] = useState(false);

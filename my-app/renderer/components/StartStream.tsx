@@ -13,6 +13,7 @@ interface Camera {
   rtspUrl: string;
 }
 interface StartStreamProps {
+  navigate: (path: string) => Promise<boolean>;
   port: number;
   rtspUrl: string;
   id: number;
@@ -21,7 +22,7 @@ interface StartStreamProps {
   onClose: () => void;
 }
 
-const StartStream: FC<StartStreamProps> = ({ port, rtspUrl, id, cameraName, setCam, onClose }) => {
+const StartStream: FC<StartStreamProps> = ({ port, rtspUrl, id, cameraName, setCam, onClose, navigate }) => {
   const [error, setError] = useState(null);
   const [players, setPlayers] = useState(null);
   const [isRecording, setIsRecording] = useState(false);

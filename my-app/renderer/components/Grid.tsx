@@ -23,6 +23,7 @@ interface SVGItem {
 }
 
 interface GridProps {
+  navigate: (path: string) => Promise<boolean>;
   onCameraDrop: (camera: Camera, rowIndex: number, colIndex: number) => void;
   onSVGDrop: (svg: SVGItem, rowIndex: number, colIndex: number) => void;
   droppedCameras: { [key: string]: Camera };
@@ -38,6 +39,7 @@ interface GridProps {
 }
 
 const Grid: FC<GridProps> = ({
+  navigate,
   onCameraDrop,
   onSVGDrop,
   droppedCameras,

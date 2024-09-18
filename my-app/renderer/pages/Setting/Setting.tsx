@@ -4,11 +4,12 @@ import SStyles from "./Setting.module.css";
 import { fetchWithRetry } from "../../refreshToken";
 
 interface SettingProps {
+  navigate: (path: string) => Promise<boolean>;
   numberHome: number;
   setNumberHome: (value: number) => void;
 }
 
-const Setting: FC<SettingProps> = ({ numberHome, setNumberHome }) => {
+const Setting: FC<SettingProps> = ({ numberHome, setNumberHome, navigate }) => {
   // Временное состояние для хранения значения input
   const [inputValue, setInputValue] = useState<number>(numberHome);
   // Временное состояние для хранения выбранного файла

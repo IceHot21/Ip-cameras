@@ -11,6 +11,7 @@ import styled from 'styled-components';
 
 
 interface ModalFiltProps {
+  navigate: (path: string) => Promise<boolean>;
   open: boolean;
   onClose: () => void;
 }
@@ -56,7 +57,7 @@ const CustomInput = ({ value, onClick }: any) => (
   </IconButton>
 );
 
-const ModalFilt: FC<ModalFiltProps> = ({ open, onClose }) => {
+const ModalFilt: FC<ModalFiltProps> = ({ open, onClose, navigate }) => {
   const [startDate, setStartDate] = useState<Date | null>(new Date());
   const [endDate, setEndDate] = useState<Date | null>(new Date());
 

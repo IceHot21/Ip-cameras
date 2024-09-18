@@ -7,7 +7,11 @@ import ModalSort from "../../components/ModalSort";
 import ModalFilt from "../../components/ModalFilt";
 import VStyles from "./Videoarchive.module.css"
 
-const Videoarchive: FC = () => {
+interface VideoarchiveProps {
+    navigate: (path: string) => Promise<boolean>;
+}
+
+const Videoarchive: FC<VideoarchiveProps> = (navigate) => {
     const [isModalViewOpen, setIsModalViewOpen] = useState(false);
     const [isModalSortOpen, setIsModalSortOpen] = useState(false);
     const [isModalFiltOpen, setIsModalFiltOpen] = useState(false);
@@ -40,9 +44,9 @@ const Videoarchive: FC = () => {
                 </div>
             </motion.div>
 
-            <ModalView open={isModalViewOpen} onClose={() => setIsModalViewOpen(false)} />
-            <ModalSort open={isModalSortOpen} onClose={() => setIsModalSortOpen(false)} />
-            <ModalFilt open={isModalFiltOpen} onClose={() => setIsModalFiltOpen(false)} />
+            <ModalView navigate={navigate.navigate} open={isModalViewOpen} onClose={() => setIsModalViewOpen(false)} />
+            <ModalSort navigate={navigate.navigate} open={isModalSortOpen} onClose={() => setIsModalSortOpen(false)} />
+            <ModalFilt navigate={navigate.navigate} open={isModalFiltOpen} onClose={() => setIsModalFiltOpen(false)} />
         </div>
     )
 }

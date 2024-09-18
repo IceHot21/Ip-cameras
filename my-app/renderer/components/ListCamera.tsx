@@ -6,6 +6,7 @@ import { FaCheck } from 'react-icons/fa';
 import { fetchWithRetry } from '../refreshToken';
 
 interface ListCameraProps {
+  navigate: (path: string) => Promise<boolean>;
   open: boolean;
   onClose: () => void;
   FlagLocal: () => void;
@@ -28,6 +29,7 @@ interface Camera {
 }
 
 const ListCamera: FC<ListCameraProps> = ({
+  navigate,
   open,
   onClose,
   FlagLocal,

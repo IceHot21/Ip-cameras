@@ -7,7 +7,12 @@ import { Visibility, VisibilityOff } from '@mui/icons-material';
 import AtisLogo from '../../components/AtisLogo';
 import { login } from '../api/auth';
 
-const LoginPage: FC = () => {
+
+interface LoginPageProps {
+  navigate: (path: string) => Promise<boolean>;
+}
+
+const LoginPage: FC<LoginPageProps> = ({ navigate }) => {
   const router = useRouter();
   const [stage, setStage] = useState(0); // Управляет стадиями анимации
   const [showPassword, setShowPassword] = useState(false);
