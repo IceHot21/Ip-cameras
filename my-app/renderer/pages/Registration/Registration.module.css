@@ -1,0 +1,33 @@
+.mainContainer {
+    width: 100vw;
+    height: 92vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: rgb(240, 240, 240);
+}
+.regContainer {
+    width: 15%;
+    min-width: 300px;
+    height: 25%;
+    min-height: 200px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+}
+.submitButton {
+    font-size: 18px;
+    border-radius: 10px;
+    padding: 2%;
+    background-color: #1C1E1B !important;
+    color: white !important;
+    border: none;
+    cursor: pointer;
+}
+.submitButton:hover {
+    transform: scale(1.1);
+    background-color: #3c4139 !important;
+    border-radius: 10px;
+    transition: .2s;
+}
