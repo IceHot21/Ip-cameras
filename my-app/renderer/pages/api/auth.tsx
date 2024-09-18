@@ -9,12 +9,12 @@ import { fetchWithRetry } from '../../refreshToken';
 // Пример функции для входа
 export const login = async (username, password) => {
   try {
-    const response = await fetchWithRetry('https://192.168.0.147:4200/api/login', 'POST', {
+    const response = await fetchWithRetry('https://192.168.0.144:4200/api/login', 'POST', {
       name: username,
       password: password,
     }, '/Home/Home');
-    console.log(response.data); // Проверьте ответ сервера
-    return response.data;
+    console.log(response); // Проверьте ответ сервера
+    return response;
   } catch (error) {
     console.error('Login failed', error);
     throw error;
