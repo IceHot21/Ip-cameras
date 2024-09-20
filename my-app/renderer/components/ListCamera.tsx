@@ -66,7 +66,7 @@ const ListCamera: FC<ListCameraProps> = ({
     setError(null);
 
     try {
-      const response = await fetchWithRetry('https://192.168.0.147:4200/stream/cameras', 'GET', null, '/list-cameras');
+      const response = await fetchWithRetry('https://192.168.0.144:4200/stream/cameras', 'GET', null, '/list-cameras');
       console.log(response)
       console.log(droppedCameras);
       if (response.length > 0) {

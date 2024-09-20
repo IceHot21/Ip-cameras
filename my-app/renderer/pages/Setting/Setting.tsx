@@ -63,7 +63,7 @@ const Setting: FC<SettingProps> = ({ numberHome, setNumberHome, navigate }) => {
     formData.append('file', file);
     console.log("Файл отправлен на сервер:", formData);
     try {
-      const response = await fetchWithRetry('https://192.168.0.147:4200/api/save-file', 'POST', formData, '/Setting/Setting');
+      const response = await fetchWithRetry('https://192.168.0.144:4200/api/save-file', 'POST', formData, '/Setting/Setting');
   
       if (response.ok) {
         console.log('File uploaded successfully');

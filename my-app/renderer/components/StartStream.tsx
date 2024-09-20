@@ -29,7 +29,7 @@ const StartStream: FC<StartStreamProps> = ({ port, rtspUrl, id, cameraName, setC
 
 
   useEffect(() => {
-      const url = `ws://192.168.0.147:${port}`;
+      const url = `ws://192.168.0.144:${port}`;
       const player = new JSMpeg.Player(url, {
         canvas: document.getElementById(`canvas${id}`),
         autoplay: true,
