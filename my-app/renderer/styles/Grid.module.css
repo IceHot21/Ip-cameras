@@ -6,7 +6,7 @@
   top: 0;
   left: 0;
   width: 100%;
-  height: 100%;
+  height: 77%;
 }
 
 .grid {
@@ -83,4 +83,9 @@
   background-color: rgba(255, 255, 0, 0.3);
   clip-path: polygon(50% 50%, 100% 0%, 100% 100%);
   transform-origin: 50% 50%;
+}
+
+.inactiveFloor .gridContainer {
+  width: 100% !important;
+  height: 100% !important;
 }

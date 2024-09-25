@@ -19,17 +19,6 @@
   animation: fadeIn 0.5s forwards;
 }
 
-.FloorContainer {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  align-items: center;
-  justify-items: center;
-  position: relative;
-  height: 100%;
-  transition: background 0.4s ease-in;
-  animation: fadeIn 1s ease-in;
-}
-
 .listButton {
   position: absolute;
   width: 100%;
@@ -78,7 +67,6 @@
   }
 }
 
-/* Стили для активных и неактивных этажей */
 .FloorContainer .active {
   grid-column: 2 / 3;
   grid-row: 1;
@@ -115,14 +103,62 @@
 }
 
 .FloorContainer {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-items: center;
+  justify-content: center;
   position: relative;
-  height: 100%;
+  height: 84vh; /* Занимает всю высоту экрана */
   transition: background 0.4s ease-in;
   animation: fadeIn 1s ease-in;
+}
+
+.activeFloor {
+  width: 100%;
+  height: 77%; /* Активный этаж занимает 70% высоты */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+  animation: fadeIn 1s ease-in;
+}
+
+.inactiveFloors {
+  width: 99%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow-x: auto;
+  white-space: nowrap;
+  padding: 10px;
+}
+
+.inactiveFloor {
+  width: 100%; /* Ширина миниатюры */
+  height: 100%;
+  margin: 0 10px; /* Отступ между миниатюрами */
+  opacity: 0.5;
+  transition: opacity 0.3s ease;
+}
+
+.inactiveFloor svg {
+width: 100% !important;
+height: 100% !important;
+}
+.inactiveFloor .gridContainer {
+  width: 100% !important;
+  height: 100% !important;
+}
+.inactiveFloor:hover {
+  opacity: 1;
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .listButton {
@@ -171,21 +207,4 @@
     opacity: 1;
     transform: translateY(0);
   }
-}
-
-/* Стили для активных и неактивных этажей */
-.FloorContainer .active {
-  grid-column: 2 / 3;
-  grid-row: 1;
-  transform: translateX(0) scale(1);
-  opacity: 1;
-  z-index: 1;
-  position: relative;
-  animation: fadeIn 1s ease-in;
-}
-
-.FloorContainer .inactive {
-  transform: scale(0.8);
-  opacity: 0.1;
-  margin-right: 10px;
 }

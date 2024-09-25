@@ -176,18 +176,16 @@ const Feeding: FC<FeedingProps> = ({navigate}) => {
           onGridOpen={handleGridOpen}
           onSVGDrop={(svg) => handleSVGDrop(svg, 0, 0)}
           activeFloor={activeFloor}
-          isSelecting={isSelecting} // Передаем isSelecting
-          setIsSelecting={setIsSelecting} // Передаем SetIsSelecting
+          isSelecting={isSelecting} 
+          setIsSelecting={setIsSelecting}
           selectedCells={selectedCells}
           setSelectedCells={setSelectedCells}
         />
       )}
-      <div className={`${FStyles.FloorContainer} ${isGridOpen ? FStyles.transparentBackground : ''}`}>
-        {floors.map(floorIndex => (
-          <div
-            key={floorIndex}
-            className={`${FStyles.floorWrapper} ${floorIndex === activeFloor ? FStyles.active : FStyles.inactive}`}
-          >
+   {/*    <div className={`${FStyles.FloorContainer} ${isGridOpen ? FStyles.transparentBackground : ''}`}>
+        {floors.map(floorIndex => ( */}
+          <div className={FStyles.FloorContainer}>
+          <div className={FStyles.activeFloor}>
             <Floor
               navigate={navigate}
               children={null}
@@ -201,11 +199,40 @@ const Feeding: FC<FeedingProps> = ({navigate}) => {
               setRotationAngles={setRotationAngles}
               droppedSVGs={droppedSVGs}
               onSVGDrop={handleSVGDrop}
-              floorIndex={floorIndex}
-              isActive={floorIndex === activeFloor}
+              floorIndex={activeFloor}
+              isActive={true}
             />
           </div>
-        ))}
+          <div className={FStyles.inactiveFloors}>
+            {floors.map(floorIndex => (
+              floorIndex !== activeFloor && (
+                <div
+                  key={floorIndex}
+                  className={FStyles.inactiveFloor}
+                  onClick={() => handleFloorChange(floorIndex)}
+                >
+                  <Floor
+                    navigate={navigate}
+                    children={null}
+                    onCameraDropped={handleCameraDrop}
+                    droppedCameras={droppedCameras}
+                    activeFloor={activeFloor}
+                    onFloorChange={handleFloorChange}
+                    onDoubleClickCamera={handleDoubleClickCamera}
+                    FlagLocal={() => setFlagLocal(prev => !prev)}
+                    rotationAngles={rotationAngles}
+                    setRotationAngles={setRotationAngles}
+                    droppedSVGs={droppedSVGs}
+                    onSVGDrop={handleSVGDrop}
+                    floorIndex={floorIndex}
+                    isActive={false}
+                  />
+                </div>
+              )
+            ))}
+          </div>
+  {/*       </div> */}
+      {/*   ))} */}
         {isEditing && (
           <div className={FStyles.gridContainer}>
             <Grid
