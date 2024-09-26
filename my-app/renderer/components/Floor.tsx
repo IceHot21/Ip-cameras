@@ -89,18 +89,27 @@ const Floor: FC<FloorProps> = ({ children, droppedCameras, activeFloor, navigate
     );
   }, []);
 
-  const displayMenu = useCallback((e: React.MouseEvent<HTMLDivElement>, cameraId: string) => {
+  const displayMenu = useCallback((e: React.MouseEvent<HTMLDivElement>, cameraId: string, svgKey?: string) => {
     e.preventDefault();
-    show({ event: e, props: { cameraId } });
+    show({ event: e, props: { cameraId, svgKey  } });
   }, [show]);
 
   const handleItemClick = useCallback(({ id, event, props }: ItemParams<any, any>) => {
     const cameraId = props.cameraId;
+    if (id === "rotateLeft" || id === "rotateRight") {
     setRotationAngles((prevAngles) => ({
       ...prevAngles,
       [cameraId]: id === "rotateLeft" ? (prevAngles[cameraId] || 0) + 45 : (prevAngles[cameraId] || 0) - 45,
     }));
-  }, [setRotationAngles]);
+  } else if (id === "deleteSVG") {
+    const svgKey = props.svgKey;
+    let newDroppedSVGs = { ...droppedSVGs };
+    delete newDroppedSVGs[svgKey];
+    newDroppedSVGs= newDroppedSVGs;
+    localStorage.setItem('droppedSVGs', JSON.stringify(newDroppedSVGs));
+  }
+  }, [setRotationAngles, droppedSVGs]);
+  
 
   const handleDoubleClick = useCallback((camera: Camera) => {
     if (!selectedCameras.some(c => c.id === camera.id)) {
@@ -216,6 +225,7 @@ const Floor: FC<FloorProps> = ({ children, droppedCameras, activeFloor, navigate
                             draggable
                             onDragStart={(e) => handleDragStart(e, svg)}
                             title={svg.name}
+                            onContextMenu={(e) => displayMenu(e, '', cellKey)}
                           >
                             {renderSVG(svg.name)}
                           </div>
@@ -229,6 +239,12 @@ const Floor: FC<FloorProps> = ({ children, droppedCameras, activeFloor, navigate
           </div>
         {children}
       </div>
+      <Menu id={menuClick}>
+        <Item id="rotateLeft" onClick={handleItemClick}>Повернуть влево</Item>
+        <Item id="rotateRight" onClick={handleItemClick}>Повернуть вправо</Item>
+        <Separator />
+        <Item id="deleteSVG" onClick={handleItemClick}>Удалить SVG</Item>
+      </Menu>
     </div>
   );
 };
