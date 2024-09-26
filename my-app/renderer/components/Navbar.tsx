@@ -66,8 +66,7 @@ const Navigation = ({ onMenuItemClick }) => {
   const menuItems = [
     { name: "Главная", action: "/Home/Home", icon: <BiHome size={24} /> },
     { name: "Схема здания", action: "/Feeding/Feeding", icon: <BiCarousel size={24} /> },
-    { name: "Видеоархив", action: "/Videoarchive/Videoarchive", icon: <BiCameraMovie size={24} /> },
-    { name: "Фотоархив", action: "/Photoarchive/Photoarchive", icon: <BiCamera size={24} /> },
+/*     { name: "Видеоархив", action: "/Videoarchive/Videoarchive", icon: <BiCameraMovie size={24} /> }, */
     { name: "Настройки", action: "/Setting/Setting", icon: <IoSettingsOutline size={24} /> },
     { name: "Регистрация", action: "/Registration/Registration", icon: <MdAppRegistration size={24} /> },
     { name: "Перезагрузка", action: "/LoginPage/LoginPage", icon: <BiRepeat size={24} /> },

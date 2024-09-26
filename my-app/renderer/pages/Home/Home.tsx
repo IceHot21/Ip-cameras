@@ -153,27 +153,51 @@ const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
           </div>
 
           <div className={HStyles.planInside}>
-            <Floor
-              navigate={navigate}
-              children={null}
-              onCameraDropped={() => {}}
-              droppedCameras={droppedCameras}
-              activeFloor={currentSvgIndex}
-              onFloorChange={setCurrentSvgIndex}
-              onDoubleClickCamera={() => {}}
-              FlagLocal={() => {}}
-              rotationAngles={{}}
-              setRotationAngles={() => {}}
-              droppedSVGs={droppedSVGs}
-              onSVGDrop={() => {}}
-              floorIndex={currentSvgIndex}
-              isActive={true}
-            />
+            <div className={HStyles.plan}>
+              <Floor
+                navigate={navigate}
+                children={null}
+                onCameraDropped={() => { }}
+                droppedCameras={droppedCameras}
+                activeFloor={currentSvgIndex}
+                onFloorChange={setCurrentSvgIndex}
+                onDoubleClickCamera={() => { }}
+                FlagLocal={() => { }}
+                rotationAngles={{}}
+                setRotationAngles={() => { }}
+                droppedSVGs={droppedSVGs}
+                onSVGDrop={() => { }}
+                floorIndex={currentSvgIndex}
+                isActive={true}
+              />
+            </div>
             <span className={HStyles.cameraLabel}>
               <button className={HStyles.prevFloor} onClick={prevFloor}><FaChevronLeft /></button>
               Этаж {currentSvgIndex + 1}
               <button className={HStyles.nextFloor} onClick={nextFloor}><FaChevronRight /></button>
             </span>
+            <div>
+              <div className={HStyles.iconTabs} style={{ justifyContent: "flex-end" }}>
+                <FaBell className={HStyles.tabIcon} />
+                <FaInfoCircle className={HStyles.tabIcon} />
+              </div>
+              <div className={HStyles.tableWrapper}>
+                <div className={HStyles.panelTitle1}>
+                </div>
+                <div className={HStyles.tableContainer1}>
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Дата и время</th>
+                        <th>Событие</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
         <div className={HStyles.carousel}>

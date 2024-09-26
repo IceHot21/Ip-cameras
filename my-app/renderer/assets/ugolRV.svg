@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<!-- Создано Microsoft Visio, экспорт SVG wallV.svg Страница-1 -->
+<!-- Создано Microsoft Visio, экспорт SVG ugolRV.svg Страница-1 -->
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:ev="http://www.w3.org/2001/xml-events"
 		xmlns:v="http://schemas.microsoft.com/visio/2003/SVGExtensions/" width="42.75px" height="42.75px"
-		viewBox="0 0 101.5 101.35" xml:space="preserve" color-interpolation-filters="sRGB" class="st3">
+		viewBox="0 0 101.5 101.4" xml:space="preserve" color-interpolation-filters="sRGB" class="st3">
 	<v:documentProperties v:langID="1049" v:metric="true" v:viewMarkup="false"/>
 
 	<style type="text/css">
@@ -18,13 +18,20 @@
 		<title>Страница-1</title>
 		<v:pageProperties v:drawingScale="1" v:pageScale="1" v:drawingUnits="19" v:shadowOffsetX="9.00003"
 				v:shadowOffsetY="-9.00003"/>
-		<g id="shape10-1" v:mID="10" v:groupContext="shape" transform="translate(0.125,-0.125)">
+		<g id="shape10-1" v:mID="10" v:groupContext="shape" transform="translate(101.375,101.525) rotate(180)">
 			<title>Лист.10</title>
-			<rect x="0" y="0.250003" width="101.25" height="101.1" class="st1"/>
+			<rect x="0" y="0.299983" width="101.25" height="101.1" class="st1"/>
 		</g>
-		<g id="shape11-3" v:mID="11" v:groupContext="shape" transform="translate(0.125,101.575) scale(1,-1)">
-			<title>Лист.4</title>
-			<path d="M0 50.85 L0 0.35 L5.5 0.35 L11 0.35 L11 50.85 L11 101.35 L5.5 101.35 L0 101.35 L0 50.85 Z" class="st2"/>
+		<g id="group16-3" transform="translate(101.3,101.7) rotate(180)" v:mID="16" v:groupContext="group">
+			<title>Лист.16</title>
+			<g id="group17-4" v:mID="17" v:groupContext="group">
+				<title>Страница-1</title>
+				<g id="shape18-5" v:mID="18" v:groupContext="shape" transform="translate(0,101.8) scale(1,-1)">
+					<title>Лист.5</title>
+					<path d="M0 50.9 L0 0.4 L50.5 0.4 L101 0.4 L101 5.9 L101 11.4 L56 11.4 L11 11.4 L11 56.4 L11 101.4 L5.5 101.4
+								 L0 101.4 L0 50.9 Z" class="st2"/>
+				</g>
+			</g>
 		</g>
 	</g>
 </svg>

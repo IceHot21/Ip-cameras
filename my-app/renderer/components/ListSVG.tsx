@@ -22,12 +22,22 @@ interface ListSVGProps {
 }
 
 const svgItems: SVGItem[] = [
-  { id: 1, name: 'doorL'},
-  { id: 2, name: 'doorR'},
-  { id: 3, name: 'ugolLV'},
-  { id: 4, name: 'wallG'},
-  { id: 5, name: 'wallV'},
-  { id: 6, name: 'window'},
+  { id: 1, name: 'doorD'},
+  { id: 2, name: 'doorL'},
+  { id: 3, name: 'doorR'},
+  { id: 4, name: 'doorV'},
+  { id: 5, name: 'ugolLD'},
+  { id: 6, name: 'ugolLV'},
+  { id: 7, name: 'ugolRD'},
+  { id: 8, name: 'ugolRV'},
+  { id: 9, name: 'wallG'},
+  { id: 10, name: 'wallGD'},
+  { id: 11, name: 'wallV'},
+  { id: 12, name: 'wallVR'},
+  { id: 13, name: 'windowD'},
+  { id: 14, name: 'windowL'},
+  { id: 15, name: 'windowR'},
+  { id: 16, name: 'windowU'},
 ];
 
 const ListSVG: FC<ListSVGProps> = ({

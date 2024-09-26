@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<!-- Создано Microsoft Visio, экспорт SVG wallV.svg Страница-1 -->
+<!-- Создано Microsoft Visio, экспорт SVG windowR.svg Страница-1 -->
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:ev="http://www.w3.org/2001/xml-events"
 		xmlns:v="http://schemas.microsoft.com/visio/2003/SVGExtensions/" width="42.75px" height="42.75px"
-		viewBox="0 0 101.5 101.35" xml:space="preserve" color-interpolation-filters="sRGB" class="st3">
+		viewBox="0 0 101.35 101.5" xml:space="preserve" color-interpolation-filters="sRGB" class="st3">
 	<v:documentProperties v:langID="1049" v:metric="true" v:viewMarkup="false"/>
 
 	<style type="text/css">
@@ -18,13 +18,16 @@
 		<title>Страница-1</title>
 		<v:pageProperties v:drawingScale="1" v:pageScale="1" v:drawingUnits="19" v:shadowOffsetX="9.00003"
 				v:shadowOffsetY="-9.00003"/>
-		<g id="shape10-1" v:mID="10" v:groupContext="shape" transform="translate(0.125,-0.125)">
+		<g id="shape10-1" v:mID="10" v:groupContext="shape" transform="translate(101.625,0.125) rotate(90)">
 			<title>Лист.10</title>
-			<rect x="0" y="0.250003" width="101.25" height="101.1" class="st1"/>
+			<rect x="0" y="0.399966" width="101.25" height="101.1" class="st1"/>
 		</g>
-		<g id="shape11-3" v:mID="11" v:groupContext="shape" transform="translate(0.125,101.575) scale(1,-1)">
-			<title>Лист.4</title>
-			<path d="M0 50.85 L0 0.35 L5.5 0.35 L11 0.35 L11 50.85 L11 101.35 L5.5 101.35 L0 101.35 L0 50.85 Z" class="st2"/>
+		<g id="shape15-3" v:mID="15" v:groupContext="shape" transform="translate(-0.274966,0.249856) rotate(-90) scale(-1,1)">
+			<title>Лист.11</title>
+			<path d="M0 96 L0 90.5 L50.5 90.5 L101 90.5 L101 96 L101 101.5 L50.5 101.5 L0 101.5 L0 96 ZM100 98.5 C100 96.5 99.3 96.5
+						 50.5 96.5 C1.7 96.5 1 96.5 1 98.5 C1 100.5 1.7 100.5 50.5 100.5 C99.3 100.5 100 100.5 100 98.5 ZM100 93.5
+						 C100 91.5 99.3 91.5 50.5 91.5 C1.7 91.5 1 91.5 1 93.5 C1 95.5 1.7 95.5 50.5 95.5 C99.3 95.5 100 95.5 100
+						 93.5 Z" class="st2"/>
 		</g>
 	</g>
 </svg>

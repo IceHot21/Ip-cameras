@@ -162,6 +162,7 @@ const Floor: FC<FloorProps> = ({ children, droppedCameras, activeFloor, navigate
       localStorage.setItem('droppedSVGs', JSON.stringify(droppedSVGs));
     }
   }, [floorIndex, droppedCameras, droppedSVGs, onSVGDrop]);
+  
 
   return (
     <div className={RStyles.body}>
@@ -172,7 +173,7 @@ const Floor: FC<FloorProps> = ({ children, droppedCameras, activeFloor, navigate
             onClick={() => handleSvgClick(floorIndex)}
           >
             <Svg className={RStyles.fonContainer} />
-            <div className={GStyles.gridContainer} style={{height: '100% !important'}}>
+            <div className={RStyles.gridContainer} style={{height: '100% !important'}}>
               <div className={GStyles.grid}>
                 {Array.from({ length: 15 }).map((_, rowIndex) =>
                   Array.from({ length: 20 }).map((_, colIndex) => {

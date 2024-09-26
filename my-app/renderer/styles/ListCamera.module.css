@@ -9,6 +9,7 @@
   transition: transform 0.3s ease-in-out;
   transform: translateX(0); /* Измените на translateX(100%) для скрытия панели */
   margin-top: 8%;
+  height: 39vh;
 }
 
 .cccccc{
@@ -42,6 +43,7 @@
   display: flex;
   justify-content: center;
   flex-direction: column;
+  overflow: auto;
 }
 
 .tableContainer th,

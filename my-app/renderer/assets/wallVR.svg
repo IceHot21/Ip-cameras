@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<!-- Создано Microsoft Visio, экспорт SVG wallV.svg Страница-1 -->
+<!-- Создано Microsoft Visio, экспорт SVG wallVR.svg Страница-1 -->
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:ev="http://www.w3.org/2001/xml-events"
 		xmlns:v="http://schemas.microsoft.com/visio/2003/SVGExtensions/" width="42.75px" height="42.75px"
 		viewBox="0 0 101.5 101.35" xml:space="preserve" color-interpolation-filters="sRGB" class="st3">
@@ -22,7 +22,7 @@
 			<title>Лист.10</title>
 			<rect x="0" y="0.250003" width="101.25" height="101.1" class="st1"/>
 		</g>
-		<g id="shape11-3" v:mID="11" v:groupContext="shape" transform="translate(0.125,101.575) scale(1,-1)">
+		<g id="shape11-3" v:mID="11" v:groupContext="shape" transform="translate(90.375,101.575) scale(1,-1)">
 			<title>Лист.4</title>
 			<path d="M0 50.85 L0 0.35 L5.5 0.35 L11 0.35 L11 50.85 L11 101.35 L5.5 101.35 L0 101.35 L0 50.85 Z" class="st2"/>
 		</g>

@@ -89,3 +89,23 @@
   width: 100% !important;
   height: 100% !important;
 }
+
+.gridCell [title="doorD"], 
+.gridCell [title="doorL"], 
+.gridCell [title="doorR"], 
+.gridCell [title="doorV"],
+.gridCell [title="ugolLD"],
+.gridCell [title="ugolLV"],
+.gridCell [title="ugolRD"],
+.gridCell [title="ugolRV"],
+.gridCell [title="wallG"],
+.gridCell [title="wallGD"],
+.gridCell [title="wallV"],
+.gridCell [title="wallVR"],
+.gridCell [title="windowD"],
+.gridCell [title="windowL"],
+.gridCell [title="windowR"],
+.gridCell [title="windowU"]
+{
+  position: absolute;
+}

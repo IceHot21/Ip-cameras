@@ -61,3 +61,36 @@
     opacity: 1;
   }
 }
+
+.gridContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.transparentCell [title="doorD"], 
+.transparentCell [title="doorL"], 
+.transparentCell [title="doorR"], 
+.transparentCell [title="doorV"],
+.transparentCell [title="ugolLD"],
+.transparentCell [title="ugolLV"],
+.transparentCell [title="ugolRD"],
+.transparentCell [title="ugolRV"],
+.transparentCell [title="wallG"],
+.transparentCell [title="wallGD"],
+.transparentCell [title="wallV"],
+.transparentCell [title="wallVR"],
+.transparentCell [title="windowD"],
+.transparentCell [title="windowL"],
+.transparentCell [title="windowR"],
+.transparentCell [title="windowU"]
+{
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
