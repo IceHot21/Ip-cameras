@@ -63,7 +63,7 @@ const Setting: FC<SettingProps> = ({ numberHome, setNumberHome, navigate }) => {
     formData.append('file', file);
     console.log("Файл отправлен на сервер:", formData);
     try {
-      const response = await fetchWithRetry('https://192.168.0.144:4200/api/save-file', 'POST', formData, '/Setting/Setting');
+      const response = await fetchWithRetry('https://192.168.0.136:4200/api/save-file', 'POST', formData, '/Setting/Setting');
   
       if (response.ok) {
         console.log('File uploaded successfully');
@@ -170,6 +170,7 @@ const Setting: FC<SettingProps> = ({ numberHome, setNumberHome, navigate }) => {
           <p>Выберите количество зданий:</p>
           <Select
             value={numberOfBuildings || ""}
+            // @ts-ignore
             onChange={handleNumberOfBuildingsChange}
             sx={{ width: '25% !important', marginTop: '10px' }}
           >
@@ -194,6 +195,7 @@ const Setting: FC<SettingProps> = ({ numberHome, setNumberHome, navigate }) => {
                   <p>Выберите количество этажей:</p>
                   <Select
                     value={numberOfFloors[index] || ""}
+                    // @ts-ignore
                     onChange={handleNumberOfFloorsChange(index)}
                     sx={{ width: '25% !important', marginTop: '10px' }}
                   >

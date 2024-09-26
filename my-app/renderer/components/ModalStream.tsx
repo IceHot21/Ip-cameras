@@ -7,6 +7,7 @@ interface ModalStreamProps {
   selectedCameras: Camera[];
   setCam: (cameras: any) => void;
   onClose: () => void;
+  ws: WebSocket
 }
 
 interface Camera {
@@ -20,7 +21,7 @@ interface Camera {
   rtspUrl: string;
 }
 
-const ModalStream: FC<ModalStreamProps> = ({ selectedCameras, setCam, onClose, navigate }) => {
+const ModalStream: FC<ModalStreamProps> = ({ selectedCameras, setCam, onClose, navigate, ws }) => {
   const [cameras, setCameras] = useState<Camera[]>(selectedCameras);
 
   useEffect(() => {
@@ -36,6 +37,7 @@ const ModalStream: FC<ModalStreamProps> = ({ selectedCameras, setCam, onClose, n
           {cameras.map((camera) => (
             <div key={camera.id} className={MSStyles.cameraItem}>
               <StartStream
+                ws={ws}
                 navigate={navigate}
                 key={camera.id}
                 port={camera.port}

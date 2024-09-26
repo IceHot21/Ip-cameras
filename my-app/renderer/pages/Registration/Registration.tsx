@@ -64,7 +64,7 @@ const Registration: FC<RegistrationProps> = ({ navigate, users, fetchUsers }) =>
         const serverLevel = levelMapping[level as keyof typeof levelMapping];
         console.log({ userName, password, level: serverLevel });
 
-        fetchWithRetry('https://192.168.0.144:4200/users/register', 'POST', {
+        fetchWithRetry('https://192.168.0.136:4200/users/register', 'POST', {
             name: userName,
             password: password,
             roles: [serverLevel]
@@ -165,7 +165,7 @@ const DeleteUser: FC<RegistrationProps> = ({ navigate, users, fetchUsers }) => {
         }
 
 
-        fetchWithRetry('https://192.168.0.144:4200/users/delete', 'DELETE', {
+        fetchWithRetry('https://192.168.0.:4200/users/delete', 'DELETE', {
             name: selectedUser
         }, navigate)
             .then(() => {
@@ -207,7 +207,7 @@ const UserManagement: FC<RegistrationProps> = ({ navigate }) => {
     };
 
     const fetchUsers = async () => {
-        await fetchWithRetry('https://192.168.0.144:4200/users', 'GET', {}, navigate)
+        await fetchWithRetry('https://192.168.0.136:4200/users', 'GET', {}, navigate)
             .then((response: User[]) => {
                 const filteredUsers = response.map(({ name, roles }) => ({ name, roles }));
                 setUsers(filteredUsers);

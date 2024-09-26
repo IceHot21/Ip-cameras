@@ -17,23 +17,38 @@ interface StartStreamProps {
   port: number;
   rtspUrl: string;
   id: number;
+  ws: WebSocket;
   cameraName: string;
   setCam: (cameras: Camera[]) => void;
   onClose: () => void;
 }
 
-const StartStream: FC<StartStreamProps> = ({ port, rtspUrl, id, cameraName, setCam, onClose, navigate }) => {
+const StartStream: FC<StartStreamProps> = ({ port, rtspUrl, id, cameraName, setCam, onClose, navigate, ws }) => {
   const [error, setError] = useState(null);
   const [players, setPlayers] = useState(null);
   const [isRecording, setIsRecording] = useState(false);
+  const [isPredictions, setIsPredictions] = useState('');
+
+  //TODO ДОДЕЛАТЬ ВЫВОД ИЗОБРАЖЕНИЯ ПРЕДИКТОВ
+  ws.onmessage = (event) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const predictions = JSON.parse(reader.result as string);
+      setIsPredictions(predictions);
+      // Здесь вы можете обработать полученные предикты
+    };
+    reader.readAsText(event.data);
+  };
 
 
   useEffect(() => {
-      const url = `ws://192.168.0.144:${port}`;
+      const url = `ws://192.168.0.136:${port}`;
       const player = new JSMpeg.Player(url, {
         canvas: document.getElementById(`canvas${id}`),
         autoplay: true,
         onVideoDecode: async (decoder, time) => {
+          //новый канвас для АИ
+          isPredictions
         },
         onSourceEstablished: () =>
           console.log(`Источник установлен для порта ${port}`),

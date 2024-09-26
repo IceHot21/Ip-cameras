@@ -10,10 +10,12 @@ import Build123 from '../../assets/Build123.svg'
 import { FaBell, FaChevronLeft, FaChevronRight, FaInfoCircle } from "react-icons/fa";
 import { Button } from "@mui/material";
 import Floor from '../../components/Floor'; // Импортируем компонент Floor
+import { fetchWithRetry } from "../../refreshToken";
 
 interface HomeProps {
   numberHome: number;
-  navigate: (path: string) => Promise<boolean>;
+  navigate: (path: string) => Promise<boolean>;3
+  ws: WebSocket;
 }
 
 interface Camera {
@@ -29,21 +31,96 @@ interface Camera {
   rotationAngle: number;
 }
 
+interface Room {
+  activeFloor: number;
+  roomName: string;
+  positions: Array<number[]>;
+}
+
+interface Prediction {
+  id: number;
+  camera_port: number;
+  item_predict: string;
+  score_predict: string;
+  date: string;
+}
+
+interface RoomInfo {
+  activeFloor: number;
+  roomName: string;
+}
+
 interface SVGItem {
   id: number;
   name: string;
 }
 
 
-const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
+const Home: FC<HomeProps> = ({ numberHome, navigate, ws }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [currentSvgIndex, setCurrentSvgIndex] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [droppedCameras, setDroppedCameras] = useState<{ [key: string]: Camera }>({});
   const [droppedSVGs, setDroppedSVGs] = useState<{ [key: string]: SVGItem }>({});
+  const [roomInfoMap, setRoomInfoMap] = useState<{ [port: number]: RoomInfo }>({});
   const itemsPerPage = 5;
 
   const totalPages = Math.ceil(numberHome / itemsPerPage);
+
+  const [predictions, setPredictions] = useState<Prediction[]>([]);
+  const [rooms, setRooms] = useState<Room[]>([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await fetchWithRetry('https://192.168.0.136:4200/prediction/eventlist', 'GET', null, '/Home/Home');
+      setPredictions(response);
+
+      // Найти все уникальные camera_port
+      const uniquePorts = [...new Set(response.map(event => event.camera_port))];
+
+      // Сопоставить каждый уникальный camera_port с соответствующим этажом и комнатой
+      const roomInfoMap: { [port: number]: RoomInfo } = {};
+      uniquePorts.forEach(port => {
+        // @ts-ignore
+        const roomInfo = findCellByPort(port);
+        if (roomInfo) {
+        // @ts-ignore
+          roomInfoMap[port] = roomInfo;
+        }
+      });
+      setRoomInfoMap(roomInfoMap);
+    };
+
+    const findCellByPort = (port: number): RoomInfo | null => {
+      const savedDroppedCameras = localStorage.getItem('droppedCameras');
+      if (!savedDroppedCameras) {
+        return null;
+      }
+      const parsedDroppedCameras: { [key: string]: Camera } = JSON.parse(savedDroppedCameras);
+      const camera = Object.values(parsedDroppedCameras).find(camera => camera.port === port);
+      if (!camera) {
+        return null;
+      }
+      const selectedRoom = localStorage.getItem('selectedRooms');
+      const parsedSelectedRoom = JSON.parse(selectedRoom);
+      const roomName = findRoomName(parsedSelectedRoom, camera.cell);
+      return roomName;
+    }
+
+    const findRoomName = (rooms: Room[], data: string): RoomInfo | null => {
+      const [floor, row, col] = data.split('-').map(Number);
+      const filteredRooms = rooms.filter(room => room.activeFloor === floor);
+      for (const room of filteredRooms) {
+        const positionExists = room.positions.some(position => position[0] === row && position[1] === col);
+        if (positionExists) {
+          return { activeFloor: room.activeFloor, roomName: room.roomName };
+        }
+      }
+      return null;
+    }
+
+    fetchData();
+  }, []);
 
   const router = useRouter();
   const svgImages = [Svg1, Svg2, Svg3];
@@ -100,21 +177,20 @@ const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
   const renderTableRows = () => {
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
-    return Array.from({ length: numberHome }, (_, index) => ({
-      date,
-      building: index + 1,
-      floor: index + 1,
-      description: `Описание события для здания №${index + 1}`
-    }))
+    return predictions
       .slice(startIndex, endIndex)
-      .map((event, index) => (
-        <tr key={index}>
-          <td>{event.date}</td>
-          <td>Здание №{event.building}</td>
-          <td>Этаж {event.floor}</td>
-          <td>{event.description}</td>
-        </tr>
-      ));
+      .map((event, index) => {
+        const roomInfo = roomInfoMap[event.camera_port] || { activeFloor: 'Неизвестно', roomName: 'Неизвестно' };
+        return (
+          <tr key={index}>
+            <td>{event.date}</td>
+            <td>Здание №1</td>
+            <td>Этаж {roomInfo.activeFloor}</td>
+            <td>Помещение {roomInfo.roomName}</td>
+            <td>Обнаружен {event.item_predict} с вероятностью {(Number(event.score_predict.slice(0, 6)) * 100).toFixed(2)}%</td>
+          </tr>
+        );
+      });
   };
 
   const handlePageChange = (page: number) => {
@@ -253,6 +329,7 @@ const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
                       <th >Дата и время</th>
                       <th >Здание</th>
                       <th >Номер этажа</th>
+                      <th >Помещение</th>
                       <th >Событие</th>
                     </tr>
                   </thead>
