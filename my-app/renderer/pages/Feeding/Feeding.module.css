@@ -81,7 +81,8 @@
   transform: scale(0.8);
   opacity: 0.1;
   margin-right: 10px;
-}.listIcon {
+}
+.listIcon {
   font-size: 34px;
   cursor: pointer;
   z-index: 1001;
@@ -125,7 +126,7 @@
 }
 
 .inactiveFloors {
-  width: 99%;
+  width: 38%;
   display: flex;
   justify-content: center;
   align-items: center;

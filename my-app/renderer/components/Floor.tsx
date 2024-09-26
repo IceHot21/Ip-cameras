@@ -162,7 +162,6 @@ const Floor: FC<FloorProps> = ({ children, droppedCameras, activeFloor, navigate
       localStorage.setItem('droppedSVGs', JSON.stringify(droppedSVGs));
     }
   }, [floorIndex, droppedCameras, droppedSVGs, onSVGDrop]);
-  
 
   return (
     <div className={RStyles.body}>

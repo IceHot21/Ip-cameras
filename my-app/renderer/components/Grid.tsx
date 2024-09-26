@@ -83,8 +83,8 @@ const Grid: FC<GridProps> = ({
   useEffect(() => {
     const storedRooms = JSON.parse(localStorage.getItem('selectedRooms') || '[]');
     const allPositions = storedRooms.flatMap((room: { positions: number[][] }) => room.positions);
-    console.log(storedRooms)
-    console.log(allPositions)
+/*     console.log(storedRooms)
+    console.log(allPositions) */
     setSavedCells(allPositions);
   }, [isSelecting]);
   const handleDragStart = (e: React.DragEvent<HTMLDivElement>, item: Camera | SVGItem) => {
