@@ -37,9 +37,10 @@ type FloorProps = {
   onSVGDrop: (svg: SVGItem, rowIndex: number, colIndex: number) => void;
   floorIndex: number;
   isActive: boolean;
+  setDroppedSVGs: any;
 };
 
-const Floor: FC<FloorProps> = ({ children, droppedCameras, activeFloor, navigate, onFloorChange, onDoubleClickCamera, FlagLocal, rotationAngles, setRotationAngles, droppedSVGs, onSVGDrop, floorIndex, isActive }) => {
+const Floor: FC<FloorProps> = ({ children, droppedCameras, activeFloor, navigate, onFloorChange, onDoubleClickCamera, FlagLocal, rotationAngles, setRotationAngles, droppedSVGs, onSVGDrop, floorIndex, isActive, setDroppedSVGs }) => {
   const [selectedCameras, setSelectedCameras] = useState<Camera[]>([]);
   const menuClick = "Меню";
   const { show } = useContextMenu({ id: menuClick });
@@ -105,7 +106,7 @@ const Floor: FC<FloorProps> = ({ children, droppedCameras, activeFloor, navigate
     const svgKey = props.svgKey;
     let newDroppedSVGs = { ...droppedSVGs };
     delete newDroppedSVGs[svgKey];
-    newDroppedSVGs= newDroppedSVGs;
+    setDroppedSVGs(newDroppedSVGs);
     localStorage.setItem('droppedSVGs', JSON.stringify(newDroppedSVGs));
   }
   }, [setRotationAngles, droppedSVGs]);
@@ -210,7 +211,7 @@ const Floor: FC<FloorProps> = ({ children, droppedCameras, activeFloor, navigate
                           >
                             <BsFillCameraVideoFill style={{ transform: `rotate(${rotationAngle}deg)`, height: '50%', width: '100%' }} />
                             <div
-                              className={GStyles.cameraViewSector}
+                              className={RStyles.cameraViewSector}
                               style={{
                                 transform: `rotate(${rotationAngle}deg)`,
                                 clipPath: `polygon(50% 50%, 100% 0%, 100% 100%)`,

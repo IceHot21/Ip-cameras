@@ -80,8 +80,8 @@
 
 .cameraViewSector {
   position: absolute;
-  width: 100px;
-  height: 100px;
+  width: 10vh;
+  height: 10vh;
   background-color: rgba(255, 255, 0, 0.3);
   clip-path: polygon(50% 50%, 100% 0%, 100% 100%);
   transform-origin: 50% 50%;

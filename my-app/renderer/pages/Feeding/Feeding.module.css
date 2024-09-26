@@ -9,25 +9,6 @@
   transform: scale(1.1);
 }
 
-.listContainer {
-  display: flex;
-  justify-content: flex-end;
-  padding: 35px;
-  padding-right: 0px;
-  opacity: 0;
-  transform: translateY(20px);
-  animation: fadeIn 0.5s forwards;
-}
-
-.listButton {
-  position: absolute;
-  width: 100%;
-  display: flex;
-  text-align: center;
-  align-items: center;
-  justify-content: space-evenly;
-}
-
 .listLabel {
   height: 34px;
   margin: 0;
@@ -95,8 +76,8 @@
 
 .listContainer {
   display: flex;
-  justify-content: flex-end;
-  padding: 35px;
+  justify-content: space-between;
+  padding: 2% 2% 1% 2%;
   padding-right: 0px;
   opacity: 0;
   transform: translateY(20px);
@@ -126,20 +107,20 @@
 }
 
 .inactiveFloors {
-  width: 38%;
+  width: 52%;
   display: flex;
   justify-content: center;
   align-items: center;
   overflow-x: auto;
+  padding-top: 1.5%;
   white-space: nowrap;
-  padding: 10px;
 }
 
 .inactiveFloor {
   width: 100%; /* Ширина миниатюры */
   height: 100%;
   margin: 0 10px; /* Отступ между миниатюрами */
-  opacity: 0.5;
+  opacity: 0.4;
   transition: opacity 0.3s ease;
 }
 
@@ -147,12 +128,19 @@
 width: 100% !important;
 height: 100% !important;
 }
+
 .inactiveFloor .gridContainer {
   width: 100% !important;
   height: 100% !important;
 }
-.inactiveFloor:hover {
+
+.inactiveFloor:hover, .inactiveFloor:focus {
   opacity: 1;
+}
+
+.activeThumbnail {
+  opacity: 1; 
+  transform: translateY(-6%)
 }
 
 @keyframes fadeIn {
@@ -164,7 +152,7 @@ height: 100% !important;
 
 .listButton {
   position: absolute;
-  width: 100%;
+  width: 98%;
   display: flex;
   text-align: center;
   align-items: center;
