@@ -245,6 +245,7 @@ const Home: FC<HomeProps> = ({ numberHome, navigate, ws }) => {
                 onSVGDrop={() => { }}
                 floorIndex={currentSvgIndex}
                 isActive={true}
+                setDroppedSVGs={setDroppedSVGs}
               />
             </div>
             <span className={HStyles.cameraLabel}>
