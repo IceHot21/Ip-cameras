@@ -82,11 +82,12 @@ const Grid: FC<GridProps> = ({
 
   useEffect(() => {
     const storedRooms = JSON.parse(localStorage.getItem('selectedRooms') || '[]');
-    const allPositions = storedRooms.flatMap((room: { positions: number[][] }) => room.positions);
-/*     console.log(storedRooms)
-    console.log(allPositions) */
-    setSavedCells(allPositions);
-  }, [isSelecting]);
+    const filteredPositions = storedRooms
+      .filter((room: { activeFloor: number }) => room.activeFloor === activeFloor)
+      .flatMap((room: { positions: number[][] }) => room.positions);
+    setSavedCells(filteredPositions);
+  }, [activeFloor,isSelecting]); // Добавляем activeFloor в зависимости
+
   const handleDragStart = (e: React.DragEvent<HTMLDivElement>, item: Camera | SVGItem) => {
     console.log('Drag start:', item);
     e.dataTransfer.setData('droppedCameras', JSON.stringify(item));
