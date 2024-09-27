@@ -11,23 +11,7 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
   const router = useRouter();
   const hideNavbar = ['/LoginPage/LoginPage'].includes(router.pathname);
   const [numberHome, setNumberHome] = useState<number>(1);
-
-  const ws = new WebSocket('ws://localhost:9999');
-
-  ws.onopen = () => {
-    console.log('Connected to WebSocket server');
-  };
-
-  ws.onclose = () => {
-    console.log('Disconnected from WebSocket server');
-  };
-
-  ws.onerror = (error) => {
-    console.error('WebSocket error:', error);
-  };
-  
-  
-
+ 
   useEffect(() => {
     const savedNumberHome = localStorage.getItem('numberHome');
     if (savedNumberHome) {
@@ -39,7 +23,7 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
     <Layout>
       <main>
         {!hideNavbar && <Navbar />}
-        <Component {...pageProps} numberHome={numberHome} setNumberHome={setNumberHome} navigate={router.push} ws={ws} />
+        <Component {...pageProps} numberHome={numberHome} setNumberHome={setNumberHome} navigate={router.push} />
         <ToastContainer
           position="top-right"
           autoClose={5000}

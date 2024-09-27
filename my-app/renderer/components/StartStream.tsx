@@ -17,28 +17,27 @@ interface StartStreamProps {
   port: number;
   rtspUrl: string;
   id: number;
-  ws: WebSocket;
   cameraName: string;
   setCam: (cameras: Camera[]) => void;
   onClose: () => void;
 }
 
-const StartStream: FC<StartStreamProps> = ({ port, rtspUrl, id, cameraName, setCam, onClose, navigate, ws }) => {
+const StartStream: FC<StartStreamProps> = ({ port, rtspUrl, id, cameraName, setCam, onClose, navigate}) => {
   const [error, setError] = useState(null);
   const [players, setPlayers] = useState(null);
   const [isRecording, setIsRecording] = useState(false);
   const [isPredictions, setIsPredictions] = useState('');
 
   //TODO ДОДЕЛАТЬ ВЫВОД ИЗОБРАЖЕНИЯ ПРЕДИКТОВ
-  ws.onmessage = (event) => {
-    const reader = new FileReader();
-    reader.onload = () => {
-      const predictions = JSON.parse(reader.result as string);
-      setIsPredictions(predictions);
-      // Здесь вы можете обработать полученные предикты
-    };
-    reader.readAsText(event.data);
-  };
+  // ws.onmessage = (event) => {
+  //   const reader = new FileReader();
+  //   reader.onload = () => {
+  //     const predictions = JSON.parse(reader.result as string);
+  //     setIsPredictions(predictions);
+  //     // Здесь вы можете обработать полученные предикты
+  //   };
+  //   reader.readAsText(event.data);
+  // };
 
 
   useEffect(() => {

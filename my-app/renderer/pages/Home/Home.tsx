@@ -11,11 +11,12 @@ import { FaBell, FaChevronLeft, FaChevronRight, FaInfoCircle } from "react-icons
 import { Button } from "@mui/material";
 import Floor from '../../components/Floor'; // Импортируем компонент Floor
 import { fetchWithRetry } from "../../refreshToken";
+import { formatDistanceToNow, format } from 'date-fns';
+import { ru } from 'date-fns/locale';
 
 interface HomeProps {
   numberHome: number;
-  navigate: (path: string) => Promise<boolean>;3
-  ws: WebSocket;
+  navigate: (path: string) => Promise<boolean>;
 }
 
 interface Camera {
@@ -55,71 +56,118 @@ interface SVGItem {
   name: string;
 }
 
-
-const Home: FC<HomeProps> = ({ numberHome, navigate, ws }) => {
+const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [currentSvgIndex, setCurrentSvgIndex] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [droppedCameras, setDroppedCameras] = useState<{ [key: string]: Camera }>({});
   const [droppedSVGs, setDroppedSVGs] = useState<{ [key: string]: SVGItem }>({});
   const [roomInfoMap, setRoomInfoMap] = useState<{ [port: number]: RoomInfo }>({});
+  const [predictions, setPredictions] = useState<Prediction[]>([]);
+  const [ws, setWs] = useState<WebSocket | null>(null);
   const itemsPerPage = 5;
 
-  const totalPages = Math.ceil(numberHome / itemsPerPage);
+  const findCellByPort = (port: number): RoomInfo | null => {
+    const savedDroppedCameras = localStorage.getItem('droppedCameras');
+    if (!savedDroppedCameras) {
+      return null;
+    }
+    const parsedDroppedCameras: { [key: string]: Camera } = JSON.parse(savedDroppedCameras);
+    const camera = Object.values(parsedDroppedCameras).find(camera => Number(camera.port) === port);
+    if (!camera) {
+      return null;
+    }
+    const selectedRoom = localStorage.getItem('selectedRooms');
+    const parsedSelectedRoom = JSON.parse(selectedRoom);
+    const roomName = findRoomName(parsedSelectedRoom, camera.cell);
+    return roomName;
+  }
 
-  const [predictions, setPredictions] = useState<Prediction[]>([]);
-  const [rooms, setRooms] = useState<Room[]>([]);
+  const findRoomName = (rooms: Room[], data: string): RoomInfo | null => {
+    const [floor, row, col] = data.split('-').map(Number);
+    const filteredRooms = rooms.filter(room => room.activeFloor === floor);
+    for (const room of filteredRooms) {
+      const positionExists = room.positions.some(position => position[0] === row && position[1] === col);
+      if (positionExists) {
+        return { activeFloor: room.activeFloor, roomName: room.roomName };
+      }
+    }
+    return null;
+  }
 
   useEffect(() => {
     const fetchData = async () => {
-      const response = await fetchWithRetry('https://192.168.0.136:4200/prediction/eventlist', 'GET', null, '/Home/Home');
-      setPredictions(response);
+      try {
+        const response = await fetchWithRetry('https://192.168.0.136:4200/prediction/eventlist', 'GET', null, '/Home/Home');
+        const initialPredictions = response.slice(0, 100); // Загружаем первые 100 предиктов
+        setPredictions(initialPredictions);
 
-      // Найти все уникальные camera_port
-      const uniquePorts = [...new Set(response.map(event => event.camera_port))];
+        // Найти все уникальные camera_port
+        const uniquePorts = [...new Set(initialPredictions.map(event => event.camera_port))];
 
-      // Сопоставить каждый уникальный camera_port с соответствующим этажом и комнатой
-      const roomInfoMap: { [port: number]: RoomInfo } = {};
-      uniquePorts.forEach(port => {
-        // @ts-ignore
-        const roomInfo = findCellByPort(port);
-        if (roomInfo) {
-        // @ts-ignore
-          roomInfoMap[port] = roomInfo;
-        }
-      });
-      setRoomInfoMap(roomInfoMap);
+        // Сопоставить каждый уникальный camera_port с соответствующим этажом и комнатой)
+        const roomInfoMap: { [port: number]: RoomInfo } = {};
+        uniquePorts.forEach(port => {
+          //@ts-ignore
+          const roomInfo = findCellByPort(port);
+          if (roomInfo) {
+                      //@ts-ignore
+            roomInfoMap[port] = roomInfo;
+          }
+        });
+        setRoomInfoMap(roomInfoMap);
+      } catch (e) {
+        console.error('Error show eventlist:', e);
+      }
     };
 
-    const findCellByPort = (port: number): RoomInfo | null => {
-      const savedDroppedCameras = localStorage.getItem('droppedCameras');
-      if (!savedDroppedCameras) {
-        return null;
-      }
-      const parsedDroppedCameras: { [key: string]: Camera } = JSON.parse(savedDroppedCameras);
-      const camera = Object.values(parsedDroppedCameras).find(camera => camera.port === port);
-      if (!camera) {
-        return null;
-      }
-      const selectedRoom = localStorage.getItem('selectedRooms');
-      const parsedSelectedRoom = JSON.parse(selectedRoom);
-      const roomName = findRoomName(parsedSelectedRoom, camera.cell);
-      return roomName;
-    }
-
-    const findRoomName = (rooms: Room[], data: string): RoomInfo | null => {
-      const [floor, row, col] = data.split('-').map(Number);
-      const filteredRooms = rooms.filter(room => room.activeFloor === floor);
-      for (const room of filteredRooms) {
-        const positionExists = room.positions.some(position => position[0] === row && position[1] === col);
-        if (positionExists) {
-          return { activeFloor: room.activeFloor, roomName: room.roomName };
-        }
-      }
-      return null;
-    }
-
     fetchData();
+  }, []);
+
+  useEffect(() => {
+    const socket = new WebSocket('ws://localhost:9999');
+
+    socket.onopen = () => {
+      console.log('Connected to WebSocket server');
+    };
+
+    socket.onclose = () => {
+      console.log('Disconnected from WebSocket server');
+    };
+
+    socket.onerror = (error) => {
+      console.error('WebSocket error:', error);
+    };
+
+    socket.onmessage = (event) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        const newPrediction = JSON.parse(reader.result as string);
+        setPredictions(prevPredictions => {
+          const updatedPredictions = [newPrediction, ...prevPredictions];
+          if (updatedPredictions.length > 100) {
+            updatedPredictions.pop(); // Удаляем самый старый предикт, если их больше 100
+          }
+          return updatedPredictions;
+        });
+
+        // Обновляем roomInfoMap для нового предикта
+        const roomInfo = findCellByPort(newPrediction.camera_port);
+        if (roomInfo) {
+          setRoomInfoMap(prevRoomInfoMap => ({
+            ...prevRoomInfoMap,
+            [newPrediction.camera_port]: roomInfo,
+          }));
+        }
+      };
+      reader.readAsText(event.data);
+    };
+
+    setWs(socket);
+
+    return () => {
+      socket.close();
+    };
   }, []);
 
   const router = useRouter();
@@ -181,13 +229,17 @@ const Home: FC<HomeProps> = ({ numberHome, navigate, ws }) => {
       .slice(startIndex, endIndex)
       .map((event, index) => {
         const roomInfo = roomInfoMap[event.camera_port] || { activeFloor: 'Неизвестно', roomName: 'Неизвестно' };
+        const eventDate = new Date(Number(event.date)); // Преобразуем миллисекунды в объект Date
+        const formattedDateForPredict = formatDistanceToNow(eventDate, { addSuffix: true, locale: ru }); // Форматируем дату
+        const formattedDate = format(eventDate, 'dd.MM.yyyy HH:mm:ss', { locale: ru });
+
         return (
           <tr key={index}>
-            <td>{event.date}</td>
+            <td>{formattedDate}</td>
             <td>Здание №1</td>
-            <td>Этаж {roomInfo.activeFloor}</td>
+            <td>Этаж {Number(roomInfo.activeFloor) + 1}</td>
             <td>Помещение {roomInfo.roomName}</td>
-            <td>Обнаружен {event.item_predict} с вероятностью {(Number(event.score_predict.slice(0, 6)) * 100).toFixed(2)}%</td>
+            <td>Обнаружен {event.item_predict} с вероятностью {(Number(event.score_predict.slice(0, 6)) * 100).toFixed(2)}% {formattedDateForPredict}</td>
           </tr>
         );
       });
@@ -196,6 +248,22 @@ const Home: FC<HomeProps> = ({ numberHome, navigate, ws }) => {
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
   };
+
+  const totalPages = Math.ceil(predictions.length / itemsPerPage);
+
+  const [pageGroup, setPageGroup] = useState(1);
+  const pagesPerGroup = 5;
+
+  const handleNextPageGroup = () => {
+    setPageGroup(prev => Math.min(prev + 1, Math.ceil(totalPages / pagesPerGroup)));
+  };
+
+  const handlePrevPageGroup = () => {
+    setPageGroup(prev => Math.max(prev - 1, 1));
+  };
+
+  const startPage = (pageGroup - 1) * pagesPerGroup + 1;
+  const endPage = Math.min(startPage + pagesPerGroup - 1, totalPages);
 
   return (
     <div>
@@ -342,24 +410,30 @@ const Home: FC<HomeProps> = ({ numberHome, navigate, ws }) => {
             </div>
             <div className={HStyles.panelDown}>
               <div className={HStyles.rowContainer}>
-                <label>Показано событий {Math.min(numberHome, itemsPerPage)} из {numberHome}</label>
+              <label>(Страница {currentPage} из {totalPages})</label>
                 <ul>
                   <li>
-                    <a href="#" onClick={() => handlePageChange(Math.max(currentPage - 1, 1))}>
+                    <button
+                      onClick={handlePrevPageGroup}
+                      disabled={pageGroup === 1}
+                    >
                       <FaChevronLeft />
-                    </a>
+                    </button>
                   </li>
-                  {Array.from({ length: totalPages }, (_, index) => (
-                    <li key={index} className={currentPage === index + 1 ? HStyles.activePage : ''}>
-                      <a href="#" onClick={() => handlePageChange(index + 1)}>
-                        {index + 1}
+                  {Array.from({ length: endPage - startPage + 1 }, (_, index) => (
+                    <li key={index} className={currentPage === startPage + index ? HStyles.activePage : ''}>
+                      <a href="#" onClick={() => handlePageChange(startPage + index)}>
+                        {startPage + index}
                       </a>
                     </li>
                   ))}
                   <li>
-                    <a href="#" onClick={() => handlePageChange(Math.min(currentPage + 1, totalPages))}>
+                    <button
+                      onClick={handleNextPageGroup}
+                      disabled={pageGroup === Math.ceil(totalPages / pagesPerGroup)}
+                    >
                       <FaChevronRight />
-                    </a>
+                    </button>
                   </li>
                 </ul>
               </div>
