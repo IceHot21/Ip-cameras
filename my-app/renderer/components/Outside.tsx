@@ -1,0 +1,205 @@
+import React, { FC, lazy, Suspense, useEffect, useState, useCallback } from 'react';
+import RStyles from '../styles/Floor.module.css';
+import GStyles from '../styles/Grid.module.css';
+import { useContextMenu, ItemParams, Menu, Item } from 'react-contexify';
+import "react-contexify/dist/ReactContexify.css";
+import { BsFillCameraVideoFill } from 'react-icons/bs';
+import Svg from '../assets/Svg1.svg';
+
+interface Camera {
+    id: number;
+    port: number;
+    name: string;
+    address: string;
+    cell?: string;
+    initialPosition?: { rowIndex: number; colIndex: number };
+    rtspUrl: string;
+}
+
+interface SVGItem {
+    id: number;
+    name: string;
+}
+
+type OutsideProps = {
+    navigate: (path: string) => Promise<boolean>;
+    children: React.ReactNode;
+    onCameraDropped: (camera: Camera, rowIndex: number, colIndex: number) => void;
+    droppedCameras: { [key: string]: Camera };
+    onDoubleClickCamera: (camera: Camera) => void;
+    FlagLocal: () => void;
+    rotationAngles: { [key: string]: number };
+    setRotationAngles: React.Dispatch<React.SetStateAction<{ [key: string]: number }>>;
+    isActive: boolean;
+};
+
+const Outside: FC<OutsideProps> = ({ children, droppedCameras, navigate, onDoubleClickCamera, FlagLocal, rotationAngles, setRotationAngles, isActive }) => {
+    const [selectedCameras, setSelectedCameras] = useState<Camera[]>([]);
+    const menuClick = "Меню";
+    const { show } = useContextMenu({ id: menuClick });
+
+    useEffect(() => {
+        if (selectedCameras) {
+            FlagLocal();
+        }
+    }, [selectedCameras]);
+
+    useEffect(() => {
+        const savedDroppedCameras = localStorage.getItem('droppedCameras');
+
+        if (savedDroppedCameras) {
+            const parsedDroppedCameras = JSON.parse(savedDroppedCameras);
+            const initialRotationAngles: { [key: string]: number } = {};
+
+            Object.keys(parsedDroppedCameras).forEach((cameraKey) => {
+                const camera = parsedDroppedCameras[cameraKey];
+                if (camera.rotationAngle !== undefined) {
+                    const cameraId = `Камера ${camera.name.split(/[^a-zA-Z0-9]/)[0]}`;
+                    initialRotationAngles[cameraId] = camera.rotationAngle;
+                }
+            });
+
+            // Устанавливаем начальные углы поворота в состояние
+            setRotationAngles(initialRotationAngles);
+        }
+    }, []);
+
+    const handleDragStart = useCallback((e: React.DragEvent<HTMLDivElement>, item: Camera) => {
+        e.dataTransfer.setData('droppedItem', JSON.stringify(item));
+    }, []);
+
+    const renderSVG = useCallback((svgName: string) => {
+        const SVGComponent = lazy(() => import(`../assets/${svgName}.svg`));
+        return (
+            <Suspense>
+                <SVGComponent />
+            </Suspense>
+        );
+    }, []);
+
+    const displayMenu = useCallback((e: React.MouseEvent<HTMLDivElement>, cameraId: string, svgKey?: string) => {
+        e.preventDefault();
+        show({ event: e, props: { cameraId, svgKey } });
+    }, [show]);
+
+    const handleItemClick = useCallback(({ id, event, props }: ItemParams<any, any>) => {
+        const cameraId = props.cameraId;
+        if (id === "rotateLeft" || id === "rotateRight") {
+            setRotationAngles((prevAngles) => ({
+                ...prevAngles,
+                [cameraId]: id === "rotateLeft" ? (prevAngles[cameraId] || 0) + 45 : (prevAngles[cameraId] || 0) - 45,
+            }));
+        }
+    }, [setRotationAngles]);
+
+    const handleDoubleClick = useCallback((camera: Camera) => {
+        if (!selectedCameras.some(c => c.id === camera.id)) {
+            setSelectedCameras([camera]);
+            onDoubleClickCamera(camera);
+            FlagLocal();
+        } else {
+            setSelectedCameras([]);
+        }
+    }, [selectedCameras, onDoubleClickCamera, FlagLocal]);
+
+    const handleDragOver = useCallback((e: React.DragEvent<HTMLDivElement>) => {
+        e.preventDefault();
+    }, []);
+
+    const handleDrop = useCallback((e: React.DragEvent<HTMLDivElement>, rowIndex: number, colIndex: number) => {
+        e.preventDefault();
+        const itemDataCamera = e.dataTransfer.getData('droppedItem');
+
+        if (itemDataCamera) {
+            const item: Camera = JSON.parse(itemDataCamera);
+
+            if ('port' in item) {
+                // Это камера
+                const camera = item as Camera;
+                const port = camera.port;
+                const cameraName = camera.name;
+                const ipAddress = camera.rtspUrl;
+                const rtspUrl = `rtsp://admin:Dd7560848@${ipAddress}`;
+                const newCellKey = `${rowIndex}-${colIndex}`;
+
+                const existingCameraKey = Object.keys(droppedCameras).find(key => droppedCameras[key].name === cameraName);
+                if (existingCameraKey) {
+                    if (existingCameraKey !== newCellKey) {
+                        delete droppedCameras[existingCameraKey];
+                    }
+                }
+
+                const newCamera: Camera = {
+                    id: Object.keys(droppedCameras).length + 1,
+                    port,
+                    rtspUrl,
+                    name: cameraName,
+                    cell: newCellKey,
+                    initialPosition: { rowIndex, colIndex },
+                    address: camera.address,
+                };
+
+                droppedCameras[newCellKey] = newCamera;
+                camera.initialPosition = { rowIndex, colIndex };
+            }
+        }
+    }, [droppedCameras]);
+
+    return (
+        <div className={RStyles.body}>
+            <div className={RStyles.container}>
+                <div>
+                    <Svg className={RStyles.fonContainer} />
+                    <div className={RStyles.gridContainer} style={{ height: '100% !important' }}>
+                        <div className={GStyles.grid}>
+                            {Array.from({ length: 15 }).map((_, rowIndex) =>
+                                Array.from({ length: 20 }).map((_, colIndex) => {
+                                    const cellKey = `${rowIndex}-${colIndex}`;
+                                    const camera = droppedCameras[cellKey];
+                                    const cameraId = camera ? `Камера ${camera.name}` : '';
+                                    const rotationAngle = rotationAngles[cameraId] || 0;
+                                    return (
+                                        <div
+                                            key={cellKey}
+                                            id={cellKey}
+                                            className={`${GStyles.gridCell} ${RStyles.transparentCell}`}
+                                            onDragOver={handleDragOver}
+                                            onDrop={(e) => handleDrop(e, rowIndex, colIndex)}
+                                        >
+                                            {camera && (
+                                                <div
+                                                    className={GStyles.cameraIcon}
+                                                    draggable
+                                                    onDragStart={(e) => handleDragStart(e, camera)}
+                                                    onDoubleClick={() => handleDoubleClick(camera)}
+                                                    id={cameraId}
+                                                    title={cameraId}
+                                                    onContextMenu={(e) => displayMenu(e, cameraId)}
+                                                >
+                                                    <BsFillCameraVideoFill style={{ transform: `rotate(${rotationAngle}deg)`, height: '50%', width: '100%' }} />
+                                                    <div
+                                                        className={RStyles.cameraViewSector}
+                                                        style={{
+                                                            transform: `rotate(${rotationAngle}deg)`,
+                                                            clipPath: `polygon(50% 50%, 100% 0%, 100% 100%)`,
+                                                        }}
+                                                    />
+                                                </div>
+                                            )}
+                                        </div>
+                                    );
+                                })
+                            )}
+                        </div>
+                    </div>
+                </div>
+                {children}
+            </div>
+            <Menu id={menuClick}>
+                <Item id="rotateLeft" onClick={handleItemClick}>Повернуть влево</Item>
+                <Item id="rotateRight" onClick={handleItemClick}>Повернуть вправо</Item>
+            </Menu>
+        </div>
+    );
+};
+export default Outside;

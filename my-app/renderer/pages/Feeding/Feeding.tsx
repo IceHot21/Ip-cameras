@@ -49,6 +49,7 @@ const Feeding: FC<FeedingProps> = ({ navigate }) => {
   const [activeFloor, setActiveFloor] = useState<number>(0);
   const [isSelecting, setIsSelecting] = useState(false);
   const [selectedCells, setSelectedCells] = useState<number[][]>([]);
+  const [isGridOpen, setIsGridOpen] = useState(false);
 
   useEffect(() => {
     if (floor) {
@@ -97,6 +98,14 @@ const Feeding: FC<FeedingProps> = ({ navigate }) => {
     setIsListSVGOpen(!isListSVGOpen);
   }, [isListSVGOpen]);
 
+<<<<<<< Updated upstream
+=======
+  const handleGridOpen = useCallback(() => {
+    setIsGridOpen((prev) => !prev);
+    setIsEditing(!isGridOpen);
+  }, [isGridOpen]);
+
+>>>>>>> Stashed changes
   const handleCameraDrop = useCallback((camera: Camera, rowIndex: number, colIndex: number) => {
     const cellKey = `${activeFloor}-${rowIndex}-${colIndex}`;
     const updatedCamera: Camera = {

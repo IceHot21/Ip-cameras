@@ -1,0 +1,203 @@
+.topRightIcon {
+  font-size: 34px;
+  cursor: pointer;
+  z-index: 1001;
+  margin-right: 2%;
+  position: absolute;
+  top: 10px; /* Расстояние от верхнего края */
+  right: 10px; /* Расстояние от правого края */
+  z-index: 1000; /* Убедитесь, что иконка находится поверх других элементов */
+}
+
+.topRightIcon:hover {
+  transform: scale(1.1);
+}
+
+.listLabel {
+  height: 34px;
+  margin: 0;
+}
+
+.listButton svg {
+  height: 34px;
+  width: 34px;
+  font-size: 31px;
+  opacity: 0.6;
+  color: #333;
+}
+
+.listButton svg:hover {
+  transform: scale(1.1);
+  cursor: pointer;
+  opacity: 1;
+}
+
+.leftSvg,
+.rightSvg {
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.leftSvg.disabled,
+.rightSvg.disabled {
+  color: #aaa;
+  opacity: 0.2;
+  pointer-events: none;
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.FloorContainer .active {
+  grid-column: 2 / 3;
+  grid-row: 1;
+  transform: translateX(0) scale(1);
+  opacity: 1;
+  z-index: 1;
+  position: relative;
+  animation: fadeIn 1s ease-in;
+}
+
+.FloorContainer .inactive {
+  transform: scale(0.8);
+  opacity: 0.1;
+  margin-right: 10px;
+}
+.listIcon {
+  font-size: 34px;
+  cursor: pointer;
+  z-index: 1001;
+  margin-right: 2%;
+}
+
+.listIcon:hover {
+  transform: scale(1.1);
+}
+
+.listContainer {
+  display: flex;
+  justify-content: space-between;
+  padding: 2% 2% 1% 2%;
+  padding-right: 0px;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeIn 0.5s forwards;
+}
+
+.FloorContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  height: 84vh; /* Занимает всю высоту экрана */
+  transition: background 0.4s ease-in;
+  animation: fadeIn 1s ease-in;
+}
+
+.activeFloor {
+  width: 100%;
+  height: 77%; /* Активный этаж занимает 70% высоты */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+  animation: fadeIn 1s ease-in;
+}
+
+.inactiveFloors {
+  width: 52%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow-x: auto;
+  padding-top: 1.5%;
+  white-space: nowrap;
+}
+
+.inactiveFloor {
+  width: 100%; /* Ширина миниатюры */
+  height: 100%;
+  margin: 0 10px; /* Отступ между миниатюрами */
+  opacity: 0.4;
+  transition: opacity 0.3s ease;
+}
+
+.inactiveFloor svg {
+width: 100% !important;
+height: 100% !important;
+}
+
+.inactiveFloor .gridContainer {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.inactiveFloor:hover, .inactiveFloor:focus {
+  opacity: 1;
+}
+
+.activeThumbnail {
+  opacity: 1; 
+  transform: translateY(-6%)
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.listButton {
+  position: absolute;
+  width: 98%;
+  display: flex;
+  text-align: center;
+  align-items: center;
+  justify-content: space-evenly;
+}
+
+.listLabel {
+  height: 34px;
+  margin: 0;
+}
+
+.listButton svg {
+  height: 34px;
+  width: 34px;
+  font-size: 31px;
+  opacity: 0.6;
+  color: #333;
+}
+
+.listButton svg:hover {
+  transform: scale(1.1);
+  cursor: pointer;
+  opacity: 1;
+}
+
+.leftSvg,
+.rightSvg {
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.leftSvg.disabled,
+.rightSvg.disabled {
+  color: #aaa;
+  opacity: 0.2;
+  pointer-events: none;
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
