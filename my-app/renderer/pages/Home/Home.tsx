@@ -61,14 +61,13 @@ const MemoizedFloor = memo(Floor);
 const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [currentSvgIndex, setCurrentSvgIndex] = useState(0);
-  const [currentPage, setCurrentPage] = useState(1);
   const [droppedCameras, setDroppedCameras] = useState<{ [key: string]: Camera }>({});
   const [droppedSVGs, setDroppedSVGs] = useState<{ [key: string]: SVGItem }>({});
   const [roomInfoMap, setRoomInfoMap] = useState<{ [port: number]: RoomInfo }>({});
   const [predictions, setPredictions] = useState<Prediction[]>([]);
   const [ws, setWs] = useState<WebSocket | null>(null);
   const [selectedFloor, setSelectedFloor] = useState<number | null>(null);
-  const itemsPerPage = 5;
+  const [activeTab, setActiveTab] = useState<'inside' | 'outside'>('inside');
 
   const floorProps = useMemo(() => ({
     navigate,
@@ -201,7 +200,7 @@ const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
   const router = useRouter();
   const svgImages = [Svg1, Svg2, Svg3];
   const current = new Date();
-  const date = `${current.getDate()}/${current.getMonth() + 1}/${current.getFullYear()}    ${current.getHours()}:${current.getMinutes()}:${current.getSeconds()}`;
+  const date = `${current.getDate()}/${current.getMonth() + 1}/${current.getFullYear()} ${current.getHours()}:${current.getMinutes()}:${current.getSeconds()}`;
 
   const nextSlide = () => {
     setCurrentIndex((prevIndex) => (prevIndex + 1) % numberHome);
@@ -250,7 +249,7 @@ const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
     return HStyles.hidden;
   };
 
-  const formatTime = (timeInMilliseconds) => {
+  const formatTime = (timeInMilliseconds: number) => {
     const date = new Date(Number(timeInMilliseconds));
 
     const year = date.getFullYear();
@@ -261,16 +260,14 @@ const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
     const seconds = String(date.getSeconds()).padStart(2, '0');
 
     return `${day}.${month}.${year} ${hours}:${minutes}:${seconds}`;
-};
+  };
 
   const renderTableRows = () => {
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    const endIndex = startIndex + itemsPerPage;
     return predictions
       .filter(event => selectedFloor === null || roomInfoMap[event.camera_port]?.activeFloor === selectedFloor)
-      .slice(startIndex, endIndex)
       .map((event, index) => {
         const roomInfo = roomInfoMap[event.camera_port] || { activeFloor: 'Неизвестно', roomName: 'Неизвестно' };
+        //@ts-ignore
         const eventDate = formatTime(event.date); // Преобразуем миллисекунды в объект Date
 
         return (
@@ -285,27 +282,6 @@ const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
       });
   };
 
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-  };
-
-  const totalPages = Math.ceil(predictions.length / itemsPerPage);
-
-  const [pageGroup, setPageGroup] = useState(1);
-  const pagesPerGroup = 5;
-
-  const handleNextPageGroup = () => {
-    setPageGroup(prev => Math.min(prev + 1, Math.ceil(totalPages / pagesPerGroup)));
-  };
-
-  const handlePrevPageGroup = () => {
-    setPageGroup(prev => Math.max(prev - 1, 1));
-  };
-
-  const startPage = (pageGroup - 1) * pagesPerGroup + 1;
-  const endPage = Math.min(startPage + pagesPerGroup - 1, totalPages);
-
-
   const floorOptions = Array.from({ length: svgImages.length }, (_, index) => (
     <option key={index} value={index}>{index + 1}</option>
   ));
@@ -315,106 +291,92 @@ const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
     setSelectedFloor(selectedValue === '' ? null : Number(selectedValue));
   };
 
-
   return (
-    <div>
-      <div className={HStyles.homeContainer}>
+    <div className={HStyles.homeContainer}>
+      <div className={HStyles.leftContainer}>
+        <div className={HStyles.tabs}>
+          <button
+            className={`${HStyles.tabButton} ${activeTab === 'inside' ? HStyles.activeTab : ''}`}
+            onClick={() => setActiveTab('inside')}
+          >
+            Внутренние камеры
+          </button>
+          <button
+            className={`${HStyles.tabButton} ${activeTab === 'outside' ? HStyles.activeTab : ''}`}
+            onClick={() => setActiveTab('outside')}
+          >
+            Уличные камеры
+          </button>
+          
+        </div>
         <div className={HStyles.planContainer}>
-          <div className={HStyles.planOutside}>
-            <SVG className={HStyles.outSide} />
-            <span className={HStyles.cameraLabel}>Уличные камеры</span>
-            <div>
-              <div className={HStyles.iconTabs}>
-                <FaBell className={HStyles.tabIcon} />
-                <FaInfoCircle className={HStyles.tabIcon} />
+          {activeTab === 'inside' && (
+            <div className={HStyles.planInside}>
+              <div className={HStyles.plan}>
+                <MemoizedFloor {...floorProps} />
               </div>
-              <div className={HStyles.tableWrapper}>
-                <div className={HStyles.panelTitle1}>
-                </div>
-                <div className={HStyles.tableContainer1}>
-                  <table>
-                    <thead>
-                      <tr>
-                        <th>Дата и время</th>
-                        <th>Событие</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                    </tbody>
-                  </table>
-                </div>
-              </div>
+              <span className={HStyles.cameraLabel}>
+                <button className={HStyles.prevFloor} onClick={prevFloor}>
+                  <FaChevronLeft />
+                </button>
+                Этаж {currentSvgIndex + 1}
+                <button className={HStyles.nextFloor} onClick={nextFloor}>
+                  <FaChevronRight />
+                </button>
+              </span>
             </div>
-          </div>
-
-          <div className={HStyles.planInside}>
-            <div className={HStyles.plan}>
-              <MemoizedFloor {...floorProps} />
-            </div>
-            <span className={HStyles.cameraLabel}>
-              <button className={HStyles.prevFloor} onClick={prevFloor}><FaChevronLeft /></button>
-              Этаж {currentSvgIndex + 1}
-              <button className={HStyles.nextFloor} onClick={nextFloor}><FaChevronRight /></button>
-            </span>
-            <div>
-              <div className={HStyles.iconTabs} style={{ justifyContent: "flex-end" }}>
-                <FaBell className={HStyles.tabIcon} />
-                <FaInfoCircle className={HStyles.tabIcon} />
-              </div>
-              <div className={HStyles.tableWrapper}>
-                <div className={HStyles.panelTitle1}>
-                </div>
-                <div className={HStyles.tableContainer1}>
-                  <table>
-                    <thead>
-                      <tr>
-                        <th>Дата и время</th>
-                        <th>Событие</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className={HStyles.carousel}>
-          {numberHome > 1 && (
-            <button className={HStyles.prevButton} onClick={prevSlide}>
-              <FaChevronLeft />
-            </button>
           )}
-          <div className={HStyles.carouselInner}>
-            {Array.from({ length: numberHome }, (_, index) => (
-              <div
-                key={index}
-                className={`${HStyles.buildingIcon} ${getSlideClass(index)}`}
-                onClick={() => setCurrentIndex(index)}
-              >
-                {index === currentIndex && <span style={{ fontSize: '50px' }}>Здание №{index + 1}</span>}
-                <Build123 />
-              </div>
-            ))}
-          </div>
-          {numberHome > 2 && (
-            <button className={HStyles.nextButton} onClick={nextSlide}>
-              <FaChevronRight />
-            </button>
+          {activeTab === 'outside' && (
+            <div className={HStyles.planOutside}>
+              <SVG className={HStyles.outSide} />
+              <span className={HStyles.cameraLabel}>Уличные камеры</span>
+            </div>
           )}
         </div>
 
+        <div className={HStyles.carouselContainer}>
+          <div className={HStyles.carouselTitle}>Выбор здания</div>
+          <div className={HStyles.carousel}>
+            {numberHome > 1 && (
+              <button className={HStyles.prevButton} onClick={prevSlide}>
+                <FaChevronLeft />
+              </button>
+            )}
+            <div className={HStyles.carouselInner}>
+              {Array.from({ length: numberHome }, (_, index) => (
+                <div
+                  key={index}
+                  className={`${HStyles.buildingIcon} ${getSlideClass(index)}`}
+                  onClick={() => setCurrentIndex(index)}
+                >
+                  
+                  <Build123 />
+                  {index === currentIndex && (
+                    <span style={{ fontSize: "50px" }}>Здание №{index + 1}</span>
+                  )}
+                </div>
+              ))}
+            </div>
+            {numberHome > 2 && (
+              <button className={HStyles.nextButton} onClick={nextSlide}>
+                <FaChevronRight />
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
+      {/* Правый контейнер */}
+      <div className={HStyles.rightContainer}>
         <div className={HStyles.containerT}>
+          {/* Содержимое containerT */}
           <div className={HStyles.panelContainer}>
             <div className={HStyles.panelHeading}>
               <div className={HStyles.panelTitle}>
-                <label className={HStyles.title}>Журнал всех событий</label>
                 <div className={HStyles.selectContainer}>
+                  <label className={HStyles.labelSelect}>Журнал событий</label>
                   <div className={HStyles.selectObject}>
                     <label className={HStyles.labelSelect}>Выбрать этаж:</label>
-                    <select value={selectedFloor === null ? '' : selectedFloor} onChange={handleFloorChange}>
+                    <select value={selectedFloor || ''} onChange={handleFloorChange}>
                       <option value="">Все этажи</option>
                       {floorOptions}
                     </select>
@@ -444,39 +406,11 @@ const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
                 </table>
               </div>
             </div>
-            <div className={HStyles.panelDown}>
-              <div className={HStyles.rowContainer}>
-                <label>Страница {currentPage} из {totalPages}</label>
-                <ul>
-                  <li>
-                    <button
-                      className={HStyles.buttonPage}
-                      onClick={handlePrevPageGroup}
-                      disabled={pageGroup === 1}
-                    >
-                      <FaChevronLeft />
-                    </button>
-                  </li>
-                  {Array.from({ length: endPage - startPage + 1 }, (_, index) => (
-                    <li key={index} className={currentPage === startPage + index ? HStyles.activePage : ''}>
-                      <a href="#" onClick={() => handlePageChange(startPage + index)}>
-                        {startPage + index}
-                      </a>
-                    </li>
-                  ))}
-                  <li>
-                    <button
-                      className={HStyles.buttonPage}
-                      onClick={handleNextPageGroup}
-                      disabled={pageGroup === Math.ceil(totalPages / pagesPerGroup)}
-                    >
-                      <FaChevronRight />
-                    </button>
-                  </li>
-                </ul>
-              </div>
-            </div>
           </div>
+        </div>
+        <div className={HStyles.statisticsContainer}>
+          <div className={HStyles.carouselTitle} style={{ width: 'auto !important'}}>Статистика</div>
+          
         </div>
       </div>
     </div>

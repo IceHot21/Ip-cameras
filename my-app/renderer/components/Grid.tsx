@@ -41,7 +41,7 @@ interface GridProps {
   setDroppedCameras: React.Dispatch<React.SetStateAction<{ [key: string]: Camera }>>;
 }
 
-const Grid: FC<GridProps> = memo(({
+const Grid: FC<GridProps> = ({
   navigate,
   onCameraDrop,
   onSVGDrop,
@@ -101,21 +101,15 @@ const Grid: FC<GridProps> = memo(({
   const displayMenu = useCallback((e: React.MouseEvent<HTMLDivElement>, cameraId: string, svgKey?: string) => {
     e.preventDefault();
     show({ event: e, props: { cameraId, svgKey } });
-    console.log(svgKey);
   }, [show]);
 
   const handleItemClick = useCallback(({ id, event, props }: ItemParams<any, any>) => {
     const cameraId = props.cameraId;
     const svgKey = props.svgKey;
-
+  
     if (id === "rotateLeft" || id === "rotateRight") {
       setRotationAngles((prevAngles) => ({ ...prevAngles, [cameraId]: id === "rotateLeft" ? (prevAngles[cameraId] || 0) - 45 : (prevAngles[cameraId] || 0) + 45, }));
-    } else if (cameraId && id === 'deleteCamera') {
-      const newDroppedCameras = { ...droppedCameras };
-      delete newDroppedCameras[cameraId];
-      setDroppedCameras(newDroppedCameras);
-      localStorage.setItem('droppedCameras', JSON.stringify(newDroppedCameras));
-    } else if (svgKey && id === 'deleteSVG') {
+    }  else if (id === "deleteSVG") {
       const newDroppedSVGs = { ...droppedSVGs };
       delete newDroppedSVGs[svgKey];
       setDroppedSVGs(newDroppedSVGs);
@@ -186,7 +180,7 @@ const Grid: FC<GridProps> = memo(({
       onSVGDrop(svg, rowIndex, colIndex);
       localStorage.setItem('droppedSVGs', JSON.stringify(droppedSVGs));
     }
-  }, [activeFloor, droppedCameras, droppedSVGs, onCameraDrop, rotationAngles]);
+  }, [activeFloor, droppedCameras, droppedSVGs, onCameraDrop, onSVGDrop, rotationAngles]);
 
   const handleCellClick = (rowIndex: number, colIndex: number) => {
     if (isSelecting) { // Проверяем состояние isSelecting
@@ -210,11 +204,7 @@ const Grid: FC<GridProps> = memo(({
   };
 
   return (
-    <motion.div className={GStyles.gridContainer}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0 }}
-        transition={{ duration: 0.7 }}>
+    <div className={GStyles.gridContainer}>
       <div className={GStyles.grid}>
         {Array.from({ length: 15 }).map((_, rowIndex) =>
           Array.from({ length: 20 }).map((_, colIndex) => {
@@ -225,20 +215,15 @@ const Grid: FC<GridProps> = memo(({
             const rotationAngle = rotationAngles[cameraId] || 0;
             const isSelected = selectedCells.some(pos => pos[0] === rowIndex && pos[1] === colIndex);
             const isSaved = savedCells.some(pos => pos[0] === rowIndex && pos[1] === colIndex);
-            const svgKey = svg ? `SVG ${svg.id}` : '';
 
             return (
-              <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.7 }}
-              key={cellKey}
-              id={cellKey}
-              className={`${GStyles.gridCell} ${isSaved ? GStyles.savedCell : ''} ${isSelected ? GStyles.selectedCell : ''}`}
-              onDragOver={handleDragOver}
-              onDrop={(e) => handleDrop(e, rowIndex, colIndex)}
-              onClick={() => handleCellClick(rowIndex, colIndex)}
+              <div
+                key={cellKey}
+                id={cellKey}
+                className={`${GStyles.gridCell} ${isSaved ? GStyles.savedCell : ''} ${isSelected ? GStyles.selectedCell : ''}`}
+                onDragOver={handleDragOver}
+                onDrop={(e) => handleDrop(e, rowIndex, colIndex)}
+                onClick={() => handleCellClick(rowIndex, colIndex)}
               >
                 {camera && (
                   <div
@@ -251,36 +236,21 @@ const Grid: FC<GridProps> = memo(({
                     onContextMenu={(e) => displayMenu(e, cameraId)}
                   >
                     <BsFillCameraVideoFill style={{ transform: `rotate(${rotationAngle}deg)` }} />
-                    <Menu id={menuClick}>
-                      <Item id='rotateRight' onClick={handleItemClick} data={{ cameraId }}>Поворот вправо</Item>
-                      <Item id='rotateLeft' onClick={handleItemClick} data={{ cameraId }}>Поворот влево</Item>
+                    <Menu className={GStyles.menuContainer} id={menuClick} >
+                      <Item className={GStyles.menuItem} id='rotateRigth' title={cameraId} onClick={handleItemClick}>Поворот вправо</Item>
+                      <Item className={GStyles.menuItem} id='rotateLeft' onClick={handleItemClick}>Поворот влево</Item>
                       <Separator />
-                      <Item id='deleteCamera' onClick={handleItemClick} data={{ cameraId }}>Удалить камеру</Item>
+                      <Item id="deleteSVG" onClick={handleItemClick}>Удалить элемент</Item>
                     </Menu>
                   </div>
                 )}
-                {/* {svg && (
-                  <div
-                    className={GStyles.svgIcon}
-                    draggable
-                    onDragStart={(e) => handleDragStart(e, svg)}
-                    id={svgKey}
-                    title={svgKey}
-                    onContextMenu={(e) => displayMenu(e, undefined, svgKey)}
-                  >
-                    {renderSVG(svg.name)}
-                    <Menu id={menuClick}>
-                      <Item id='deleteSVG' onClick={handleItemClick} data={{ svgKey }}>Удалить SVG</Item>
-                    </Menu>
-                  </div>
-                )} */}
-              </motion.div>
+              </div>
             );
           })
         )}
       </div>
-    </motion.div>
+    </div>
   );
-});
+};
 
 export default Grid;

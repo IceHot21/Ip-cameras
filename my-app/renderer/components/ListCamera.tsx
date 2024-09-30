@@ -100,6 +100,7 @@ const ListCamera: FC<ListCameraProps> = memo(({
 
   const handleDragStart = (e: React.DragEvent<HTMLDivElement>, camera: Camera) => {
     e.dataTransfer.setData('droppedCameras', JSON.stringify(camera));
+    console.log('Drag start:', camera);
   };
 
   const handleAddCameraClick = () => {

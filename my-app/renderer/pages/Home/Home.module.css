@@ -1,7 +1,68 @@
+.leftContainer {
+  display: flex;
+  flex-direction: column;
+}
+
+.tabs {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+  height: 2vh;
+  background: #f0f0f0;
+  padding: 1vh 0 1vh 0;
+  z-index: 999 !important;
+  font-size: 2vh !important;
+}
+
+.tabButton {
+  border: none;
+  margin-top: -1vh !important;
+  height: 4vh !important;
+  background-color: #006c2a;
+  cursor: pointer;
+  color: white;
+  transition: background-color 0.3s ease;
+  font-size: 1.5vh;
+  flex: 1;
+}
+
+.tabButton:hover {
+  background-color: #ddd;
+  color: black;
+}
+
+.activeTab {
+  background-color: #ddd;
+  color: black;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.planContainer {
+  display: flex;
+  flex-direction: column;
+}
+
+.rightContainer {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  flex-direction: column;
+}
+
+.containerT {
+  flex: 1;
+  overflow: auto;
+}
+
+.tableWrapper,
+.tableContainer {
+  overflow-x: auto;
+}
+
 .homeContainer {
   display: flex;
-  height: 84vh;
-  justify-content: center;
+  justify-content: start;
+  height: 96vh;
   animation: fadeIn 1s ease-in;
 }
 
@@ -10,8 +71,8 @@
   align-items: center;
   justify-content: center;
   position: relative;
-  width: 100vh;
-  margin-bottom: 3%;
+  height: 31vh;
+  width: 67vh;
 }
 
 .carouselInner {
@@ -20,7 +81,7 @@
   align-items: center;
   width: 100%;
   position: relative;
-  transform: scale(0.7);
+  transform: scale(0.3);
 }
 
 .buildingIcon {
@@ -32,11 +93,9 @@
   transform: scale(0.8);
   transition: opacity 0.5s ease, transform 0.5s ease;
   position: absolute;
-  width: 37%;
-  cursor: pointer; 
-  
+  width: 65%;
+  cursor: pointer;
 }
-
 
 .buildingIcon svg {
   cursor: pointer;
@@ -92,52 +151,47 @@
   right: 0vh;
 }
 
-.prevButton svg:hover, .nextButton svg:hover {
+.prevButton svg:hover,
+.nextButton svg:hover {
   transform: scale(1.1);
   color: #999;
 }
-.hidden{
-opacity:0;
+
+.hidden {
+  opacity: 0;
 }
 
 .outSide,
 .plan {
-  width: 47% !important;
+  width: 68% !important;
   height: auto;
-  border: 2px solid #006c2ab3;
   border-top-left-radius: 25px;
   border-top-right-radius: 25px;
-  box-shadow: 0 4px 10px #006c2a33;
   padding: 10px;
-  cursor:pointer;
+  cursor: pointer;
 }
 
 .planContainer {
   display: flex;
-  position: absolute;
   flex-direction: row;
   align-items: center;
+  gap: 30%;
   width: 100%;
-  gap:30%;
 }
 
 .planOutside {
   display: flex;
-  margin-left: 3%;
-  margin-top: 1%;
-  width: auto;
+  width: 81%;
   flex-direction: column;
-  align-content: flex-start;
+  align-content: center;
   flex-wrap: wrap;
 }
 
 .planInside {
   display: flex;
-  margin-right: 3%;
-  margin-top: 1%;
-  width: auto;
+  width: 81%;
   flex-direction: column;
-  align-content: flex-end;
+  align-content: center;
   flex-wrap: wrap;
 }
 
@@ -146,7 +200,6 @@ opacity:0;
   align-items: center;
   justify-content: space-between;
   height: 40px;
-  border: 2px solid #006c2ab3;
   border-top: none;
   border-bottom-left-radius: 25px;
   border-bottom-right-radius: 25px;
@@ -157,13 +210,15 @@ opacity:0;
   from {
     opacity: 0;
   }
+
   to {
     opacity: 1;
   }
 }
 
-.prevFloor, .nextFloor {
-  border:none;
+.prevFloor,
+.nextFloor {
+  border: none;
   cursor: pointer;
   background-color: transparent !important;
 }
@@ -172,18 +227,15 @@ opacity:0;
   justify-content: center;
 }
 
-.prevFloor:hover, .nextFloor:hover {
+.prevFloor:hover,
+.nextFloor:hover {
   transform: scale(1.1);
   color: #999;
 }
 
 .containerT {
-  height: 32%;
-  width: 54%;
-  margin-top: 62vh;
-  position: absolute;
-  border: 1px solid #006c2ab3;
-  border-radius: 23px;
+  height: 90%;
+  width: 100%;
   background-color: white;
   box-shadow: 0 8px 16px rgba(0, 108, 42, 0.1);
   display: flex;
@@ -193,7 +245,7 @@ opacity:0;
 }
 
 .containerT:hover {
-  box-shadow: 0 12px 24px rgba(0, 108, 42, 0.2); /* Более глубокие тени при наведении */
+  box-shadow: 0 12px 24px rgba(0, 108, 42, 0.2);
 }
 
 .panelContainer {
@@ -202,35 +254,34 @@ opacity:0;
   height: 100%;
 }
 
-.panelTitle, .panelTitle1 {
+.panelTitle,
+.panelTitle1 {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 15px;
-  background-color: #f4f4f4;
+  padding: 1vh;
+  color: white;
+  height: 2vh;
+  background-color: #006c2a;
   border-bottom: 1px solid #ccc;
 }
 
-.panelTitle1{
+.panelTitle1 {
   padding: 0px !important;
 }
+
 .selectContainer {
   display: flex;
   gap: 10px;
 }
 
-.selectContainer select,
-.selectContainer button {
+.selectContainer select {
   border: 1px solid #ccc;
   border-radius: 21px;
   padding: 5px 10px;
   outline: none;
   cursor: pointer;
-  color: #333;
-  background-color: transparent;
-}
-
-.selectContainer button {
+  color: #fff;
   background-color: transparent;
 }
 
@@ -242,6 +293,9 @@ opacity:0;
 .selectContainer {
   display: flex;
   align-items: center;
+  width: 100%;
+  justify-content: space-between;
+  font-size: 1.5vh;
 }
 
 .selectObject select:hover {
@@ -249,18 +303,20 @@ opacity:0;
 }
 
 .selectObject select:focus {
-  border-color: #006c2a;
+  background-color: #ccc !important;
+  color: #333;
   box-shadow: 0 0 5px rgba(0, 108, 42, 0.5);
 }
 
 .selectObject select option {
   padding: 10px;
-  background-color: #fff;
+  background-color: #ccc;
   transition: background-color 0.3s ease;
+  border-radius: 1vh !important;
 }
 
 .selectObject select option:hover {
-  background-color: #006c2a;
+  background-color: #006c2a !important;
   color: #fff;
 }
 
@@ -273,14 +329,8 @@ opacity:0;
 .tableContainer {
   flex: 1;
   overflow: auto;
-/*   scrollbar-width: thin;
-  scrollbar-color: #bfbfbf #3b3b3b; */
 }
 
-.tableContainer table {
-  width: 100%;
-  border-collapse: collapse;
-}
 
 .tableContainer::-webkit-scrollbar {
   width: 8px;
@@ -298,23 +348,6 @@ opacity:0;
 
 .tableContainer::-webkit-scrollbar-thumb:hover {
   background: #ccc;
-}
-
-
-.tableHeader th {
-  padding: 10px;
-  background-color: #f4f4f4;
-  border-bottom: 2px solid #ccc;
-  text-align: left;
-  position: sticky;
-  top: 0;
-  left: 0;
-}
-
-.tableBody td {
-  padding: 7px;
-  border-bottom: 1px solid #ddd;
-  text-align: left;
 }
 
 .panelDown {
@@ -406,9 +439,8 @@ opacity:0;
   align-items: center;
 }
 
-.tableWrapper  {
+.tableWrapper {
   height: 200px;
-  position: absolute;
 }
 
 .tableWrapper table {
@@ -429,18 +461,96 @@ opacity:0;
   text-align: left;
 }
 
-.plan svg{
+.plan svg {
   height: 100%;
   width: 100%;
 }
 
-.labelSelect{
+.labelSelect {
   display: flex;
   align-items: center;
 }
 
-.buttonPage{
-  border:none;
+.buttonPage {
+  border: none;
   background-color: transparent;
   cursor: pointer;
+}
+
+
+.leftContainer {
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid #006c2a;
+}
+
+.planContainer {
+  display: flex;
+  flex-direction: column;
+}
+
+
+.carouselContainer {
+  display: flex;
+  align-items: center;
+  padding: 1vh;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.carouselTitle {
+  padding: 1vh;
+  width: 100%;
+  border-top: 1px solid #006c2a;
+  border-bottom: 1px solid #006c2a;
+  text-align: center;
+  background: #006c2a;
+  color: white;
+  font-size: 2vh;
+}
+
+
+.tableContainer table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.tableHeader th,
+.tableBody td {
+  padding: 10px;
+  border: 1px solid #ddd;
+  text-align: center;
+  width: auto;
+}
+
+.tableHeader {
+  background-color: #f4f4f4;
+}
+
+.tableBody td {
+  background-color: #efefef;
+  font-size: 1.2vh;
+  padding: 1%;
+}
+
+.tableHeader th {
+  position: sticky;
+  top: 0;
+  background-color: #f4f4f4;
+  z-index: 10;
+}
+
+.tableBody tr {
+  transition: background-color 0.3s ease;
+}
+
+.tableBody tr:hover {
+  background-color: #f9f9f9;
+}
+
+.statisticsContainer {
+  width: 100%;
+  padding: 0 !important;
+  height: 36.6vh;
 }
