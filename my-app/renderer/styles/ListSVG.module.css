@@ -1,0 +1,14 @@
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: white;
+    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    overflow-y: auto;
+    transition: transform 0.3s ease-in-out;
+    transform: translateX(0); /* Измените на translateX(100%) для скрытия панели */
+    margin-top: 8%;
+    height: 45vh;
+  }
+  
