@@ -82,21 +82,23 @@ const ListSVG: FC<ListSVGProps> = ({
 
   const handleSaveRoom = () => {
     const storedRooms = JSON.parse(localStorage.getItem('selectedRooms') || '[]');
-    const allPositions = storedRooms.flatMap((room: { positions: number[][] }) => room.positions);
-
-    // Проверка на пересечение ячеек
+    const allPositions = storedRooms.flatMap((room: { positions: number[][], activeFloor: number }) => 
+      room.activeFloor === activeFloor ? room.positions : []
+    );
+  
+    // Проверка на пересечение ячеек на текущем этаже
     const hasIntersection = selectedCells.some(selectedPos =>
       allPositions.some(storedPos => storedPos[0] === selectedPos[0] && storedPos[1] === selectedPos[1])
     );
-
+  
     if (hasIntersection) {
-      setErrorMessage('Ошибка: Выбранные ячейки уже заняты другой комнатой.');
+      setErrorMessage('Ошибка: Выбранные ячейки уже заняты другой комнатой на этом этаже.');
       setRoomName('');
       setIsSelecting(false);
       setSelectedCells([]);
       return;
     }
-
+  
     const newRoom = { activeFloor, roomName, positions: selectedCells };
     const updatedRooms = [...storedRooms, newRoom];
     localStorage.setItem('selectedRooms', JSON.stringify(updatedRooms));
