@@ -107,11 +107,12 @@
 }
 
 .inactiveFloors {
-  width: 52%;
+  width: 62%;
   display: flex;
   justify-content: center;
   align-items: center;
   overflow-x: auto;
+  overflow-y: hidden;
   padding-top: 1.5%;
   white-space: nowrap;
 }
@@ -122,6 +123,8 @@
   margin: 0 10px; /* Отступ между миниатюрами */
   opacity: 0.4;
   transition: opacity 0.3s ease;
+  display: flex;
+  gap: 2vh;
 }
 
 .inactiveFloor svg {
@@ -139,8 +142,9 @@ height: 100% !important;
 }
 
 .activeThumbnail {
-  opacity: 1; 
-  transform: translateY(-6%)
+  opacity: 1;     
+  font-weight: bold;
+  transform: translateY(-6%);
 }
 
 @keyframes fadeIn {
@@ -197,3 +201,13 @@ height: 100% !important;
     transform: translateY(0);
   }
 }
+
+.floorLabel
+  {
+    display: flex;
+    margin: 0;
+  }
+
+  .floorLabel:focus{
+    font-weight: bold;
+  }

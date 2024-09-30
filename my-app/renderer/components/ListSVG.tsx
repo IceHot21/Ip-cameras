@@ -5,6 +5,8 @@ import { FaCheck } from 'react-icons/fa';
 import LSCGStyle from '../styles/ListSVG.module.css';
 import { motion } from 'framer-motion';
 import { FormControl, Input, InputLabel } from '@mui/material';
+import {  toast } from 'react-toastify';
+import Collapsible from 'react-collapsible';
 
 interface SVGItem {
   id: number;
@@ -113,13 +115,13 @@ const ListSVG: FC<ListSVGProps> = ({
   };
 
   const handleSelectClick = () => {
-    setErrorMessage('');
+    toast.info('Пожалуйста, выберете ячейки для комнаты и дайте ей название.');
     setIsSelecting(!isSelecting);
   };
 
   const handleSaveRoom = () => {
     if (selectedCells.length === 0) { // Проверка на пустой выбор
-      setErrorMessage('Ошибка: Нужно выбрать хотя бы одну ячейку.');
+      toast.error('Ошибка: Нужно выбрать хотя бы одну ячейку.');
       return;
     }
 
@@ -133,7 +135,7 @@ const ListSVG: FC<ListSVGProps> = ({
     );
 
     if (hasIntersection) {
-      setErrorMessage('Ошибка: Выбранные ячейки уже заняты другой комнатой на этом этаже.');
+      toast.error('Ошибка: Выбранные ячейки уже заняты другой комнатой на этом этаже.');
       setRoomName('');
       setIsSelecting(false);
       setSelectedCells([]);
@@ -175,7 +177,7 @@ const ListSVG: FC<ListSVGProps> = ({
               <React.Fragment key={groupKey}>
                 {groupedSVGItems[groupKey].map((svg, index) => (
                   <tr key={svg.id} className={LCStyles.tableRow}>
-                    <td>{index === 0 ? svgGroups[groupKey].name : ''}</td> {/* Отображаем категорию только для первого элемента */}
+                    <td>{index === 0 ? svgGroups[groupKey].name : ''}</td>
                     <td>
                       <div
                         draggable
@@ -193,6 +195,27 @@ const ListSVG: FC<ListSVGProps> = ({
           </tbody>
         </table>
         </div>
+        {/* <div className={LSCGStyle.tableContainer}>
+        {Object.keys(groupedSVGItems).map((groupKey) => (
+          <Collapsible key={groupKey} trigger={svgGroups[groupKey].name}>
+            {groupedSVGItems[groupKey].map((svg) => (
+              <div key={svg.id} className={LCStyles.tableRow}>
+                <td>{svg.name}</td>
+                <td>
+                  <div
+                    draggable
+                    className={LCStyles.cccccc}
+                    onDragStart={(e) => handleDragStart(e, svg)}
+                    title={svg.name}
+                  >
+                    {renderSVG(svg.name)}
+                  </div>
+                </td>
+              </div>
+            ))}
+          </Collapsible>
+        ))}
+      </div> */}
         <div style={{ position: 'sticky', bottom: '0', left: '0' }}>
           <div className={LSCGStyle.roomSelectionContainer}>
             <FormControl
@@ -229,13 +252,13 @@ const ListSVG: FC<ListSVGProps> = ({
                 onClick={isSelecting ? handleSaveRoom : handleSelectClick} // Изменяем действие в зависимости от состояния
                 className={isSelecting ? LSCGStyle.saveButton : LSCGStyle.selectButton} // Динамически меняем стили
               >
-                {isSelecting ? "Сохранить комнату" : "Выбрать"} {/* Динамически меняем текст */}
+                {isSelecting ? "Сохранить комнату" : "Назначить комнату"} {/* Динамически меняем текст */}
               </motion.button>
 
               {errorMessage && <div className={LCStyles.errorMessage}>{errorMessage}</div>}
             </div>
           </div>
-        </div>
+        </div> 
       </div>
   );
 };

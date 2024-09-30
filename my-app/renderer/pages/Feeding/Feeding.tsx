@@ -8,6 +8,8 @@ import ListSVG from '../../components/ListSVG';
 import ModalStream from '../../components/ModalStream';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import { useRouter } from 'next/router';
+import { ToastContainer, toast } from 'react-toastify'; // Импортируем toast и ToastContainer
+import 'react-toastify/dist/ReactToastify.css'; // Добавляем стили для уведомлений
 
 interface Camera {
   id: number;
@@ -34,7 +36,6 @@ interface FeedingProps {
 const Feeding: FC<FeedingProps> = ({ navigate }) => {
   const [isListCameraOpen, setIsListCameraOpen] = useState(false);
   const [isListSVGOpen, setIsListSVGOpen] = useState(false);
-  const [isGridOpen, setIsGridOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [droppedCameras, setDroppedCameras] = useState<{ [key: string]: Camera }>({});
   const [droppedSVGs, setDroppedSVGs] = useState<{ [key: string]: SVGItem }>({});
@@ -229,6 +230,7 @@ const Feeding: FC<FeedingProps> = ({ navigate }) => {
                 isActive={floorIndex === activeFloor} 
                 setDroppedSVGs={setDroppedSVGs}
               />
+              <p className={FStyles.floorLabel}>{floorIndex + 1}</p>
             </div>
           ))}
         </div>
@@ -260,6 +262,17 @@ const Feeding: FC<FeedingProps> = ({ navigate }) => {
           onClose={() => setIsModalStreamOpen(false)}
         />
       )}
+      <ToastContainer
+        position="bottom-right" 
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
     </div>
   );
 };
