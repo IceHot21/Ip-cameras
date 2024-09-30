@@ -3,6 +3,8 @@ import LCStyles from '../styles/ListCamera.module.css';
 import { BiX, BiSolidLayerPlus } from "react-icons/bi";
 import { FaCheck } from 'react-icons/fa';
 import LSCGStyle from '../styles/ListSVG.module.css';
+import { motion } from 'framer-motion';
+import { FormControl, Input, InputLabel } from '@mui/material';
 
 interface SVGItem {
   id: number;
@@ -61,6 +63,16 @@ const ListSVG: FC<ListSVGProps> = ({
   const [isAddingSVG, setIsAddingSVG] = useState(false);
   const [roomName, setRoomName] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+  const [isFocused, setIsFocused] = useState(false);
+
+
+  const handleFocus = () => {
+    setIsFocused(true);
+  };
+
+  const handleBlur = () => {
+    setIsFocused(false);
+  };
 
   const groupSVGItems = (items: SVGItem[]) => {
     const groupedItems: { [key: string]: SVGItem[] } = {};
@@ -106,6 +118,11 @@ const ListSVG: FC<ListSVGProps> = ({
   };
 
   const handleSaveRoom = () => {
+    if (selectedCells.length === 0) { // Проверка на пустой выбор
+      setErrorMessage('Ошибка: Нужно выбрать хотя бы одну ячейку.');
+      return;
+    }
+    
     const storedRooms = JSON.parse(localStorage.getItem('selectedRooms') || '[]');
     const allPositions = storedRooms.flatMap((room: { positions: number[][], activeFloor: number }) =>
       room.activeFloor === activeFloor ? room.positions : []
@@ -136,30 +153,54 @@ const ListSVG: FC<ListSVGProps> = ({
 
   return (
     <div className={LSCGStyle.sidebar}>
-      <div className={LCStyles.buttonContainer}>
-        <button onClick={onClose} className={LCStyles.closeButton} title="Закрыть"><BiX /></button>
-        <div style={{ display: 'flex' }}>
+      <div className={LSCGStyle.header}>
+        <div className={LCStyles.buttonContainer}>
+          <button onClick={onClose} className={LCStyles.closeButton} title="Закрыть"><BiX /></button>
+          <div style={{ display: 'flex' }}>
+          </div>
+        </div>
+
+        <div className={LSCGStyle.roomSelectionContainer}>
+          <FormControl
+            sx={{
+              m: 1,
+              width: 'auto',
+              '& .MuiInput-underline:after': {
+                borderBottomColor: isFocused ? 'green' : 'inherit',
+              },
+              '& .MuiInputLabel-root.Mui-focused': {
+                color: isFocused ? 'green' : 'inherit',
+              },
+              '& .MuiInputBase-input': {
+                color: isFocused ? 'black' : 'inherit',
+              },
+            }}
+            onFocus={handleFocus}
+            onBlur={handleBlur}
+            variant="standard">
+            <InputLabel >Название комнаты</InputLabel>
+            <Input
+              type="text"
+              value={roomName}
+              onChange={(e) => setRoomName(e.target.value)}
+              className={LCStyles.roomNameInput}
+            />
+          </FormControl>
+          <div className={LSCGStyle.Buttons}>
+            <motion.button
+              type="button"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={isSelecting ? handleSaveRoom : handleSelectClick} // Изменяем действие в зависимости от состояния
+              className={isSelecting ? LSCGStyle.saveButton : LSCGStyle.selectButton} // Динамически меняем стили
+            >
+              {isSelecting ? "Сохранить комнату" : "Выбрать"} {/* Динамически меняем текст */}
+            </motion.button>
+
+            {errorMessage && <div className={LCStyles.errorMessage}>{errorMessage}</div>}
+          </div>
         </div>
       </div>
-
-<div className={LCStyles.roomSelectionContainer}>
-          <input
-            type="text"
-            placeholder="Название комнаты"
-            value={roomName}
-            onChange={(e) => setRoomName(e.target.value)}
-            className={LCStyles.roomNameInput}
-          />
-          <button onClick={handleSelectClick} className={LCStyles.selectButton}>
-            {isSelecting ? <FaCheck title="Сохранить комнату" /> : "Выбрать"}
-          </button>
-          {isSelecting && (
-            <button onClick={handleSaveRoom} className={LCStyles.saveButton}>
-              Сохранить комнату
-            </button>
-          )}
-          {errorMessage && <div className={LCStyles.errorMessage}>{errorMessage}</div>}
-        </div>
       <div className={LCStyles.tableContainer}>
         <table>
           <thead className={LCStyles.tableHeader}>
@@ -191,7 +232,7 @@ const ListSVG: FC<ListSVGProps> = ({
           </tbody>
         </table>
 
-        
+
       </div>
     </div>
   );

@@ -12,3 +12,58 @@
     height: 45vh;
   }
   
+  .sidebar::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  .sidebar::-webkit-scrollbar-track {
+    background: #f4f4f4;
+    border-radius: 5px;
+  }
+  
+  .sidebar::-webkit-scrollbar-thumb {
+    background-color: #ccc;
+    border-radius: 5px;
+  }
+  
+  .sidebar::-webkit-scrollbar-thumb:hover {
+    background: #ccc;
+  }
+
+  .header{
+    top:0;
+    left:0;
+    position: sticky;
+    z-index: 1000;
+    background-color: white;
+    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.5);
+  }
+
+  .Buttons {
+    display: flex;
+    gap:1vh;
+    align-items: flex-end;
+    justify-content: center;
+  }
+
+  .selectButton,
+.saveButton {
+    height: 3vh;
+  padding: 7px;
+  border: none;
+  border-radius: 20px;
+  background-color: #666;
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-bottom: 10px;
+  font-size: 12px;
+}
+
+.roomSelectionContainer{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    width: 100%;
+    gap: 1vh;
+  }
