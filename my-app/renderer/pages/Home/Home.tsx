@@ -1,4 +1,4 @@
-import { createElement, FC, useState, useEffect } from "react";
+import React, { FC, useMemo, useState, useEffect, memo } from "react";
 import HStyles from "./Home.module.css";
 import { BsArrowDownUp } from "react-icons/bs";
 import Svg1 from "../../assets/Svg1.svg";
@@ -56,6 +56,8 @@ interface SVGItem {
   name: string;
 }
 
+const MemoizedFloor = memo(Floor);
+
 const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [currentSvgIndex, setCurrentSvgIndex] = useState(0);
@@ -66,6 +68,31 @@ const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
   const [predictions, setPredictions] = useState<Prediction[]>([]);
   const [ws, setWs] = useState<WebSocket | null>(null);
   const itemsPerPage = 5;
+
+  const floorProps = useMemo(() => ({
+    navigate,
+    children: null,
+    onCameraDropped: () => { },
+    droppedCameras,
+    activeFloor: currentSvgIndex,
+    onFloorChange: setCurrentSvgIndex,
+    onDoubleClickCamera: () => { },
+    FlagLocal: () => { },
+    rotationAngles: {},
+    setRotationAngles: () => { },
+    droppedSVGs,
+    onSVGDrop: () => { },
+    floorIndex: currentSvgIndex,
+    isActive: true,
+    setDroppedSVGs,
+  }), [
+    navigate,
+    droppedCameras,
+    currentSvgIndex,
+    setCurrentSvgIndex,
+    droppedSVGs,
+    setDroppedSVGs,
+  ]);
 
   const findCellByPort = (port: number): RoomInfo | null => {
     const savedDroppedCameras = localStorage.getItem('droppedCameras');
@@ -222,6 +249,19 @@ const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
     return HStyles.hidden;
   };
 
+  const formatTime = (timeInMilliseconds) => {
+    const date = new Date(Number(timeInMilliseconds));
+
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Месяцы начинаются с 0
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const seconds = String(date.getSeconds()).padStart(2, '0');
+
+    return `${day}.${month}.${year} ${hours}:${minutes}:${seconds}`;
+};
+
   const renderTableRows = () => {
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
@@ -229,17 +269,15 @@ const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
       .slice(startIndex, endIndex)
       .map((event, index) => {
         const roomInfo = roomInfoMap[event.camera_port] || { activeFloor: 'Неизвестно', roomName: 'Неизвестно' };
-        const eventDate = new Date(Number(event.date)); // Преобразуем миллисекунды в объект Date
-        const formattedDateForPredict = formatDistanceToNow(eventDate, { addSuffix: true, locale: ru }); // Форматируем дату
-        const formattedDate = format(eventDate, 'dd.MM.yyyy HH:mm:ss', { locale: ru });
+        const eventDate = formatTime(event.date); // Преобразуем миллисекунды в объект Date
 
         return (
           <tr key={index}>
-            <td>{formattedDate}</td>
+            <td>{eventDate}</td>
             <td>Здание №1</td>
             <td>Этаж {Number(roomInfo.activeFloor) + 1}</td>
-            <td>Помещение {roomInfo.roomName}</td>
-            <td>Обнаружен {event.item_predict} с вероятностью {(Number(event.score_predict.slice(0, 6)) * 100).toFixed(2)}% {formattedDateForPredict}</td>
+            <td>{roomInfo.roomName}</td>
+            <td>Обнаружен {event.item_predict} с вероятностью {(Number(event.score_predict.slice(0, 6)) * 100).toFixed(2)}%</td>
           </tr>
         );
       });
@@ -298,23 +336,7 @@ const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
 
           <div className={HStyles.planInside}>
             <div className={HStyles.plan}>
-              <Floor
-                navigate={navigate}
-                children={null}
-                onCameraDropped={() => { }}
-                droppedCameras={droppedCameras}
-                activeFloor={currentSvgIndex}
-                onFloorChange={setCurrentSvgIndex}
-                onDoubleClickCamera={() => { }}
-                FlagLocal={() => { }}
-                rotationAngles={{}}
-                setRotationAngles={() => { }}
-                droppedSVGs={droppedSVGs}
-                onSVGDrop={() => { }}
-                floorIndex={currentSvgIndex}
-                isActive={true}
-                setDroppedSVGs={setDroppedSVGs}
-              />
+              <MemoizedFloor {...floorProps} />
             </div>
             <span className={HStyles.cameraLabel}>
               <button className={HStyles.prevFloor} onClick={prevFloor}><FaChevronLeft /></button>
@@ -395,13 +417,17 @@ const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
                 <table>
                   <thead className={HStyles.tableHeader}>
                     <tr>
-                      <th >Дата и время</th>
-                      <th >Здание</th>
-                      <th >Номер этажа</th>
-                      <th >Помещение</th>
-                      <th >Событие</th>
+                      <th>Дата и время</th>
+                      <th>Здание</th>
+                      <th>Номер этажа</th>
+                      <th>Помещение</th>
+                      <th>Событие</th>
                     </tr>
                   </thead>
+                </table>
+              </div>
+              <div className={HStyles.tableBodyWrapper}>
+                <table>
                   <tbody className={HStyles.tableBody}>
                     {renderTableRows()}
                   </tbody>
