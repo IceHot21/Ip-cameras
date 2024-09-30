@@ -39,7 +39,7 @@ const StartStream: FC<StartStreamProps> = ({ port, rtspUrl, id, cameraName, setC
   const [ws, setWs] = useState<WebSocket | null>(null);
 
   useEffect(() => {
-    const socket = new WebSocket('ws://localhost:9999');
+    const socket = new WebSocket('ws://192.168.0.136:9999');
 
     socket.onopen = () => {
       console.log('Connected to WebSocket server');

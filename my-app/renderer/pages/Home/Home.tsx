@@ -153,7 +153,7 @@ const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
   }, []);
 
   useEffect(() => {
-    const socket = new WebSocket('ws://localhost:9999');
+    const socket = new WebSocket('ws://192.168.0.136:9999');
 
     socket.onopen = () => {
       console.log('Connected to WebSocket server');
