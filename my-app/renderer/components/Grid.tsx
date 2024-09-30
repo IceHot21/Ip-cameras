@@ -1,7 +1,7 @@
 import React, { FC, useState, useEffect, lazy, Suspense, useCallback } from 'react';
 import GStyles from '../styles/Grid.module.css';
 import { BsFillCameraVideoFill } from 'react-icons/bs';
-import { Menu, Item, useContextMenu, ItemParams } from 'react-contexify';
+import { Menu, Item, useContextMenu, ItemParams, Separator } from 'react-contexify';
 import "react-contexify/dist/ReactContexify.css";
 
 interface Camera {
@@ -36,6 +36,8 @@ interface GridProps {
   isSelecting: boolean;
   selectedCells: number[][];
   setSelectedCells: React.Dispatch<React.SetStateAction<number[][]>>;
+  setDroppedSVGs: React.Dispatch<React.SetStateAction<{ [key: string]: SVGItem }>>;
+  setDroppedCameras: React.Dispatch<React.SetStateAction<{ [key: string]: Camera }>>;
 }
 
 const Grid: FC<GridProps> = ({
@@ -52,6 +54,8 @@ const Grid: FC<GridProps> = ({
   isSelecting,
   selectedCells,
   setSelectedCells,
+  setDroppedSVGs,
+  setDroppedCameras,
 }) => {
   const [selectedCameras, setSelectedCameras] = useState<Camera[]>([]);
   const [savedCells, setSavedCells] = useState<number[][]>([]);
@@ -86,40 +90,37 @@ const Grid: FC<GridProps> = ({
       .filter((room: { activeFloor: number }) => room.activeFloor === activeFloor)
       .flatMap((room: { positions: number[][] }) => room.positions);
     setSavedCells(filteredPositions);
-  }, [activeFloor,isSelecting]); // Добавляем activeFloor в зависимости
+  }, [activeFloor, isSelecting]); // Добавляем activeFloor в зависимости
 
   const handleDragStart = (e: React.DragEvent<HTMLDivElement>, item: Camera | SVGItem) => {
     console.log('Drag start:', item);
     e.dataTransfer.setData('droppedCameras', JSON.stringify(item));
   };
 
-  const displayMenu = useCallback((e: React.MouseEvent<HTMLDivElement>, cameraId: string) => {
+  const displayMenu = useCallback((e: React.MouseEvent<HTMLDivElement>, cameraId: string, svgKey?: string) => {
     e.preventDefault();
-    show({ event: e, props: { cameraId } });
+    show({ event: e, props: { cameraId, svgKey } });
+    console.log(svgKey);
   }, [show]);
 
   const handleItemClick = useCallback(({ id, event, props }: ItemParams<any, any>) => {
     const cameraId = props.cameraId;
-    setRotationAngles((prevAngles) => {
-      const newAngle = id === "rotateLeft" ? (prevAngles[cameraId] || 0) - 45 : (prevAngles[cameraId] || 0) + 45;
-      const cameraKey = Object.keys(droppedCameras).find(key => `Камера ${droppedCameras[key].name.split(/[^a-zA-Z0-9]/)[0]}` === cameraId);
-      if (cameraKey) {
-        const updatedCamera = {
-          ...droppedCameras[cameraKey],
-          rotationAngle: newAngle,
-        };
-        const updatedDroppedCameras = {
-          ...droppedCameras,
-          [cameraKey]: updatedCamera,
-        };
-        localStorage.setItem('droppedCameras', JSON.stringify(updatedDroppedCameras));
-      }
-      return {
-        ...prevAngles,
-        [cameraId]: newAngle,
-      };
-    });
-  }, [droppedCameras, setRotationAngles]);
+    const svgKey = props.svgKey;
+
+    if (id === "rotateLeft" || id === "rotateRight") {
+      setRotationAngles((prevAngles) => ({ ...prevAngles, [cameraId]: id === "rotateLeft" ? (prevAngles[cameraId] || 0) - 45 : (prevAngles[cameraId] || 0) + 45, }));
+    } else if (cameraId && id === 'deleteCamera') {
+      const newDroppedCameras = { ...droppedCameras };
+      delete newDroppedCameras[cameraId];
+      setDroppedCameras(newDroppedCameras);
+      localStorage.setItem('droppedCameras', JSON.stringify(newDroppedCameras));
+    } else if (svgKey && id === 'deleteSVG') {
+      const newDroppedSVGs = { ...droppedSVGs };
+      delete newDroppedSVGs[svgKey];
+      setDroppedSVGs(newDroppedSVGs);
+      localStorage.setItem('droppedSVGs', JSON.stringify(newDroppedSVGs));
+    }
+  }, [setRotationAngles, droppedCameras, setDroppedCameras, droppedSVGs, setDroppedSVGs]);
 
   const handleDragOver = useCallback((e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -219,6 +220,7 @@ const Grid: FC<GridProps> = ({
             const rotationAngle = rotationAngles[cameraId] || 0;
             const isSelected = selectedCells.some(pos => pos[0] === rowIndex && pos[1] === colIndex);
             const isSaved = savedCells.some(pos => pos[0] === rowIndex && pos[1] === colIndex);
+            const svgKey = svg ? `SVG ${svg.id}` : '';
 
             return (
               <div
@@ -240,9 +242,11 @@ const Grid: FC<GridProps> = ({
                     onContextMenu={(e) => displayMenu(e, cameraId)}
                   >
                     <BsFillCameraVideoFill style={{ transform: `rotate(${rotationAngle}deg)` }} />
-                    <Menu className={GStyles.menuContainer} id={menuClick} >
-                      <Item className={GStyles.menuItem} id='rotateRigth' title={cameraId} onClick={handleItemClick}>Поворот вправо</Item>
-                      <Item className={GStyles.menuItem} id='rotateLeft' onClick={handleItemClick}>Поворот влево</Item>
+                    <Menu id={menuClick}>
+                      <Item id='rotateRight' onClick={handleItemClick} data={{ cameraId }}>Поворот вправо</Item>
+                      <Item id='rotateLeft' onClick={handleItemClick} data={{ cameraId }}>Поворот влево</Item>
+                      <Separator />
+                      <Item id='deleteCamera' onClick={handleItemClick} data={{ cameraId }}>Удалить камеру</Item>
                     </Menu>
                   </div>
                 )}
@@ -251,9 +255,14 @@ const Grid: FC<GridProps> = ({
                     className={GStyles.svgIcon}
                     draggable
                     onDragStart={(e) => handleDragStart(e, svg)}
-                    title={svg.name}
+                    id={svgKey}
+                    title={svgKey}
+                    onContextMenu={(e) => displayMenu(e, undefined, svgKey)}
                   >
                     {renderSVG(svg.name)}
+                    <Menu id={menuClick}>
+                      <Item id='deleteSVG' onClick={handleItemClick} data={{ svgKey }}>Удалить SVG</Item>
+                    </Menu>
                   </div>
                 )}
               </div>

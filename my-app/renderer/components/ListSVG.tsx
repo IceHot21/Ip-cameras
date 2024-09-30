@@ -169,7 +169,7 @@ const ListSVG: FC<ListSVGProps> = ({
           <thead className={LSCGStyle.tableHeader}>
             <tr>
               <th>Название</th>
-              <th>SVG</th>
+              <th>Элемент</th>
             </tr>
           </thead>
           <tbody className={LCStyles.tableBody}>
@@ -178,7 +178,7 @@ const ListSVG: FC<ListSVGProps> = ({
                 {groupedSVGItems[groupKey].map((svg, index) => (
                   <tr key={svg.id} className={LCStyles.tableRow}>
                     <td>{index === 0 ? svgGroups[groupKey].name : ''}</td>
-                    <td>
+                    <td className={LSCGStyle.tdContainer}>
                       <div
                         draggable
                         className={LCStyles.cccccc}
@@ -195,6 +195,8 @@ const ListSVG: FC<ListSVGProps> = ({
           </tbody>
         </table>
         </div>
+
+{/* TODO: прикольная идея с аккордионом, надо подумать!!!
         {/* <div className={LSCGStyle.tableContainer}>
         {Object.keys(groupedSVGItems).map((groupKey) => (
           <Collapsible key={groupKey} trigger={svgGroups[groupKey].name}>
@@ -216,6 +218,7 @@ const ListSVG: FC<ListSVGProps> = ({
           </Collapsible>
         ))}
       </div> */}
+
         <div style={{ position: 'sticky', bottom: '0', left: '0' }}>
           <div className={LSCGStyle.roomSelectionContainer}>
             <FormControl

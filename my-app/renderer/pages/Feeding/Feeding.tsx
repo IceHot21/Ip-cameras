@@ -97,11 +97,6 @@ const Feeding: FC<FeedingProps> = ({ navigate }) => {
     setIsListSVGOpen(!isListSVGOpen);
   }, [isListSVGOpen]);
 
-/*   const handleGridOpen = useCallback(() => {
-    setIsGridOpen((prev) => !prev);
-    setIsEditing(!isGridOpen);
-  }, [isGridOpen]); */
-
   const handleCameraDrop = useCallback((camera: Camera, rowIndex: number, colIndex: number) => {
     const cellKey = `${activeFloor}-${rowIndex}-${colIndex}`;
     const updatedCamera: Camera = {
@@ -227,7 +222,7 @@ const Feeding: FC<FeedingProps> = ({ navigate }) => {
                 droppedSVGs={droppedSVGs}
                 onSVGDrop={handleSVGDrop}
                 floorIndex={floorIndex}
-                isActive={floorIndex === activeFloor} 
+                isActive={floorIndex === activeFloor}
                 setDroppedSVGs={setDroppedSVGs}
               />
               <p className={FStyles.floorLabel}>{floorIndex + 1}</p>
@@ -250,6 +245,8 @@ const Feeding: FC<FeedingProps> = ({ navigate }) => {
               setRotationAngles={setRotationAngles}
               selectedCells={selectedCells}
               setSelectedCells={setSelectedCells}
+              setDroppedSVGs={setDroppedSVGs}
+              setDroppedCameras={setDroppedCameras}
             />
           </div>
         )}
@@ -263,7 +260,7 @@ const Feeding: FC<FeedingProps> = ({ navigate }) => {
         />
       )}
       <ToastContainer
-        position="bottom-right" 
+        position="bottom-right"
         autoClose={3000}
         hideProgressBar={false}
         newestOnTop={false}
