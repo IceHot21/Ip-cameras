@@ -122,7 +122,7 @@ const ListSVG: FC<ListSVGProps> = ({
       setErrorMessage('Ошибка: Нужно выбрать хотя бы одну ячейку.');
       return;
     }
-    
+
     const storedRooms = JSON.parse(localStorage.getItem('selectedRooms') || '[]');
     const allPositions = storedRooms.flatMap((room: { positions: number[][], activeFloor: number }) =>
       room.activeFloor === activeFloor ? room.positions : []
@@ -160,50 +160,11 @@ const ListSVG: FC<ListSVGProps> = ({
           </div>
         </div>
 
-        <div className={LSCGStyle.roomSelectionContainer}>
-          <FormControl
-            sx={{
-              m: 1,
-              width: 'auto',
-              '& .MuiInput-underline:after': {
-                borderBottomColor: isFocused ? 'green' : 'inherit',
-              },
-              '& .MuiInputLabel-root.Mui-focused': {
-                color: isFocused ? 'green' : 'inherit',
-              },
-              '& .MuiInputBase-input': {
-                color: isFocused ? 'black' : 'inherit',
-              },
-            }}
-            onFocus={handleFocus}
-            onBlur={handleBlur}
-            variant="standard">
-            <InputLabel >Название комнаты</InputLabel>
-            <Input
-              type="text"
-              value={roomName}
-              onChange={(e) => setRoomName(e.target.value)}
-              className={LCStyles.roomNameInput}
-            />
-          </FormControl>
-          <div className={LSCGStyle.Buttons}>
-            <motion.button
-              type="button"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={isSelecting ? handleSaveRoom : handleSelectClick} // Изменяем действие в зависимости от состояния
-              className={isSelecting ? LSCGStyle.saveButton : LSCGStyle.selectButton} // Динамически меняем стили
-            >
-              {isSelecting ? "Сохранить комнату" : "Выбрать"} {/* Динамически меняем текст */}
-            </motion.button>
 
-            {errorMessage && <div className={LCStyles.errorMessage}>{errorMessage}</div>}
-          </div>
-        </div>
       </div>
-      <div className={LCStyles.tableContainer}>
+      <div className={LSCGStyle.tableContainer}>
         <table>
-          <thead className={LCStyles.tableHeader}>
+          <thead className={LSCGStyle.tableHeader}>
             <tr>
               <th>Название</th>
               <th>SVG</th>
@@ -231,10 +192,51 @@ const ListSVG: FC<ListSVGProps> = ({
             ))}
           </tbody>
         </table>
+        </div>
+        <div style={{ position: 'sticky', bottom: '0', left: '0' }}>
+          <div className={LSCGStyle.roomSelectionContainer}>
+            <FormControl
+              sx={{
+                m: 1,
+                width: 'auto',
+                '& .MuiInput-underline:after': {
+                  borderBottomColor: isFocused ? '#006c2a' : 'inherit',
+                },
+                '& .MuiInputLabel-root.Mui-focused': {
+                  color: isFocused ? '#006c2a' : 'inherit',
+                },
+                '& .MuiInputBase-input': {
+                  color: isFocused ? 'black' : 'inherit',
+                },
+              }}
+              onFocus={handleFocus}
+              onBlur={handleBlur}
+              variant="standard">
+              <InputLabel >Введите название комнаты</InputLabel>
+              <Input
+                style={{ width: '20vh' }}
+                type="text"
+                value={roomName}
+                onChange={(e) => setRoomName(e.target.value)}
+                className={LCStyles.roomNameInput}
+              />
+            </FormControl>
+            <div className={LSCGStyle.Buttons}>
+              <motion.button
+                type="button"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={isSelecting ? handleSaveRoom : handleSelectClick} // Изменяем действие в зависимости от состояния
+                className={isSelecting ? LSCGStyle.saveButton : LSCGStyle.selectButton} // Динамически меняем стили
+              >
+                {isSelecting ? "Сохранить комнату" : "Выбрать"} {/* Динамически меняем текст */}
+              </motion.button>
 
-
+              {errorMessage && <div className={LCStyles.errorMessage}>{errorMessage}</div>}
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
   );
 };
 
