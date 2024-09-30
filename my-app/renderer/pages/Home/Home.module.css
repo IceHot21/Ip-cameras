@@ -51,7 +51,6 @@
                1px 25px 50px rgba(16, 16, 16, 0.2);
 }
 
-
 .buildingIcon svg {
   cursor: pointer;
 }
@@ -319,6 +318,7 @@ opacity:0;
   padding: 10px;
   background-color: #f4f4f4;
   border-bottom: 2px solid #ccc;
+  top: 0;
   text-align: left;
   position: sticky;
   top: 0;
@@ -329,6 +329,36 @@ opacity:0;
   padding: 7px;
   border-bottom: 1px solid #ddd;
   text-align: left;
+}
+
+.tableHeaderWrapper {
+  /* Ваши стили для обертки заголовка таблицы */
+  width: 100%;
+  position: sticky;
+  top: 0;
+  background-color: white; /* Цвет фона, чтобы заголовок был виден при скролле */
+  z-index: 1; /* Чтобы заголовок был поверх тела таблицы */
+}
+
+/* Стилизация скроллбара для WebKit браузеров */
+.tableContainer::-webkit-scrollbar {
+  width: 12px; /* Ширина скроллбара */
+}
+
+.tableContainer::-webkit-scrollbar-track {
+  background: #f1f1f1; /* Цвет фона трека */
+}
+
+.tableContainer::-webkit-scrollbar-thumb {
+  background-color: #006c2a; /* Цвет ползунка */
+  border-radius: 6px; /* Закругление углов ползунка */
+  border: 3px solid #f1f1f1; /* Отступ вокруг ползунка */
+}
+
+/* Стилизация скроллбара для Firefox */
+.tableBodyWrapper {
+  scrollbar-color: #006c2a #f1f1f1; /* Цвет ползунка и трека */
+  scrollbar-width: thin; /* Ширина скроллбара */
 }
 
 .panelDown {
