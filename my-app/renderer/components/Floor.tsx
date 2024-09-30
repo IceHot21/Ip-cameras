@@ -38,9 +38,10 @@ type FloorProps = {
   floorIndex: number;
   isActive: boolean;
   setDroppedSVGs: any;
+  setDroppedCameras: React.Dispatch<React.SetStateAction<{ [key: string]: Camera }>>;
 };
 
-const Floor: FC<FloorProps> = memo(({ children, droppedCameras, activeFloor, navigate, onFloorChange, onDoubleClickCamera, FlagLocal, rotationAngles, setRotationAngles, droppedSVGs, onSVGDrop, floorIndex, isActive, setDroppedSVGs }) => {
+const Floor: FC<FloorProps> = memo(({ children, droppedCameras, activeFloor, navigate, onFloorChange, onDoubleClickCamera, FlagLocal, rotationAngles, setRotationAngles, droppedSVGs, onSVGDrop, floorIndex, isActive, setDroppedSVGs, setDroppedCameras }) => {
   const [selectedCameras, setSelectedCameras] = useState<Camera[]>([]);
   const menuClick = "Меню";
   const { show } = useContextMenu({ id: menuClick });
@@ -129,12 +130,11 @@ const Floor: FC<FloorProps> = memo(({ children, droppedCameras, activeFloor, nav
     e.preventDefault();
     const itemDataCamera = e.dataTransfer.getData('droppedItem');
     const itemDataSVG = e.dataTransfer.getData('svgItem');
-    console.log('Dropped item data:', itemDataSVG);
+    
     if (itemDataCamera) {
       const item: Camera = JSON.parse(itemDataCamera);
-      console.log('Parsed item:', item);
+
       if ('port' in item) {
-        // Это камера
         const camera = item as Camera;
         const port = camera.port;
         const cameraName = camera.name;
@@ -142,35 +142,46 @@ const Floor: FC<FloorProps> = memo(({ children, droppedCameras, activeFloor, nav
         const rtspUrl = `rtsp://admin:Dd7560848@${ipAddress}`;
         const newCellKey = `${floorIndex}-${rowIndex}-${colIndex}`;
         const existingCameraKey = Object.keys(droppedCameras).find(key => droppedCameras[key].name === cameraName);
-        if (existingCameraKey) {
-          if (existingCameraKey !== newCellKey) {
-            delete droppedCameras[existingCameraKey];
+
+        setDroppedCameras((prevDroppedCameras) => {
+          const updatedCameras = { ...prevDroppedCameras };
+
+          if (existingCameraKey && existingCameraKey !== newCellKey) {
+            delete updatedCameras[existingCameraKey]; // Удаляем старую ячейку
           }
-        }
-        const newCamera: Camera = {
-          id: Object.keys(droppedCameras).length + 1,
-          port,
-          rtspUrl,
-          name: cameraName,
-          floor: floorIndex,
-          cell: newCellKey,
-          initialPosition: { rowIndex, colIndex },
-          address: camera.address,
-        };
-        droppedCameras[newCellKey] = newCamera;
-        camera.initialPosition = { rowIndex, colIndex };
+
+          const newCamera: Camera = {
+            id: Object.keys(updatedCameras).length + 1,
+            port,
+            rtspUrl,
+            name: cameraName,
+            floor: floorIndex,
+            cell: newCellKey,
+            initialPosition: { rowIndex, colIndex },
+            address: camera.address,
+          };
+
+          updatedCameras[newCellKey] = newCamera; // Обновляем новое положение камеры
+          return updatedCameras;
+        });
       }
     }
+
     if (itemDataSVG) {
-      // Это SVG
       const item: SVGItem = JSON.parse(itemDataSVG);
       const svg = item as SVGItem;
       const newCellKey = `${floorIndex}-${rowIndex}-${colIndex}`;
-      droppedSVGs[newCellKey] = svg;
+      
+      setDroppedSVGs((prevDroppedSVGs) => {
+        const updatedSVGs = { ...prevDroppedSVGs, [newCellKey]: svg };
+        localStorage.setItem('droppedSVGs', JSON.stringify(updatedSVGs));
+        return updatedSVGs;
+      });
+
       onSVGDrop(svg, rowIndex, colIndex);
-      localStorage.setItem('droppedSVGs', JSON.stringify(droppedSVGs));
     }
-  }, [floorIndex, droppedCameras, droppedSVGs, onSVGDrop]);
+  }, [floorIndex, droppedCameras, setDroppedCameras, setDroppedSVGs, onSVGDrop]);
+
 
   return (
     <div className={RStyles.body}>
@@ -206,7 +217,6 @@ const Floor: FC<FloorProps> = memo(({ children, droppedCameras, activeFloor, nav
                           onDoubleClick={() => handleDoubleClick(camera)}
                           id={cameraId}
                           title={cameraId}
-                          onContextMenu={(e) => displayMenu(e, cameraId)}
                         >
                           <BsFillCameraVideoFill style={{ transform: `rotate(${rotationAngle}deg)`, height: '50%', width: '100%' }} />
                           <div

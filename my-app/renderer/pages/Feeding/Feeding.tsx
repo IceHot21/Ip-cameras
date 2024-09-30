@@ -206,6 +206,7 @@ const Feeding: FC<FeedingProps> = ({ navigate }) => {
         isActive={true}
         // isPredictions={isPredictions}
         setDroppedSVGs={setDroppedSVGs}
+        setDroppedCameras={setDroppedCameras}
       />
     </div>
   ), [activeFloor, memoizedDroppedCameras, memoizedDroppedSVGs, memoizedRotationAngles, handleCameraDrop, handleFloorChange, handleDoubleClickCamera, navigate, memoizedFlagLocalToggle]);
@@ -235,6 +236,7 @@ const Feeding: FC<FeedingProps> = ({ navigate }) => {
             isActive={floorIndex === activeFloor}
             // isPredictions={isPredictions} 
             setDroppedSVGs={setDroppedSVGs}
+            setDroppedCameras={setDroppedCameras}
           />
         </div>
       ))}

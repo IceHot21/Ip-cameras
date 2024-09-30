@@ -120,16 +120,16 @@ const Grid: FC<GridProps> = ({
   const handleItemClick = useCallback(({ id, event, props }: ItemParams<any, any>) => {
     const cameraId = props.cameraId;
     const svgKey = props.svgKey;
-  
+
     if (id === "rotateLeft" || id === "rotateRight") {
       setRotationAngles((prevAngles) => ({ ...prevAngles, [cameraId]: id === "rotateLeft" ? (prevAngles[cameraId] || 0) - 45 : (prevAngles[cameraId] || 0) + 45, }));
-    }  else if (id === "deleteSVG") {
+    } else if (id === "deleteSVG") {
       const newDroppedSVGs = { ...droppedSVGs };
       delete newDroppedSVGs[svgKey];
       setDroppedSVGs(newDroppedSVGs);
       localStorage.setItem('droppedSVGs', JSON.stringify(newDroppedSVGs));
     }
-  }, [setRotationAngles, droppedCameras, setDroppedCameras, droppedSVGs, setDroppedSVGs]);
+  }, [setRotationAngles, droppedCameras, droppedSVGs, setDroppedSVGs]);
 
   const handleDragOver = useCallback((e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -251,12 +251,6 @@ const Grid: FC<GridProps> = ({
                     onContextMenu={(e) => displayMenu(e, cameraId)}
                   >
                     <BsFillCameraVideoFill style={{ transform: `rotate(${rotationAngle}deg)` }} />
-                    <Menu className={GStyles.menuContainer} id={menuClick} >
-                      <Item className={GStyles.menuItem} id='rotateRigth' title={cameraId} onClick={handleItemClick}>Поворот вправо</Item>
-                      <Item className={GStyles.menuItem} id='rotateLeft' onClick={handleItemClick}>Поворот влево</Item>
-                      <Separator />
-                      <Item id="deleteSVG" onClick={handleItemClick}>Удалить элемент</Item>
-                    </Menu>
                   </div>
                 )}
                 {isSaved && roomName && (
@@ -269,6 +263,12 @@ const Grid: FC<GridProps> = ({
           })
         )}
       </div>
+      <Menu className={GStyles.menuContainer} id={menuClick} >
+        <Item className={GStyles.menuItem} id='rotateRigth' onClick={handleItemClick}>Поворот вправо</Item>
+        <Item className={GStyles.menuItem} id='rotateLeft' onClick={handleItemClick}>Поворот влево</Item>
+        <Separator />
+        <Item id="deleteSVG" onClick={handleItemClick}>Удалить элемент</Item>
+      </Menu>
     </div>
   );
 };
