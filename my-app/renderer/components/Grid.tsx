@@ -1,8 +1,9 @@
-import React, { FC, useState, useEffect, lazy, Suspense, useCallback } from 'react';
+import React, { FC, useState, useEffect, lazy, Suspense, useCallback, memo } from 'react';
 import GStyles from '../styles/Grid.module.css';
 import { BsFillCameraVideoFill } from 'react-icons/bs';
 import { Menu, Item, useContextMenu, ItemParams } from 'react-contexify';
 import "react-contexify/dist/ReactContexify.css";
+import { motion } from 'framer-motion';
 
 interface Camera {
   id: number;
@@ -38,7 +39,7 @@ interface GridProps {
   setSelectedCells: React.Dispatch<React.SetStateAction<number[][]>>;
 }
 
-const Grid: FC<GridProps> = ({
+const Grid: FC<GridProps> = memo(({
   navigate,
   onCameraDrop,
   onSVGDrop,
@@ -184,7 +185,7 @@ const Grid: FC<GridProps> = ({
       onSVGDrop(svg, rowIndex, colIndex);
       localStorage.setItem('droppedSVGs', JSON.stringify(droppedSVGs));
     }
-  }, [activeFloor, droppedCameras, droppedSVGs, onCameraDrop, onSVGDrop, rotationAngles]);
+  }, [activeFloor, droppedCameras, droppedSVGs, onCameraDrop, rotationAngles]);
 
   const handleCellClick = (rowIndex: number, colIndex: number) => {
     if (isSelecting) { // Проверяем состояние isSelecting
@@ -208,7 +209,11 @@ const Grid: FC<GridProps> = ({
   };
 
   return (
-    <div className={GStyles.gridContainer}>
+    <motion.div className={GStyles.gridContainer}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.7 }}>
       <div className={GStyles.grid}>
         {Array.from({ length: 15 }).map((_, rowIndex) =>
           Array.from({ length: 20 }).map((_, colIndex) => {
@@ -221,13 +226,17 @@ const Grid: FC<GridProps> = ({
             const isSaved = savedCells.some(pos => pos[0] === rowIndex && pos[1] === colIndex);
 
             return (
-              <div
-                key={cellKey}
-                id={cellKey}
-                className={`${GStyles.gridCell} ${isSaved ? GStyles.savedCell : ''} ${isSelected ? GStyles.selectedCell : ''}`}
-                onDragOver={handleDragOver}
-                onDrop={(e) => handleDrop(e, rowIndex, colIndex)}
-                onClick={() => handleCellClick(rowIndex, colIndex)}
+              <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.7 }}
+              key={cellKey}
+              id={cellKey}
+              className={`${GStyles.gridCell} ${isSaved ? GStyles.savedCell : ''} ${isSelected ? GStyles.selectedCell : ''}`}
+              onDragOver={handleDragOver}
+              onDrop={(e) => handleDrop(e, rowIndex, colIndex)}
+              onClick={() => handleCellClick(rowIndex, colIndex)}
               >
                 {camera && (
                   <div
@@ -256,13 +265,13 @@ const Grid: FC<GridProps> = ({
                     {renderSVG(svg.name)}
                   </div>
                 )}
-              </div>
+              </motion.div>
             );
           })
         )}
       </div>
-    </div>
+    </motion.div>
   );
-};
+});
 
 export default Grid;

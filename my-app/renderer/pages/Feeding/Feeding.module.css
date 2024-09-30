@@ -197,3 +197,135 @@ height: 100% !important;
     transform: translateY(0);
   }
 }
+
+/* Общие стили для анимации */
+.fade-enter {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.fade-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 300ms, transform 300ms;
+}
+
+.fade-exit {
+  opacity: 1;
+}
+
+.fade-exit-active {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 300ms, transform 300ms;
+}
+
+/* Стили для анимации компонента ListCamera */
+.ListCamera-enter {
+  opacity: 0;
+  transform: scale(0.9);
+}
+
+.ListCamera-enter-active {
+  opacity: 1;
+  transform: scale(1);
+  transition: opacity 300ms, transform 300ms;
+}
+
+.ListCamera-exit {
+  opacity: 1;
+}
+
+.ListCamera-exit-active {
+  opacity: 0;
+  transform: scale(0.9);
+  transition: opacity 300ms, transform 300ms;
+}
+
+/* Стили для анимации компонента ListSVG */
+.ListSVG-enter {
+  opacity: 0;
+  transform: scale(0.9);
+}
+
+.ListSVG-enter-active {
+  opacity: 1;
+  transform: scale(1);
+  transition: opacity 300ms, transform 300ms;
+}
+
+.ListSVG-exit {
+  opacity: 1;
+}
+
+.ListSVG-exit-active {
+  opacity: 0;
+  transform: scale(0.9);
+  transition: opacity 300ms, transform 300ms;
+}
+
+/* Стили для анимации компонента Floor */
+.floor-enter {
+  opacity: 0;
+  transform: scale(0.9);
+}
+
+.floor-enter-active {
+  opacity: 1;
+  transform: scale(1);
+  transition: opacity 300ms, transform 300ms;
+}
+
+.floor-exit {
+  opacity: 1;
+}
+
+.floor-exit-active {
+  opacity: 0;
+  transform: scale(0.9);
+  transition: opacity 300ms, transform 300ms;
+}
+
+/* Стили для анимации компонента Grid */
+.grid-enter {
+  opacity: 0;
+  transform: scale(0.9);
+}
+
+.grid-enter-active {
+  opacity: 1;
+  transform: scale(1);
+  transition: opacity 300ms, transform 300ms;
+}
+
+.grid-exit {
+  opacity: 1;
+}
+
+.grid-exit-active {
+  opacity: 0;
+  transform: scale(0.9);
+  transition: opacity 300ms, transform 300ms;
+}
+
+/* Стили для анимации компонента ModalStream */
+.ModalStream-enter {
+  opacity: 0;
+  transform: scale(0.9);
+}
+
+.ModalStream-enter-active {
+  opacity: 1;
+  transform: scale(1);
+  transition: opacity 300ms, transform 300ms;
+}
+
+.ModalStream-exit {
+  opacity: 1;
+}
+
+.ModalStream-exit-active {
+  opacity: 0;
+  transform: scale(0.9);
+  transition: opacity 300ms, transform 300ms;
+}

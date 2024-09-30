@@ -1,8 +1,9 @@
-import React, { FC, useState, lazy, Suspense } from 'react';
+import React, { FC, useState, lazy, Suspense, memo } from 'react';
 import LCStyles from '../styles/ListCamera.module.css';
 import { BiX, BiSolidLayerPlus } from "react-icons/bi";
 import { FaCheck } from 'react-icons/fa';
 import LSCGStyle from '../styles/ListSVG.module.css';
+import { motion } from 'framer-motion';
 
 interface SVGItem {
   id: number;
@@ -47,7 +48,7 @@ const svgGroups = {
   walls: { name: 'Стена', items: ['wallG', 'wallGD', 'wallV', 'wallVR'] },
 };
 
-const ListSVG: FC<ListSVGProps> = ({
+const ListSVG: FC<ListSVGProps> = memo(({
   navigate,
   open,
   onClose,
@@ -135,7 +136,13 @@ const ListSVG: FC<ListSVGProps> = ({
   if (!open) return null;
 
   return (
-    <div className={LSCGStyle.sidebar}>
+    <motion.div 
+    style={{height: '100% !important'}}
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1, y: 0 }}
+    exit={{ opacity: 0 }}
+    transition={{ duration: 0.7 }}
+    className={LSCGStyle.sidebar}>
       <div className={LCStyles.buttonContainer}>
         <button onClick={onClose} className={LCStyles.closeButton} title="Закрыть"><BiX /></button>
         <div style={{ display: 'flex' }}>
@@ -193,8 +200,8 @@ const ListSVG: FC<ListSVGProps> = ({
 
         
       </div>
-    </div>
+    </motion.div>
   );
-};
+});
 
 export default ListSVG;

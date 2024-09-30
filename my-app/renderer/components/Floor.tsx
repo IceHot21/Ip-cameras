@@ -1,10 +1,12 @@
-import React, { FC, lazy, Suspense, useEffect, useState, useCallback } from 'react';
+import React, { FC, lazy, Suspense, useEffect, useState, useCallback, memo } from 'react';
 import RStyles from '../styles/Floor.module.css';
 import GStyles from '../styles/Grid.module.css';
 import { BsFillCameraVideoFill } from 'react-icons/bs';
 import { Menu, Item, Separator, Submenu, useContextMenu, ItemParams } from 'react-contexify';
 import "react-contexify/dist/ReactContexify.css";
+import { CSSTransition } from 'react-transition-group';
 import Svg from '../assets/Svg1.svg';
+import { motion } from 'framer-motion';
 
 interface Camera {
   id: number;
@@ -40,7 +42,7 @@ type FloorProps = {
   setDroppedSVGs: any;
 };
 
-const Floor: FC<FloorProps> = ({ children, droppedCameras, activeFloor, navigate, onFloorChange, onDoubleClickCamera, FlagLocal, rotationAngles, setRotationAngles, droppedSVGs, onSVGDrop, floorIndex, isActive, setDroppedSVGs }) => {
+const Floor: FC<FloorProps> = memo(({ children, droppedCameras, activeFloor, navigate, onFloorChange, onDoubleClickCamera, FlagLocal, rotationAngles, setRotationAngles, droppedSVGs, onSVGDrop, floorIndex, isActive, setDroppedSVGs }) => {
   const [selectedCameras, setSelectedCameras] = useState<Camera[]>([]);
   const menuClick = "Меню";
   const { show } = useContextMenu({ id: menuClick });
@@ -174,15 +176,27 @@ const Floor: FC<FloorProps> = ({ children, droppedCameras, activeFloor, navigate
   }, [floorIndex, droppedCameras, droppedSVGs, onSVGDrop]);
 
   return (
-    <div className={RStyles.body}>
-      <div className={RStyles.container}>
+    <div  
+    className={RStyles.body}>
+    <motion.div  
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1, y: 0 }}
+    exit={{ opacity: 0 }}
+    transition={{ duration: 0.7 }}
+      className={RStyles.container}>
           <div
             key={floorIndex}
             className={RStyles.card}
             onClick={() => handleSvgClick(floorIndex)}
           >
             <Svg className={RStyles.fonContainer} />
-            <div className={RStyles.gridContainer} style={{height: '100% !important'}}>
+            <motion.div  
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.7 }}
+            className={RStyles.gridContainer} 
+            style={{height: '100% !important'}}>
               <div className={GStyles.grid}>
                 {Array.from({ length: 15 }).map((_, rowIndex) =>
                   Array.from({ length: 20 }).map((_, colIndex) => {
@@ -235,10 +249,10 @@ const Floor: FC<FloorProps> = ({ children, droppedCameras, activeFloor, navigate
                   })
                 )}
               </div>
+              </motion.div>
             </div>
-          </div>
         {children}
-      </div>
+      </motion.div>
       <Menu id={menuClick}>
         <Item id="rotateLeft" onClick={handleItemClick}>Повернуть влево</Item>
         <Item id="rotateRight" onClick={handleItemClick}>Повернуть вправо</Item>
@@ -247,6 +261,6 @@ const Floor: FC<FloorProps> = ({ children, droppedCameras, activeFloor, navigate
       </Menu>
     </div>
   );
-};
+});
 
 export default Floor;

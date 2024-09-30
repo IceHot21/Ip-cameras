@@ -1,4 +1,4 @@
-import React, { FC, useState, useEffect, useCallback } from 'react';
+import React, { FC, useState, useEffect, useCallback, useMemo } from 'react';
 import { BsLayoutTextWindow, BsWrenchAdjustable } from "react-icons/bs";
 import FStyles from './Feeding.module.css';
 import Floor from '../../components/Floor';
@@ -96,11 +96,6 @@ const Feeding: FC<FeedingProps> = ({ navigate }) => {
     setIsListSVGOpen(!isListSVGOpen);
   }, [isListSVGOpen]);
 
-/*   const handleGridOpen = useCallback(() => {
-    setIsGridOpen((prev) => !prev);
-    setIsEditing(!isGridOpen);
-  }, [isGridOpen]); */
-
   const handleCameraDrop = useCallback((camera: Camera, rowIndex: number, colIndex: number) => {
     const cellKey = `${activeFloor}-${rowIndex}-${colIndex}`;
     const updatedCamera: Camera = {
@@ -141,6 +136,11 @@ const Feeding: FC<FeedingProps> = ({ navigate }) => {
 
   const floors = [0, 1, 2]; // Массив этажей
 
+  const memoizedDroppedCameras = useMemo(() => droppedCameras, [droppedCameras]);
+  const memoizedDroppedSVGs = useMemo(() => droppedSVGs, [droppedSVGs]);
+  const memoizedRotationAngles = useMemo(() => rotationAngles, [rotationAngles]);
+  const memoizedSelectedCells = useMemo(() => selectedCells, [selectedCells]);
+
   return (
     <div>
       <div className={FStyles.listContainer}>
@@ -169,7 +169,7 @@ const Feeding: FC<FeedingProps> = ({ navigate }) => {
           FlagLocal={() => setFlagLocal(prev => !prev)}
           onDoubleClickCamera={handleDoubleClickCamera}
           movedCameras={movedCameras}
-          droppedCameras={droppedCameras}
+          droppedCameras={memoizedDroppedCameras}
         />
       )}
       {isListSVGOpen && (
@@ -181,29 +181,29 @@ const Feeding: FC<FeedingProps> = ({ navigate }) => {
           activeFloor={activeFloor}
           isSelecting={isSelecting}
           setIsSelecting={setIsSelecting}
-          selectedCells={selectedCells}
+          selectedCells={memoizedSelectedCells}
           setSelectedCells={setSelectedCells}
         />
       )}
       <div className={FStyles.FloorContainer}>
         <div className={FStyles.activeFloor}>
-          <Floor
-            navigate={navigate}
-            children={null}
-            onCameraDropped={handleCameraDrop}
-            droppedCameras={droppedCameras}
-            activeFloor={activeFloor}
-            onFloorChange={handleFloorChange}
-            onDoubleClickCamera={handleDoubleClickCamera}
-            FlagLocal={() => setFlagLocal(prev => !prev)}
-            rotationAngles={rotationAngles}
-            setRotationAngles={setRotationAngles}
-            droppedSVGs={droppedSVGs}
-            onSVGDrop={handleSVGDrop}
-            floorIndex={activeFloor}
-            isActive={true}
-            setDroppedSVGs={setDroppedSVGs}
-          />
+            <Floor
+              navigate={navigate}
+              children={null}
+              onCameraDropped={handleCameraDrop}
+              droppedCameras={memoizedDroppedCameras}
+              activeFloor={activeFloor}
+              onFloorChange={handleFloorChange}
+              onDoubleClickCamera={handleDoubleClickCamera}
+              FlagLocal={() => setFlagLocal(prev => !prev)}
+              rotationAngles={memoizedRotationAngles}
+              setRotationAngles={setRotationAngles}
+              droppedSVGs={memoizedDroppedSVGs}
+              onSVGDrop={handleSVGDrop}
+              floorIndex={activeFloor}
+              isActive={true}
+              setDroppedSVGs={setDroppedSVGs}
+            />
         </div>
         <div className={FStyles.inactiveFloors}>
           {floors.map(floorIndex => (
@@ -212,43 +212,43 @@ const Feeding: FC<FeedingProps> = ({ navigate }) => {
               className={`${FStyles.inactiveFloor} ${floorIndex === activeFloor ? FStyles.activeThumbnail : ''}`}
               onClick={() => handleFloorChange(floorIndex)}
             >
-              <Floor
-                navigate={navigate}
-                children={null}
-                onCameraDropped={handleCameraDrop}
-                droppedCameras={droppedCameras}
-                activeFloor={activeFloor}
-                onFloorChange={handleFloorChange}
-                onDoubleClickCamera={handleDoubleClickCamera}
-                FlagLocal={() => setFlagLocal(prev => !prev)}
-                rotationAngles={rotationAngles}
-                setRotationAngles={setRotationAngles}
-                droppedSVGs={droppedSVGs}
-                onSVGDrop={handleSVGDrop}
-                floorIndex={floorIndex}
-                isActive={floorIndex === activeFloor} 
-                setDroppedSVGs={setDroppedSVGs}
-              />
+                <Floor
+                  navigate={navigate}
+                  children={null}
+                  onCameraDropped={handleCameraDrop}
+                  droppedCameras={memoizedDroppedCameras}
+                  activeFloor={activeFloor}
+                  onFloorChange={handleFloorChange}
+                  onDoubleClickCamera={handleDoubleClickCamera}
+                  FlagLocal={() => setFlagLocal(prev => !prev)}
+                  rotationAngles={memoizedRotationAngles}
+                  setRotationAngles={setRotationAngles}
+                  droppedSVGs={memoizedDroppedSVGs}
+                  onSVGDrop={handleSVGDrop}
+                  floorIndex={floorIndex}
+                  isActive={floorIndex === activeFloor} 
+                  setDroppedSVGs={setDroppedSVGs}
+                />
             </div>
           ))}
         </div>
         {isEditing && (
           <div className={FStyles.gridContainer}>
-            <Grid
-              navigate={navigate}
-              isSelecting={isSelecting}
-              onCameraDrop={handleCameraDrop}
-              onSVGDrop={handleSVGDrop}
-              droppedCameras={droppedCameras}
-              droppedSVGs={droppedSVGs}
-              activeFloor={activeFloor}
-              onDoubleClickCamera={handleDoubleClickCamera}
-              FlagLocal={() => setFlagLocal(prev => !prev)}
-              rotationAngles={rotationAngles}
-              setRotationAngles={setRotationAngles}
-              selectedCells={selectedCells}
-              setSelectedCells={setSelectedCells}
-            />
+              <Grid
+                navigate={navigate}
+                isSelecting={isSelecting}
+                onCameraDrop={handleCameraDrop}
+                onSVGDrop={handleSVGDrop}
+                droppedCameras={memoizedDroppedCameras}
+                droppedSVGs={memoizedDroppedSVGs}
+                activeFloor={activeFloor}
+                onDoubleClickCamera={handleDoubleClickCamera}
+                FlagLocal={() => setFlagLocal(prev => !prev)}
+                rotationAngles={memoizedRotationAngles}
+                setRotationAngles={setRotationAngles}
+                selectedCells={memoizedSelectedCells}
+                setSelectedCells={setSelectedCells}
+              />
           </div>
         )}
       </div>
