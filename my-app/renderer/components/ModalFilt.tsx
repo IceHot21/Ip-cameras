@@ -16,6 +16,7 @@ interface ModalFiltProps {
   onClose: () => void;
 }
 // Регистрируем локализацию
+//@ts-ignore
 registerLocale("ru", ru);
 
 const StyledTextField = styled(TextField)`

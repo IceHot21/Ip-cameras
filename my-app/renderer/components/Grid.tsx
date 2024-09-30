@@ -4,6 +4,8 @@ import { BsFillCameraVideoFill } from 'react-icons/bs';
 import { Menu, Item, useContextMenu, ItemParams, Separator } from 'react-contexify';
 import "react-contexify/dist/ReactContexify.css";
 import { motion } from 'framer-motion';
+import Tippy from '@tippyjs/react';
+import 'tippy.js/dist/tippy.css'; // Импортируем стили tippy.js
 
 interface Camera {
   id: number;
@@ -60,6 +62,7 @@ const Grid: FC<GridProps> = ({
 }) => {
   const [selectedCameras, setSelectedCameras] = useState<Camera[]>([]);
   const [savedCells, setSavedCells] = useState<number[][]>([]);
+  const [roomNames, setRoomNames] = useState<{ [key: string]: string }>({});
   const menuClick = "Меню";
   const { show } = useContextMenu({ id: menuClick });
 
@@ -91,6 +94,17 @@ const Grid: FC<GridProps> = ({
       .filter((room: { activeFloor: number }) => room.activeFloor === activeFloor)
       .flatMap((room: { positions: number[][] }) => room.positions);
     setSavedCells(filteredPositions);
+
+    const roomNamesMap: { [key: string]: string } = {};
+    storedRooms.forEach((room: { activeFloor: number, roomName: string, positions: number[][] }) => {
+      if (room.activeFloor === activeFloor) {
+        room.positions.forEach((pos: number[]) => {
+          const cellKey = `${activeFloor}-${pos[0]}-${pos[1]}`;
+          roomNamesMap[cellKey] = room.roomName;
+        });
+      }
+    });
+    setRoomNames(roomNamesMap);
   }, [activeFloor, isSelecting]); // Добавляем activeFloor в зависимости
 
   const handleDragStart = (e: React.DragEvent<HTMLDivElement>, item: Camera | SVGItem) => {
@@ -215,6 +229,7 @@ const Grid: FC<GridProps> = ({
             const rotationAngle = rotationAngles[cameraId] || 0;
             const isSelected = selectedCells.some(pos => pos[0] === rowIndex && pos[1] === colIndex);
             const isSaved = savedCells.some(pos => pos[0] === rowIndex && pos[1] === colIndex);
+            const roomName = roomNames[cellKey];
 
             return (
               <div
@@ -243,6 +258,11 @@ const Grid: FC<GridProps> = ({
                       <Item id="deleteSVG" onClick={handleItemClick}>Удалить элемент</Item>
                     </Menu>
                   </div>
+                )}
+                {isSaved && roomName && (
+                  <Tippy content={roomName}>
+                    <div style={{ width: '100%', height: '100%' }} />
+                  </Tippy>
                 )}
               </div>
             );
