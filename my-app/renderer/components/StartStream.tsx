@@ -22,22 +22,54 @@ interface StartStreamProps {
   onClose: () => void;
 }
 
+interface Prediction {
+  id: number;
+  camera_port: number;
+  item_predict: string;
+  score_predict: string;
+  date: string;
+  bbox: number[];
+}
+
 const StartStream: FC<StartStreamProps> = ({ port, rtspUrl, id, cameraName, setCam, onClose, navigate}) => {
   const [error, setError] = useState(null);
   const [players, setPlayers] = useState(null);
   const [isRecording, setIsRecording] = useState(false);
-  const [isPredictions, setIsPredictions] = useState('');
+  const [isPredictions, setIsPredictions] = useState<Prediction | null>(null)
+  const [ws, setWs] = useState<WebSocket | null>(null);
 
-  //TODO ДОДЕЛАТЬ ВЫВОД ИЗОБРАЖЕНИЯ ПРЕДИКТОВ
-  // ws.onmessage = (event) => {
-  //   const reader = new FileReader();
-  //   reader.onload = () => {
-  //     const predictions = JSON.parse(reader.result as string);
-  //     setIsPredictions(predictions);
-  //     // Здесь вы можете обработать полученные предикты
-  //   };
-  //   reader.readAsText(event.data);
-  // };
+  useEffect(() => {
+    const socket = new WebSocket('ws://localhost:9999');
+
+    socket.onopen = () => {
+      console.log('Connected to WebSocket server');
+    };
+
+    socket.onclose = () => {
+      console.log('Disconnected from WebSocket server');
+    };
+
+    socket.onerror = (error) => {
+      console.error('WebSocket error:', error);
+    };
+
+    socket.onmessage = (event) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        const predictions = JSON.parse(reader.result as string);
+        console.log(predictions);
+        setIsPredictions(predictions);
+      };
+      reader.readAsText(event.data);
+    };
+
+    setWs(socket);
+
+    return () => {
+      socket.close();
+    };
+  }, [port]);
+
 
 
   useEffect(() => {
@@ -47,7 +79,6 @@ const StartStream: FC<StartStreamProps> = ({ port, rtspUrl, id, cameraName, setC
         autoplay: true,
         onVideoDecode: async (decoder, time) => {
           //новый канвас для АИ
-          isPredictions
         },
         onSourceEstablished: () =>
           console.log(`Источник установлен для порта ${port}`),
@@ -65,6 +96,48 @@ const StartStream: FC<StartStreamProps> = ({ port, rtspUrl, id, cameraName, setC
       //   }
       // };
   }, [port, id]);
+
+  useEffect(() => {
+    const videoCanvas = document.getElementById(`canvas${id}`) as HTMLCanvasElement;
+    const overlayCanvas = document.getElementById(`overlayCanvas${id}`) as HTMLCanvasElement;
+    const ctx = overlayCanvas.getContext('2d');
+
+    if (!ctx) return;
+
+    const resizeCanvas = () => {
+      overlayCanvas.width = videoCanvas.width;
+      overlayCanvas.height = videoCanvas.height;
+    };
+
+    resizeCanvas();
+
+    window.addEventListener('resize', resizeCanvas);
+
+    return () => {
+      window.removeEventListener('resize', resizeCanvas);
+    };
+  }, [id]);
+
+  useEffect(() => {
+    const canvas = document.getElementById(`overlayCanvas${id}`) as HTMLCanvasElement;
+    const ctx = canvas.getContext('2d');
+
+    if (!ctx) return;
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    if(isPredictions == null) return
+    if (Number(isPredictions.camera_port) == port) {
+        const [x, y, width, height] = isPredictions.bbox;
+        ctx.strokeStyle = 'red';
+        ctx.lineWidth = 2;
+        ctx.strokeRect(x, y, width, height);
+
+        ctx.fillStyle = 'red';
+        ctx.font = '16px Arial';
+        ctx.fillText(`${isPredictions.item_predict} (${isPredictions.score_predict.slice(0, 4)})`, x, y - 5);
+    };
+  }, [isPredictions, port, id]);
+
 
   const handleDelete = async () => {
     players.destroy()
@@ -129,7 +202,8 @@ const StartStream: FC<StartStreamProps> = ({ port, rtspUrl, id, cameraName, setC
         <div className={SSStyles.deleteBut}>
           <button onClick={handleDelete}><BiX /></button>
         </div>
-        <canvas id={`canvas${id}`} />
+        <canvas id={`canvas${id}`} width="1920" height="1080" />
+        <canvas id={`overlayCanvas${id}`} style={{ position: 'absolute', top: 0, left: 0, pointerEvents: 'none', marginTop:'35px', backgroundColor: 'transparent' }} />
         <div className={SSStyles.buttonsContainer}>
           <button
             onClick={isRecording ? handleStopRecording : handleStartRecording}
