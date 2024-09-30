@@ -10,7 +10,6 @@ interface ListCameraProps {
   open: boolean;
   onClose: () => void;
   FlagLocal: () => void;
-  onGridOpen: () => void;
   onDoubleClickCamera: (camera: Camera) => void;
   movedCameras: Set<number>;
   droppedCameras: { [key: string]: Camera };
@@ -33,7 +32,6 @@ const ListCamera: FC<ListCameraProps> = ({
   open,
   onClose,
   FlagLocal,
-  onGridOpen,
   onDoubleClickCamera,
   movedCameras,
   droppedCameras,
@@ -105,7 +103,6 @@ const ListCamera: FC<ListCameraProps> = ({
 
   const handleAddCameraClick = () => {
     setIsAddingCamera(!isAddingCamera);
-    onGridOpen();
   };
 
   if (!open) return null;
@@ -116,9 +113,6 @@ const ListCamera: FC<ListCameraProps> = ({
         <button onClick={onClose} className={LCStyles.closeButton} title="Закрыть"><BiX /></button>
         <div style={{ display: 'flex' }}>
           <button onClick={handleDiscoverCameras} className={LCStyles.refreshButton} title="Обновить"><BiRevision /></button>
-          <button onClick={handleAddCameraClick} className={LCStyles.plusButton} >
-            {isAddingCamera ? <FaCheck title="Сохранить камеру" /> : <BiSolidLayerPlus title="Добавить камеру" />}
-          </button>
         </div>
       </div>
       {loading ? (

@@ -79,6 +79,10 @@ const Feeding: FC<FeedingProps> = ({ navigate }) => {
   }, [droppedSVGs]);
 
   useEffect(() => {
+    setIsEditing(isListCameraOpen || isListSVGOpen);
+  }, [isListCameraOpen, isListSVGOpen]);
+
+  useEffect(() => {
     if (FlagLocal) {
       setIsModalStreamOpen(true);
     }
@@ -92,10 +96,10 @@ const Feeding: FC<FeedingProps> = ({ navigate }) => {
     setIsListSVGOpen(!isListSVGOpen);
   }, [isListSVGOpen]);
 
-  const handleGridOpen = useCallback(() => {
+/*   const handleGridOpen = useCallback(() => {
     setIsGridOpen((prev) => !prev);
     setIsEditing(!isGridOpen);
-  }, [isGridOpen]);
+  }, [isGridOpen]); */
 
   const handleCameraDrop = useCallback((camera: Camera, rowIndex: number, colIndex: number) => {
     const cellKey = `${activeFloor}-${rowIndex}-${colIndex}`;
@@ -163,7 +167,6 @@ const Feeding: FC<FeedingProps> = ({ navigate }) => {
           open={isListCameraOpen}
           onClose={() => setIsListCameraOpen(false)}
           FlagLocal={() => setFlagLocal(prev => !prev)}
-          onGridOpen={handleGridOpen}
           onDoubleClickCamera={handleDoubleClickCamera}
           movedCameras={movedCameras}
           droppedCameras={droppedCameras}
@@ -174,7 +177,6 @@ const Feeding: FC<FeedingProps> = ({ navigate }) => {
           navigate={navigate}
           open={isListSVGOpen}
           onClose={() => setIsListSVGOpen(false)}
-          onGridOpen={handleGridOpen}
           onSVGDrop={(svg) => handleSVGDrop(svg, 0, 0)}
           activeFloor={activeFloor}
           isSelecting={isSelecting}

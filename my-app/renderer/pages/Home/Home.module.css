@@ -34,7 +34,9 @@
   position: absolute;
   width: 37%;
   cursor: pointer; 
+  
 }
+
 
 .buildingIcon svg {
   cursor: pointer;
@@ -225,6 +227,7 @@ opacity:0;
   outline: none;
   cursor: pointer;
   color: #333;
+  background-color: transparent;
 }
 
 .selectContainer button {
@@ -236,6 +239,31 @@ opacity:0;
   gap: 10px;
 }
 
+.selectContainer {
+  display: flex;
+  align-items: center;
+}
+
+.selectObject select:hover {
+  border-color: #006c2a;
+}
+
+.selectObject select:focus {
+  border-color: #006c2a;
+  box-shadow: 0 0 5px rgba(0, 108, 42, 0.5);
+}
+
+.selectObject select option {
+  padding: 10px;
+  background-color: #fff;
+  transition: background-color 0.3s ease;
+}
+
+.selectObject select option:hover {
+  background-color: #006c2a;
+  color: #fff;
+}
+
 .title {
   font-size: 20px;
   font-weight: bold;
@@ -245,6 +273,8 @@ opacity:0;
 .tableContainer {
   flex: 1;
   overflow: auto;
+/*   scrollbar-width: thin;
+  scrollbar-color: #bfbfbf #3b3b3b; */
 }
 
 .tableContainer table {
@@ -252,49 +282,39 @@ opacity:0;
   border-collapse: collapse;
 }
 
+.tableContainer::-webkit-scrollbar {
+  width: 8px;
+}
+
+.tableContainer::-webkit-scrollbar-track {
+  background: #f4f4f4;
+  border-radius: 5px;
+}
+
+.tableContainer::-webkit-scrollbar-thumb {
+  background-color: #ccc;
+  border-radius: 5px;
+}
+
+.tableContainer::-webkit-scrollbar-thumb:hover {
+  background: #ccc;
+}
+
+
 .tableHeader th {
   padding: 10px;
   background-color: #f4f4f4;
   border-bottom: 2px solid #ccc;
-  top: 0;
   text-align: left;
   position: sticky;
+  top: 0;
+  left: 0;
 }
 
 .tableBody td {
   padding: 7px;
   border-bottom: 1px solid #ddd;
   text-align: left;
-}
-
-.tableHeaderWrapper {
-  /* Ваши стили для обертки заголовка таблицы */
-  width: 100%;
-  position: sticky;
-  top: 0;
-  background-color: white; /* Цвет фона, чтобы заголовок был виден при скролле */
-  z-index: 1; /* Чтобы заголовок был поверх тела таблицы */
-}
-
-/* Стилизация скроллбара для WebKit браузеров */
-.tableContainer::-webkit-scrollbar {
-  width: 12px; /* Ширина скроллбара */
-}
-
-.tableContainer::-webkit-scrollbar-track {
-  background: #f1f1f1; /* Цвет фона трека */
-}
-
-.tableContainer::-webkit-scrollbar-thumb {
-  background-color: #006c2a; /* Цвет ползунка */
-  border-radius: 6px; /* Закругление углов ползунка */
-  border: 3px solid #f1f1f1; /* Отступ вокруг ползунка */
-}
-
-/* Стилизация скроллбара для Firefox */
-.tableBodyWrapper {
-  scrollbar-color: #006c2a #f1f1f1; /* Цвет ползунка и трека */
-  scrollbar-width: thin; /* Ширина скроллбара */
 }
 
 .panelDown {
@@ -332,7 +352,7 @@ opacity:0;
 }
 
 .rowContainer ul li a:hover {
-  background-color: #ddd;
+  color: green;
 }
 
 .activePage {
@@ -412,4 +432,15 @@ opacity:0;
 .plan svg{
   height: 100%;
   width: 100%;
+}
+
+.labelSelect{
+  display: flex;
+  align-items: center;
+}
+
+.buttonPage{
+  border:none;
+  background-color: transparent;
+  cursor: pointer;
 }

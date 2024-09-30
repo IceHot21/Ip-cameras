@@ -67,6 +67,7 @@ const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
   const [roomInfoMap, setRoomInfoMap] = useState<{ [port: number]: RoomInfo }>({});
   const [predictions, setPredictions] = useState<Prediction[]>([]);
   const [ws, setWs] = useState<WebSocket | null>(null);
+  const [selectedFloor, setSelectedFloor] = useState<number | null>(null);
   const itemsPerPage = 5;
 
   const floorProps = useMemo(() => ({
@@ -138,7 +139,7 @@ const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
           //@ts-ignore
           const roomInfo = findCellByPort(port);
           if (roomInfo) {
-                      //@ts-ignore
+            //@ts-ignore
             roomInfoMap[port] = roomInfo;
           }
         });
@@ -266,6 +267,7 @@ const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
     return predictions
+      .filter(event => selectedFloor === null || roomInfoMap[event.camera_port]?.activeFloor === selectedFloor)
       .slice(startIndex, endIndex)
       .map((event, index) => {
         const roomInfo = roomInfoMap[event.camera_port] || { activeFloor: 'Неизвестно', roomName: 'Неизвестно' };
@@ -302,6 +304,17 @@ const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
 
   const startPage = (pageGroup - 1) * pagesPerGroup + 1;
   const endPage = Math.min(startPage + pagesPerGroup - 1, totalPages);
+
+
+  const floorOptions = Array.from({ length: svgImages.length }, (_, index) => (
+    <option key={index} value={index}>{index + 1}</option>
+  ));
+
+  const handleFloorChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedValue = event.target.value;
+    setSelectedFloor(selectedValue === '' ? null : Number(selectedValue));
+  };
+
 
   return (
     <div>
@@ -360,6 +373,7 @@ const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
                       </tr>
                     </thead>
                     <tbody>
+
                     </tbody>
                   </table>
                 </div>
@@ -398,15 +412,11 @@ const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
               <div className={HStyles.panelTitle}>
                 <label className={HStyles.title}>Журнал всех событий</label>
                 <div className={HStyles.selectContainer}>
-                  <Button><BsArrowDownUp /></Button>
                   <div className={HStyles.selectObject}>
-                    <select>
-                      <option>1</option>
-                      <option>2</option>
-                    </select>
-                    <select>
-                      <option >1</option>
-                      <option >2</option>
+                    <label className={HStyles.labelSelect}>Выбрать этаж:</label>
+                    <select value={selectedFloor === null ? '' : selectedFloor} onChange={handleFloorChange}>
+                      <option value="">Все этажи</option>
+                      {floorOptions}
                     </select>
                   </div>
                 </div>
@@ -436,10 +446,11 @@ const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
             </div>
             <div className={HStyles.panelDown}>
               <div className={HStyles.rowContainer}>
-              <label>(Страница {currentPage} из {totalPages})</label>
+                <label>Страница {currentPage} из {totalPages}</label>
                 <ul>
                   <li>
                     <button
+                      className={HStyles.buttonPage}
                       onClick={handlePrevPageGroup}
                       disabled={pageGroup === 1}
                     >
@@ -455,6 +466,7 @@ const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
                   ))}
                   <li>
                     <button
+                      className={HStyles.buttonPage}
                       onClick={handleNextPageGroup}
                       disabled={pageGroup === Math.ceil(totalPages / pagesPerGroup)}
                     >
