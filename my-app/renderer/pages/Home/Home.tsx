@@ -409,7 +409,7 @@ const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
           </div>
         </div>
         <div className={HStyles.statisticsContainer}>
-          <div className={HStyles.carouselTitle} style={{ width: 'auto !important'}}>Статистика</div>
+          <div className={HStyles.carouselTitle1}>Статистика</div>
           
         </div>
       </div>

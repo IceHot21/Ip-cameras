@@ -498,7 +498,8 @@
   flex-direction: column;
 }
 
-.carouselTitle {
+.carouselTitle,
+.carouselTitle1 {
   padding: 1vh;
   width: 100%;
   border-top: 1px solid #006c2a;
@@ -509,7 +510,10 @@
   font-size: 2vh;
 }
 
-
+.carouselTitle1
+{
+  width: auto !important;
+} 
 .tableContainer table {
   width: 100%;
   border-collapse: collapse;
