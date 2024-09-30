@@ -7,6 +7,15 @@ import ListCamera from '../../components/ListCamera';
 import ModalStream from '../../components/ModalStream';
 import { useRouter } from 'next/router';
 
+interface Prediction {
+    id: number;
+    camera_port: number;
+    item_predict: string;
+    score_predict: string;
+    date: string;
+    bbox: number[];
+}
+
 interface Camera {
     id: number;
     port: number;
@@ -44,6 +53,7 @@ const OutsideCamera: FC<OutsideProps> = ({ navigate }) => {
     const router = useRouter();
     const [isSelecting, setIsSelecting] = useState(false);
     const [selectedCells, setSelectedCells] = useState<number[][]>([]);
+    const [isPredictions, setIsPredictions] = useState<Prediction | null>(null)
 
     useEffect(() => {
         const storedCameras = localStorage.getItem('droppedCameras');
@@ -182,6 +192,7 @@ const OutsideCamera: FC<OutsideProps> = ({ navigate }) => {
                         selectedCameras={selectedCameras}
                         setCam={setSelectedCameras}
                         onClose={() => setIsModalStreamOpen(false)}
+                        isPredictions={isPredictions}
                     />
                 )
             }

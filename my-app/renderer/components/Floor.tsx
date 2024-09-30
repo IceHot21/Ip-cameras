@@ -4,9 +4,7 @@ import GStyles from '../styles/Grid.module.css';
 import { BsFillCameraVideoFill } from 'react-icons/bs';
 import { Menu, Item, Separator, Submenu, useContextMenu, ItemParams } from 'react-contexify';
 import "react-contexify/dist/ReactContexify.css";
-import { CSSTransition } from 'react-transition-group';
 import Svg from '../assets/Svg1.svg';
-import { motion } from 'framer-motion';
 
 interface Camera {
   id: number;

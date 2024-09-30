@@ -13,6 +13,52 @@
   transform: scale(1.1);
 }
 
+.gridContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  top: 100px !important;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(20, auto);
+  grid-template-rows: repeat(15, auto);
+  height: 100%;
+}
+
+.gridCell {
+  border: 1px solid #aaa;
+  display: flex;
+  aspect-ratio: 1 / 1;
+}
+
+.gridCell svg {
+  position: absolute;
+}
+
+.selectedCell {
+  background-color: #02943a !important;
+}
+.savedCell {
+  background-color: #98e4b5;
+}
+
+.cameraIcon
+{
+  display:flex;
+  justify-content: center;
+  align-items: center;
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
+  cursor: pointer;
+  z-index: 101 !important;
+}
+
 .listLabel {
   height: 34px;
   margin: 0;
@@ -52,7 +98,7 @@
   }
 }
 
-.FloorContainer .active {
+.OutsideContainer .active {
   grid-column: 2 / 3;
   grid-row: 1;
   transform: translateX(0) scale(1);
@@ -62,7 +108,7 @@
   animation: fadeIn 1s ease-in;
 }
 
-.FloorContainer .inactive {
+.OutsidContainer .inactiveOutside {
   transform: scale(0.8);
   opacity: 0.1;
   margin-right: 10px;
@@ -88,7 +134,7 @@
   animation: fadeIn 0.5s forwards;
 }
 
-.FloorContainer {
+.OutsideContainer {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -99,7 +145,7 @@
   animation: fadeIn 1s ease-in;
 }
 
-.activeFloor {
+.activeOutside {
   width: 100%;
   height: 77%; /* Активный этаж занимает 70% высоты */
   display: flex;
@@ -110,7 +156,7 @@
   animation: fadeIn 1s ease-in;
 }
 
-.inactiveFloors {
+.inactiveOutside {
   width: 52%;
   display: flex;
   justify-content: center;
@@ -120,7 +166,7 @@
   white-space: nowrap;
 }
 
-.inactiveFloor {
+.inactiveOutside {
   width: 100%; /* Ширина миниатюры */
   height: 100%;
   margin: 0 10px; /* Отступ между миниатюрами */
@@ -128,17 +174,17 @@
   transition: opacity 0.3s ease;
 }
 
-.inactiveFloor svg {
+.inactiveOutside svg {
 width: 100% !important;
 height: 100% !important;
 }
 
-.inactiveFloor .gridContainer {
+.inactiveOutside .gridContainer {
   width: 100% !important;
   height: 100% !important;
 }
 
-.inactiveFloor:hover, .inactiveFloor:focus {
+.inactiveOutside:hover, .inactiveOutside:focus {
   opacity: 1;
 }
 
