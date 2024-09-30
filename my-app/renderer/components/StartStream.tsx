@@ -205,14 +205,14 @@ const StartStream: FC<StartStreamProps> = ({ port, rtspUrl, id, cameraName, setC
         </div>
         <canvas id={`canvas${id}`} width="1920" height="1080" />
         <canvas id={`overlayCanvas${id}`} style={{ position: 'absolute', top: 0, left: 0, pointerEvents: 'none', marginTop:'35px', backgroundColor: 'transparent' }} />
-        <div className={SSStyles.buttonsContainer}>
+        {/* <div className={SSStyles.buttonsContainer}>
           <button
             onClick={isRecording ? handleStopRecording : handleStartRecording}
           >
             {isRecording ? 'Стоп' : 'Запись'}
           </button>
           <button onClick={handleTakeScreenshot}>Сделать скриншот</button>
-        </div>
+        </div> */}
         {error && <div style={{ color: 'red' }}>{error}</div>}
       </div>
     </div>

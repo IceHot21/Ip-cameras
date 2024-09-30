@@ -244,6 +244,8 @@ const Feeding: FC<FeedingProps> = ({ navigate }) => {
   const memoizedGridContent = useMemo(() => (
     <div className={FStyles.gridContainer}>
       <MemoizedGrid
+        setDroppedSVGs={setDroppedSVGs}
+        setDroppedCameras={setDroppedCameras}
         navigate={navigate}
         isSelecting={isSelecting}
         onCameraDrop={handleCameraDrop}
@@ -320,7 +322,7 @@ const Feeding: FC<FeedingProps> = ({ navigate }) => {
         />
       )}
       <ToastContainer
-        position="bottom-right" 
+        position="bottom-right"
         autoClose={3000}
         hideProgressBar={false}
         newestOnTop={false}
