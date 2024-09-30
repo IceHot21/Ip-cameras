@@ -20,6 +20,7 @@ interface StartStreamProps {
   cameraName: string;
   setCam: (cameras: Camera[]) => void;
   onClose: () => void;
+  isPredictions: Prediction | null;
 }
 
 interface Prediction {
@@ -31,44 +32,44 @@ interface Prediction {
   bbox: number[];
 }
 
-const StartStream: FC<StartStreamProps> = ({ port, rtspUrl, id, cameraName, setCam, onClose, navigate}) => {
+const StartStream: FC<StartStreamProps> = ({ port, rtspUrl, id, cameraName, setCam, onClose, isPredictions, navigate}) => {
   const [error, setError] = useState(null);
   const [players, setPlayers] = useState(null);
   const [isRecording, setIsRecording] = useState(false);
-  const [isPredictions, setIsPredictions] = useState<Prediction | null>(null)
-  const [ws, setWs] = useState<WebSocket | null>(null);
+  // const [isPredictions, setIsPredictions] = useState<Prediction | null>(null)
+  // const [ws, setWs] = useState<WebSocket | null>(null);
 
-  useEffect(() => {
-    const socket = new WebSocket('ws://192.168.0.136:9999');
+  // useEffect(() => {
+  //   const socket = new WebSocket('ws://192.168.0.136:9999');
 
-    socket.onopen = () => {
-      console.log('Connected to WebSocket server');
-    };
+  //   socket.onopen = () => {
+  //     console.log('Connected to WebSocket server');
+  //   };
 
-    socket.onclose = () => {
-      console.log('Disconnected from WebSocket server');
-    };
+  //   socket.onclose = () => {
+  //     console.log('Disconnected from WebSocket server');
+  //   };
 
-    socket.onerror = (error) => {
-      console.error('WebSocket error:', error);
-    };
+  //   socket.onerror = (error) => {
+  //     console.error('WebSocket error:', error);
+  //   };
 
-    socket.onmessage = (event) => {
-      const reader = new FileReader();
-      reader.onload = () => {
-        const predictions = JSON.parse(reader.result as string);
-        console.log(predictions);
-        setIsPredictions(predictions);
-      };
-      reader.readAsText(event.data);
-    };
+  //   socket.onmessage = (event) => {
+  //     const reader = new FileReader();
+  //     reader.onload = () => {
+  //       const predictions = JSON.parse(reader.result as string);
+  //       console.log(predictions);
+  //       setIsPredictions(predictions);
+  //     };
+  //     reader.readAsText(event.data);
+  //   };
 
-    setWs(socket);
+  //   setWs(socket);
 
-    return () => {
-      socket.close();
-    };
-  }, [port]);
+  //   return () => {
+  //     socket.close();
+  //   };
+  // }, [port]);
 
 
 

@@ -7,6 +7,7 @@ interface ModalStreamProps {
   selectedCameras: Camera[];
   setCam: (cameras: any) => void;
   onClose: () => void;
+  isPredictions: Prediction | null;
 }
 
 interface Camera {
@@ -20,7 +21,17 @@ interface Camera {
   rtspUrl: string;
 }
 
-const ModalStream: FC<ModalStreamProps> = memo(({ selectedCameras, setCam, onClose, navigate }) => {
+interface Prediction {
+  id: number;
+  camera_port: number;
+  item_predict: string;
+  score_predict: string;
+  date: string;
+  bbox: number[];
+}
+
+
+const ModalStream: FC<ModalStreamProps> = memo(({ selectedCameras, setCam, onClose, isPredictions, navigate }) => {
   const [cameras, setCameras] = useState<Camera[]>(selectedCameras);
 
   useEffect(() => {
@@ -42,6 +53,7 @@ const ModalStream: FC<ModalStreamProps> = memo(({ selectedCameras, setCam, onClo
                 rtspUrl={camera.rtspUrl}
                 id={camera.id}
                 cameraName={camera.name}
+                isPredictions={isPredictions}
                 setCam={setCam}
                 onClose={onClose}
               />

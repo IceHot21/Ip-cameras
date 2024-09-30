@@ -1,4 +1,4 @@
-import React, { FC, useState, useEffect, useCallback, useMemo } from 'react';
+import React, { FC, useState, useEffect, useCallback, useMemo, memo } from 'react';
 import { BsLayoutTextWindow, BsWrenchAdjustable } from "react-icons/bs";
 import FStyles from './Feeding.module.css';
 import Floor from '../../components/Floor';
@@ -22,6 +22,15 @@ interface Camera {
   rtspUrl: string;
   isDisabled: boolean;
   rotationAngle: number;
+}
+
+interface Prediction {
+  id: number;
+  camera_port: number;
+  item_predict: string;
+  score_predict: string;
+  date: string;
+  bbox: number[];
 }
 
 interface SVGItem {
@@ -49,6 +58,40 @@ const Feeding: FC<FeedingProps> = ({ navigate }) => {
   const [activeFloor, setActiveFloor] = useState<number>(0);
   const [isSelecting, setIsSelecting] = useState(false);
   const [selectedCells, setSelectedCells] = useState<number[][]>([]);
+  const [isPredictions, setIsPredictions] = useState<Prediction | null>(null)
+  const [ws, setWs] = useState<WebSocket | null>(null);
+
+  useEffect(() => {
+    const socket = new WebSocket('ws://192.168.0.136:9999');
+
+    socket.onopen = () => {
+      console.log('Connected to WebSocket server');
+    };
+
+    socket.onclose = () => {
+      console.log('Disconnected from WebSocket server');
+    };
+
+    socket.onerror = (error) => {
+      console.error('WebSocket error:', error);
+    };
+
+    socket.onmessage = (event) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        const predictions = JSON.parse(reader.result as string);
+        console.log(predictions);
+        setIsPredictions(predictions);
+      };
+      reader.readAsText(event.data);
+    };
+
+    setWs(socket);
+
+    return () => {
+      socket.close();
+    };
+  }, []);
 
   useEffect(() => {
     if (floor) {
@@ -142,6 +185,82 @@ const Feeding: FC<FeedingProps> = ({ navigate }) => {
   const memoizedRotationAngles = useMemo(() => rotationAngles, [rotationAngles]);
   const memoizedSelectedCells = useMemo(() => selectedCells, [selectedCells]);
 
+  const memoizedFlagLocalToggle = useCallback(() => setFlagLocal(prev => !prev), []);
+
+  const memoizedActiveFloorContent = useMemo(() => (
+    <div className={FStyles.activeFloor}>
+      <MemoizedFloor
+        navigate={navigate}
+        children={null}
+        onCameraDropped={handleCameraDrop}
+        droppedCameras={memoizedDroppedCameras}
+        activeFloor={activeFloor}
+        onFloorChange={handleFloorChange}
+        onDoubleClickCamera={handleDoubleClickCamera}
+        FlagLocal={memoizedFlagLocalToggle}
+        rotationAngles={memoizedRotationAngles}
+        setRotationAngles={setRotationAngles}
+        droppedSVGs={memoizedDroppedSVGs}
+        onSVGDrop={handleSVGDrop}
+        floorIndex={activeFloor}
+        isActive={true}
+        // isPredictions={isPredictions}
+        setDroppedSVGs={setDroppedSVGs}
+      />
+    </div>
+  ), [activeFloor, memoizedDroppedCameras, memoizedDroppedSVGs, memoizedRotationAngles, handleCameraDrop, handleFloorChange, handleDoubleClickCamera, navigate, memoizedFlagLocalToggle]);
+
+  const memoizedInactiveFloorsContent = useMemo(() => (
+    <div className={FStyles.inactiveFloors}>
+      {floors.map(floorIndex => (
+        <div
+          key={floorIndex}
+          className={`${FStyles.inactiveFloor} ${floorIndex === activeFloor ? FStyles.activeThumbnail : ''}`}
+          onClick={() => handleFloorChange(floorIndex)}
+        >
+          <MemoizedFloor
+            navigate={navigate}
+            children={null}
+            onCameraDropped={handleCameraDrop}
+            droppedCameras={memoizedDroppedCameras}
+            activeFloor={activeFloor}
+            onFloorChange={handleFloorChange}
+            onDoubleClickCamera={handleDoubleClickCamera}
+            FlagLocal={memoizedFlagLocalToggle}
+            rotationAngles={memoizedRotationAngles}
+            setRotationAngles={setRotationAngles}
+            droppedSVGs={memoizedDroppedSVGs}
+            onSVGDrop={handleSVGDrop}
+            floorIndex={floorIndex}
+            isActive={floorIndex === activeFloor}
+            // isPredictions={isPredictions} 
+            setDroppedSVGs={setDroppedSVGs}
+          />
+        </div>
+      ))}
+    </div>
+  ), [activeFloor, memoizedDroppedCameras, memoizedDroppedSVGs, memoizedRotationAngles, handleCameraDrop, handleFloorChange, handleDoubleClickCamera, navigate, floors, memoizedFlagLocalToggle]);
+
+  const memoizedGridContent = useMemo(() => (
+    <div className={FStyles.gridContainer}>
+      <MemoizedGrid
+        navigate={navigate}
+        isSelecting={isSelecting}
+        onCameraDrop={handleCameraDrop}
+        onSVGDrop={handleSVGDrop}
+        droppedCameras={memoizedDroppedCameras}
+        droppedSVGs={memoizedDroppedSVGs}
+        activeFloor={activeFloor}
+        onDoubleClickCamera={handleDoubleClickCamera}
+        FlagLocal={memoizedFlagLocalToggle}
+        rotationAngles={memoizedRotationAngles}
+        setRotationAngles={setRotationAngles}
+        selectedCells={memoizedSelectedCells}
+        setSelectedCells={setSelectedCells}
+      />
+    </div>
+  ), [activeFloor, memoizedDroppedCameras, memoizedDroppedSVGs, memoizedRotationAngles, memoizedSelectedCells, isSelecting, handleCameraDrop, handleSVGDrop, handleDoubleClickCamera, navigate, memoizedFlagLocalToggle]);
+
   return (
     <div>
       <div className={FStyles.listContainer}>
@@ -163,18 +282,18 @@ const Feeding: FC<FeedingProps> = ({ navigate }) => {
 
       </div>
       {isListCameraOpen && (
-        <ListCamera
+        <MemoizedListCamera
           navigate={navigate}
           open={isListCameraOpen}
           onClose={() => setIsListCameraOpen(false)}
-          FlagLocal={() => setFlagLocal(prev => !prev)}
+          FlagLocal={memoizedFlagLocalToggle}
           onDoubleClickCamera={handleDoubleClickCamera}
           movedCameras={movedCameras}
           droppedCameras={memoizedDroppedCameras}
         />
       )}
       {isListSVGOpen && (
-        <ListSVG
+        <MemoizedListSVG
           navigate={navigate}
           open={isListSVGOpen}
           onClose={() => setIsListSVGOpen(false)}
@@ -187,77 +306,16 @@ const Feeding: FC<FeedingProps> = ({ navigate }) => {
         />
       )}
       <div className={FStyles.FloorContainer}>
-        <div className={FStyles.activeFloor}>
-            <Floor
-              navigate={navigate}
-              children={null}
-              onCameraDropped={handleCameraDrop}
-              droppedCameras={memoizedDroppedCameras}
-              activeFloor={activeFloor}
-              onFloorChange={handleFloorChange}
-              onDoubleClickCamera={handleDoubleClickCamera}
-              FlagLocal={() => setFlagLocal(prev => !prev)}
-              rotationAngles={memoizedRotationAngles}
-              setRotationAngles={setRotationAngles}
-              droppedSVGs={memoizedDroppedSVGs}
-              onSVGDrop={handleSVGDrop}
-              floorIndex={activeFloor}
-              isActive={true}
-              setDroppedSVGs={setDroppedSVGs}
-            />
-        </div>
-        <div className={FStyles.inactiveFloors}>
-          {floors.map(floorIndex => (
-            <div
-              key={floorIndex}
-              className={`${FStyles.inactiveFloor} ${floorIndex === activeFloor ? FStyles.activeThumbnail : ''}`}
-              onClick={() => handleFloorChange(floorIndex)}
-            >
-                <Floor
-                  navigate={navigate}
-                  children={null}
-                  onCameraDropped={handleCameraDrop}
-                  droppedCameras={memoizedDroppedCameras}
-                  activeFloor={activeFloor}
-                  onFloorChange={handleFloorChange}
-                  onDoubleClickCamera={handleDoubleClickCamera}
-                  FlagLocal={() => setFlagLocal(prev => !prev)}
-                  rotationAngles={memoizedRotationAngles}
-                  setRotationAngles={setRotationAngles}
-                  droppedSVGs={memoizedDroppedSVGs}
-                  onSVGDrop={handleSVGDrop}
-                  floorIndex={floorIndex}
-                  isActive={floorIndex === activeFloor} 
-                  setDroppedSVGs={setDroppedSVGs}
-                />
-            </div>
-          ))}
-        </div>
-        {isEditing && (
-          <div className={FStyles.gridContainer}>
-              <Grid
-                navigate={navigate}
-                isSelecting={isSelecting}
-                onCameraDrop={handleCameraDrop}
-                onSVGDrop={handleSVGDrop}
-                droppedCameras={memoizedDroppedCameras}
-                droppedSVGs={memoizedDroppedSVGs}
-                activeFloor={activeFloor}
-                onDoubleClickCamera={handleDoubleClickCamera}
-                FlagLocal={() => setFlagLocal(prev => !prev)}
-                rotationAngles={memoizedRotationAngles}
-                setRotationAngles={setRotationAngles}
-                selectedCells={memoizedSelectedCells}
-                setSelectedCells={setSelectedCells}
-              />
-          </div>
-        )}
+        {memoizedActiveFloorContent}
+        {memoizedInactiveFloorsContent}
+        {isEditing && memoizedGridContent}
       </div>
       {isModalStreamOpen && (
-        <ModalStream
+        <MemoizedModalStream
           navigate={navigate}
           selectedCameras={selectedCameras}
           setCam={setSelectedCameras}
+          isPredictions={isPredictions}
           onClose={() => setIsModalStreamOpen(false)}
         />
       )}
@@ -275,5 +333,11 @@ const Feeding: FC<FeedingProps> = ({ navigate }) => {
     </div>
   );
 };
+
+const MemoizedFloor = memo(Floor);
+const MemoizedGrid = memo(Grid);
+const MemoizedListCamera = memo(ListCamera);
+const MemoizedListSVG = memo(ListSVG);
+const MemoizedModalStream = memo(ModalStream);
 
 export default Feeding;
