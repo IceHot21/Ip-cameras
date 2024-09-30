@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/router";
 import NStyles from "../styles/Navbar.module.css";
 import { BiCameraMovie, BiCamera, BiRepeat, BiSolidHome, BiX, BiHome, BiCarousel } from "react-icons/bi";
-import { MdAppRegistration } from "react-icons/md";
+import { MdAppRegistration, MdOutlineCameraOutdoor } from "react-icons/md";
 import { IoSettingsOutline } from "react-icons/io5";
 
 type Tab = {
@@ -66,7 +66,8 @@ const Navigation = ({ onMenuItemClick }) => {
   const menuItems = [
     { name: "Главная", action: "/Home/Home", icon: <BiHome size={24} /> },
     { name: "Схема здания", action: "/Feeding/Feeding", icon: <BiCarousel size={24} /> },
-/*     { name: "Видеоархив", action: "/Videoarchive/Videoarchive", icon: <BiCameraMovie size={24} /> }, */
+    { name: "Уличные камеры", action: "/OutsideCamera/OutsideCamera", icon: <MdOutlineCameraOutdoor size={24} /> },
+    { name: "Видеоархив", action: "/Videoarchive/Videoarchive", icon: <BiCameraMovie size={24} /> },
     { name: "Настройки", action: "/Setting/Setting", icon: <IoSettingsOutline size={24} /> },
     { name: "Регистрация", action: "/Registration/Registration", icon: <MdAppRegistration size={24} /> },
     { name: "Перезагрузка", action: "/LoginPage/LoginPage", icon: <BiRepeat size={24} /> },
