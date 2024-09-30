@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from 'react';
+import { FC, useEffect, useState, memo } from 'react';
 import MSStyles from '../styles/ModalStream.module.css';
 import StartStream from './StartStream';
 
@@ -20,7 +20,7 @@ interface Camera {
   rtspUrl: string;
 }
 
-const ModalStream: FC<ModalStreamProps> = ({ selectedCameras, setCam, onClose, navigate }) => {
+const ModalStream: FC<ModalStreamProps> = memo(({ selectedCameras, setCam, onClose, navigate }) => {
   const [cameras, setCameras] = useState<Camera[]>(selectedCameras);
 
   useEffect(() => {
@@ -51,6 +51,6 @@ const ModalStream: FC<ModalStreamProps> = ({ selectedCameras, setCam, onClose, n
       </div>
     </div>
   );
-};
+});
 
 export default ModalStream;

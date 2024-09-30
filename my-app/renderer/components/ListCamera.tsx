@@ -1,9 +1,10 @@
-import { useState, useEffect, FC } from 'react';
+import { useState, useEffect, FC, memo } from 'react';
 import LCStyles from '../styles/ListCamera.module.css';
 import { BsFillCameraVideoFill } from "react-icons/bs";
 import { BiX, BiRevision, BiSolidLayerPlus } from "react-icons/bi";
 import { FaCheck } from 'react-icons/fa';
 import { fetchWithRetry } from '../refreshToken';
+import { motion } from 'framer-motion';
 
 interface ListCameraProps {
   navigate: (path: string) => Promise<boolean>;
@@ -27,7 +28,7 @@ interface Camera {
   isDisabled: boolean;
 }
 
-const ListCamera: FC<ListCameraProps> = ({
+const ListCamera: FC<ListCameraProps> = memo(({
   navigate,
   open,
   onClose,
@@ -108,7 +109,12 @@ const ListCamera: FC<ListCameraProps> = ({
   if (!open) return null;
 
   return (
-    <div className={LCStyles.sidebar}>
+    <motion.div className={LCStyles.sidebar}
+        style={{height: '100% !important'}}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.7 }}>
       <div className={LCStyles.buttonContainer}>
         <button onClick={onClose} className={LCStyles.closeButton} title="Закрыть"><BiX /></button>
         <div style={{ display: 'flex' }}>
@@ -162,8 +168,8 @@ const ListCamera: FC<ListCameraProps> = ({
           </table>
         </div>
       )}
-    </div>
+    </motion.div>
   );
-};
+});
 
 export default ListCamera;
