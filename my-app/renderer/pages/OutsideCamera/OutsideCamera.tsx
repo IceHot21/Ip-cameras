@@ -4,11 +4,8 @@ import OStyles from './OutsideCamera.module.css';
 import Grid from '../../components/Grid';
 import Outside from '../../components/Outside';
 import ListCamera from '../../components/ListCamera';
-import ListSVG from '../../components/ListSVG';
 import ModalStream from '../../components/ModalStream';
-import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import { useRouter } from 'next/router';
-import OutsideBuild123 from '../../assets/OutsideBuild123.svg'
 
 interface Camera {
     id: number;
@@ -175,7 +172,6 @@ const OutsideCamera: FC<OutsideProps> = ({ navigate }) => {
                             setDroppedSVGs={setDroppedSVGs}
                             setDroppedCameras={setDroppedCameras}
                         />
-                        <OutsideBuild123 style={{ position: 'absolute', top: -220, left: 450, zIndex: 1000 }} />
                     </div>
                 )}
             </div>

@@ -4,7 +4,7 @@ import GStyles from '../styles/Grid.module.css';
 import { useContextMenu, ItemParams, Menu, Item } from 'react-contexify';
 import "react-contexify/dist/ReactContexify.css";
 import { BsFillCameraVideoFill } from 'react-icons/bs';
-import Svg from '../assets/Svg1.svg';
+import SVGOUT from '../assets/SVGOUT.svg';
 
 interface Camera {
     id: number;
@@ -149,7 +149,7 @@ const Outside: FC<OutsideProps> = ({ children, droppedCameras, navigate, onDoubl
         <div className={RStyles.body}>
             <div className={RStyles.container}>
                 <div>
-                    <Svg className={RStyles.fonContainer} />
+                    <SVGOUT className={RStyles.fonContainer} />
                     <div className={RStyles.gridContainer} style={{ height: '100% !important' }}>
                         <div className={GStyles.grid}>
                             {Array.from({ length: 15 }).map((_, rowIndex) =>

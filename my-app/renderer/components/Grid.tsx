@@ -259,7 +259,7 @@ const Grid: FC<GridProps> = memo(({
                     </Menu>
                   </div>
                 )}
-                {svg && (
+                {/* {svg && (
                   <div
                     className={GStyles.svgIcon}
                     draggable
@@ -273,7 +273,7 @@ const Grid: FC<GridProps> = memo(({
                       <Item id='deleteSVG' onClick={handleItemClick} data={{ svgKey }}>Удалить SVG</Item>
                     </Menu>
                   </div>
-                )}
+                )} */}
               </motion.div>
             );
           })
