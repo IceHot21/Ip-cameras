@@ -45,10 +45,10 @@ const svgItems: SVGItem[] = [
 ];
 
 const svgGroups = {
-  doors: { name: 'Дверь', items: ['doorD', 'doorL', 'doorR', 'doorV'] },
-  windows: { name: 'Окно', items: ['windowD', 'windowL', 'windowR', 'windowU'] },
-  corners: { name: 'Угол', items: ['ugolLD', 'ugolLV', 'ugolRD', 'ugolRV'] },
-  walls: { name: 'Стена', items: ['wallG', 'wallGD', 'wallV', 'wallVR'] },
+  doors: { name: 'Двери', items: ['doorD', 'doorL', 'doorR', 'doorV'] },
+  windows: { name: 'Окна', items: ['windowD', 'windowL', 'windowR', 'windowU'] },
+  corners: { name: 'Уголы', items: ['ugolLD', 'ugolLV', 'ugolRD', 'ugolRV'] },
+  walls: { name: 'Стены', items: ['wallG', 'wallGD', 'wallV', 'wallVR'] },
 };
 
 const ListSVG: FC<ListSVGProps> = memo(({

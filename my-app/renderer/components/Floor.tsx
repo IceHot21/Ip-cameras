@@ -41,9 +41,12 @@ type FloorProps = {
   isActive: boolean;
   setDroppedSVGs: any;
   setDroppedCameras: React.Dispatch<React.SetStateAction<{ [key: string]: Camera }>>;
+  savedCells: number[][];
+  roomNames: { [key: string]: string };
+  roomCenters: { [key: string]: { x: number; y: number } };
 };
 
-const Floor: FC<FloorProps> = memo(({ children, droppedCameras, activeFloor, navigate, onFloorChange, onDoubleClickCamera, FlagLocal, rotationAngles, setRotationAngles, droppedSVGs, onSVGDrop, floorIndex, isActive, setDroppedSVGs, setDroppedCameras }) => {
+const Floor: FC<FloorProps> = memo(({ children, droppedCameras, activeFloor, navigate, onFloorChange, onDoubleClickCamera, FlagLocal, rotationAngles, setRotationAngles, droppedSVGs, onSVGDrop, floorIndex, isActive, setDroppedSVGs, setDroppedCameras, savedCells, roomNames, roomCenters }) => {
   const [selectedCameras, setSelectedCameras] = useState<Camera[]>([]);
   const menuClick = "Меню";
   const { show } = useContextMenu({ id: menuClick });
@@ -53,6 +56,11 @@ const Floor: FC<FloorProps> = memo(({ children, droppedCameras, activeFloor, nav
       FlagLocal();
     }
   }, [selectedCameras]);
+
+  useEffect(() => {
+    const savedCells = localStorage.getItem('centerNameRooms');
+    console.log(savedCells)
+  },[savedCells]);
 
   useEffect(() => {
     const savedDroppedCameras = localStorage.getItem('droppedCameras');
@@ -148,7 +156,6 @@ const Floor: FC<FloorProps> = memo(({ children, droppedCameras, activeFloor, nav
     }
   }, [floorIndex, droppedCameras, droppedSVGs, rotationAngles, setDroppedCameras, setDroppedSVGs]);
 
-
   return (
     <div className={RStyles.body}>
       <div className={RStyles.container}>
@@ -158,6 +165,11 @@ const Floor: FC<FloorProps> = memo(({ children, droppedCameras, activeFloor, nav
           onClick={() => handleSvgClick(floorIndex)}
         >
           <Svg className={RStyles.fonContainer} />
+          { savedCells && (
+                        <div className={RStyles.roomNameLabel}>
+                          {savedCells}
+                        </div>
+                      )}
           <div className={RStyles.gridContainer} style={{ height: '100% !important' }}>
             <div className={GStyles.grid}>
               {Array.from({ length: 15 }).map((_, rowIndex) =>
@@ -167,6 +179,7 @@ const Floor: FC<FloorProps> = memo(({ children, droppedCameras, activeFloor, nav
                   const svg = droppedSVGs[cellKey];
                   const cameraId = camera ? `Камера ${camera.name}` : '';
                   const rotationAngle = rotationAngles[cameraId] || 0;
+
                   return (
                     <div
                       key={cellKey}
@@ -203,6 +216,7 @@ const Floor: FC<FloorProps> = memo(({ children, droppedCameras, activeFloor, nav
                           {renderSVG(svg.name)}
                         </div>
                       )}
+                    
                     </div>
                   );
                 })
@@ -212,12 +226,6 @@ const Floor: FC<FloorProps> = memo(({ children, droppedCameras, activeFloor, nav
         </div>
         {children}
       </div>
-{/*       <Menu id={menuClick}>
-        <Item id="rotateLeft" onClick={handleItemClick}>Повернуть влево</Item>
-        <Item id="rotateRight" onClick={handleItemClick}>Повернуть вправо</Item>
-        <Separator />
-        <Item id="deleteSVG" onClick={handleItemClick}>Удалить SVG</Item>
-      </Menu> */}
     </div>
   );
 });

@@ -41,8 +41,10 @@ interface GridProps {
   setSelectedCells: React.Dispatch<React.SetStateAction<number[][]>>;
   setDroppedSVGs: React.Dispatch<React.SetStateAction<{ [key: string]: SVGItem }>>;
   setDroppedCameras: React.Dispatch<React.SetStateAction<{ [key: string]: Camera }>>;
+  setRoomCenters: React.Dispatch<React.SetStateAction<{ [key: string]: { x: number; y: number } }>>;
+  //TODO: хуйня полная
+  setRoomNames: any;
 }
-
 
 const Grid: FC<GridProps> = ({
   navigate,
@@ -60,13 +62,52 @@ const Grid: FC<GridProps> = ({
   setSelectedCells,
   setDroppedSVGs,
   setDroppedCameras,
+  setRoomCenters,
+  setRoomNames,
 }) => {
   const [selectedCameras, setSelectedCameras] = useState<Camera[]>([]);
   const [savedCells, setSavedCells] = useState<number[][]>([]);
-  const [roomNames, setRoomNames] = useState<{ [key: string]: string }>({});
+  const [roomNames, setLocalRoomNames] = useState<{ [key: string]: string }>({});
   const menuClick = "Меню";
   const { show } = useContextMenu({ id: menuClick });
   const [zIndex, setZIndex] = useState('auto');
+
+  const calculateRoomCenters = (rooms: { activeFloor: number, roomName: string, positions: number[][] }[]) => {
+    const centers: { [key: string]: { x: number; y: number } } = {};
+    const centerNameRooms: { [key: string]: { roomName: string, center: { x: number; y: number } } } = {};
+
+    rooms.forEach((room) => {
+      if (room.activeFloor === activeFloor) {
+        const positions = room.positions;
+        const minX = Math.min(...positions.map(pos => pos[0]));
+        const maxX = Math.max(...positions.map(pos => pos[0]));
+        const minY = Math.min(...positions.map(pos => pos[1]));
+        const maxY = Math.max(...positions.map(pos => pos[1]));
+
+        const centerX = (minX + maxX) / 2;
+        const centerY = (minY + maxY) / 2;
+
+        const roomKey = `${activeFloor}-${centerX}-${centerY}`;
+        centers[roomKey] = { x: centerX, y: centerY };
+
+        // Сохраняем данные в centerNameRooms
+        centerNameRooms[roomKey] = {
+          roomName: room.roomName,
+          center: { x: centerX, y: centerY }
+        };
+      }
+    });
+
+    // Сохраняем centerNameRooms в localStorage
+    localStorage.setItem('centerNameRooms', JSON.stringify(centerNameRooms));
+    setRoomCenters(centers);
+    setRoomNames(centerNameRooms);
+  };
+
+  useEffect(() => {
+    const storedRooms = JSON.parse(localStorage.getItem('selectedRooms') || '[]');
+    calculateRoomCenters(storedRooms);
+  }, [activeFloor, isSelecting]);
 
   useEffect(() => {
     if (selectedCameras) {
@@ -106,7 +147,7 @@ const Grid: FC<GridProps> = ({
         });
       }
     });
-    setRoomNames(roomNamesMap);
+    setLocalRoomNames(roomNamesMap);
   }, [activeFloor, isSelecting]); // Добавляем activeFloor в зависимости
 
   const handleDragStart = (e: React.DragEvent<HTMLDivElement>, item: Camera | SVGItem) => {
@@ -124,7 +165,7 @@ const Grid: FC<GridProps> = ({
     setZIndex('auto'); // Возвращаем z-index в auto при закрытии меню
   }, []);
 
-  const handleItemClick = useCallback(({ id, event, props,  }: ItemParams<any, any>) => {
+  const handleItemClick = useCallback(({ id, event, props, }: ItemParams<any, any>) => {
     const cameraId = props.cameraId;
     const svgKey = props.svgKey;
 
@@ -147,11 +188,10 @@ const Grid: FC<GridProps> = ({
           ...prevAngles,
           [cameraId]: newAngle,
         };
-      }); 
+      });
     }
     if (id === "deleteSVG") {
-      if (cameraId === "")
-      {
+      if (cameraId === "") {
         const newDroppedSVGs = { ...droppedSVGs };
         delete newDroppedSVGs[svgKey];
         setDroppedSVGs(newDroppedSVGs);
@@ -286,25 +326,25 @@ const Grid: FC<GridProps> = ({
                   >
                     <BsFillCameraVideoFill style={{ transform: `rotate(${rotationAngle}deg)` }} />
                     <div
-                            className={GStyles.cameraViewSector}
-                            style={{
-                              transform: `rotate(${rotationAngle}deg)`,
-                              clipPath: `polygon(50% 50%, 100% 0%, 100% 100%)`,
-                            }}
-                          />
+                      className={GStyles.cameraViewSector}
+                      style={{
+                        transform: `rotate(${rotationAngle}deg)`,
+                        clipPath: `polygon(50% 50%, 100% 0%, 100% 100%)`,
+                      }}
+                    />
                   </div>
                 )}
-                 {svg && (
-                        <div
-                          className={GStyles.svgIcon}
-                          draggable
-                          onDragStart={(e) => handleDragStart(e, svg)}
-                          title={svg.name}
-                          onContextMenu={(e) => displayMenu(e, '', cellKey)}
-                        >
-                          {renderSVG(svg.name)}
-                        </div>
-                      )}
+                {svg && (
+                  <div
+                    className={GStyles.svgIcon}
+                    draggable
+                    onDragStart={(e) => handleDragStart(e, svg)}
+                    title={svg.name}
+                    onContextMenu={(e) => displayMenu(e, '', cellKey)}
+                  >
+                    {renderSVG(svg.name)}
+                  </div>
+                )}
                 {isSaved && roomName && (
                   <Tippy content={roomName}>
                     <div style={{ width: '100%', height: '100%' }} />
@@ -315,9 +355,9 @@ const Grid: FC<GridProps> = ({
           })
         )}
       </div>
-      
+
       <Menu className={GStyles.menuContainer} id={menuClick} //@ts-ignore 
-      onClose={handleMenuClose} >
+        onClose={handleMenuClose} >
         <Item className={GStyles.menuItem} id='rotateRight' onClick={handleItemClick}>Поворот вправо</Item>
         <Item className={GStyles.menuItem} id='rotateLeft' onClick={handleItemClick}>Поворот влево</Item>
         <Separator />
