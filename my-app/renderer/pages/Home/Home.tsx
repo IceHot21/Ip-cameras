@@ -364,7 +364,47 @@ const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
   return (
     <div className={HStyles.homeContainer}>
       <div className={HStyles.leftContainer}>
-        <div className={HStyles.tabs}>
+      
+        
+
+        <div className={HStyles.carouselContainer}>
+          <div className={HStyles.carouselTitle}>Выбор здания</div>
+          <div className={HStyles.carousel}>
+            {numberHome > 1 && (
+              <button className={HStyles.prevButton} onClick={prevSlide}>
+                <FaChevronLeft />
+              </button>
+            )}
+            <div className={HStyles.carouselInner}>
+              {Array.from({ length: numberHome }, (_, index) => (
+                <div
+                  key={index}
+                  className={`${HStyles.buildingIcon} ${getSlideClass(index)}`}
+                  onClick={() => setCurrentIndex(index)}
+                >
+                  
+                  <Build123 />
+                  {index === currentIndex && (
+                    <span style={{ fontSize: "50px" }}>Здание №{index + 1}</span>
+                  )}
+                </div>
+              ))}
+            </div>
+            {numberHome > 2 && (
+              <button className={HStyles.nextButton} onClick={nextSlide}>
+                <FaChevronRight />
+              </button>
+            )}
+          </div>
+        </div>
+        <div className={HStyles.statisticsContainer}>
+          <div className={HStyles.carouselTitle1}>Статистика</div>
+          
+        </div>
+      </div>
+      {/* Правый контейнер */}
+      <div className={HStyles.rightContainer}>
+      <div className={HStyles.tabs}>
           <button
             className={`${HStyles.tabButton} ${activeTab === 'inside' ? HStyles.activeTab : ''}`}
             onClick={() => setActiveTab('inside')}
@@ -406,40 +446,6 @@ const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
             </div>
           )}
         </div>
-
-        <div className={HStyles.carouselContainer}>
-          <div className={HStyles.carouselTitle}>Выбор здания</div>
-          <div className={HStyles.carousel}>
-            {numberHome > 1 && (
-              <button className={HStyles.prevButton} onClick={prevSlide}>
-                <FaChevronLeft />
-              </button>
-            )}
-            <div className={HStyles.carouselInner}>
-              {Array.from({ length: numberHome }, (_, index) => (
-                <div
-                  key={index}
-                  className={`${HStyles.buildingIcon} ${getSlideClass(index)}`}
-                  onClick={() => setCurrentIndex(index)}
-                >
-                  
-                  <Build123 />
-                  {index === currentIndex && (
-                    <span style={{ fontSize: "50px" }}>Здание №{index + 1}</span>
-                  )}
-                </div>
-              ))}
-            </div>
-            {numberHome > 2 && (
-              <button className={HStyles.nextButton} onClick={nextSlide}>
-                <FaChevronRight />
-              </button>
-            )}
-          </div>
-        </div>
-      </div>
-      {/* Правый контейнер */}
-      <div className={HStyles.rightContainer}>
         <div className={HStyles.containerT}>
           {/* Содержимое containerT */}
           <div className={HStyles.panelContainer}>
@@ -481,10 +487,7 @@ const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
             </div>
           </div>
         </div>
-        <div className={HStyles.statisticsContainer}>
-          <div className={HStyles.carouselTitle1}>Статистика</div>
-          
-        </div>
+        
       </div>
       <ModalWindow isOpen={isModalOpen} onClose={closeModal} imageUrl={modalImageUrl} />
     </div>
