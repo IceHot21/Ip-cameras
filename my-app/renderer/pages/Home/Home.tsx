@@ -400,7 +400,7 @@ const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
         <div className={HStyles.carouselHeader}>
           <div className={HStyles.carouselTitle1}>Статистика</div>
           </div>
-          
+          <ModalWindow isOpen={isModalOpen} onClose={closeModal} imageUrl={modalImageUrl} />
         </div>
       </div>
       {/* Правый контейнер */}
@@ -490,7 +490,7 @@ const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
         </div>
         
       </div>
-      <ModalWindow isOpen={isModalOpen} onClose={closeModal} imageUrl={modalImageUrl} />
+   
     </div>
   );
 };
