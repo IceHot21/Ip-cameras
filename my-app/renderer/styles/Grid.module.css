@@ -20,20 +20,19 @@
   border: 1px solid #aaa;
   display: flex;
   aspect-ratio: 1 / 1;
+  z-index: 99 !important;
 }
 
 .gridCell svg {
   position: absolute;
-  z-index: 3 !important;
 }
 
 .selectedCell {
   background-color: #02943a !important;
-  z-index: 2 !important;
 }
 .savedCell {
   background-color: #98e4b5;
-  z-index: 0;
+  z-index: auto !important;
 }
 
 .cameraIcon
@@ -42,9 +41,11 @@
   justify-content: center;
   align-items: center;
   aspect-ratio: 1 / 1;
+  width: 50%;
+  height: 50%;
   border-radius: 50%;
   cursor: pointer;
-  z-index: 4 !important;
+  z-index: 101 !important;
 }
 
 .streamModal {
@@ -85,7 +86,7 @@
   background-color: rgba(255, 255, 0, 0.3);
   clip-path: polygon(50% 50%, 100% 0%, 100% 100%);
   transform-origin: 50% 50%;
-  z-index: 5 !important; /* Сектор обзора камеры выше всего */
+  z-index: 1001 !important;
 }
 
 .inactiveFloor .gridContainer {
@@ -111,8 +112,7 @@
 .gridCell [title="windowU"]
 {
   position: absolute;
-  z-index: 3 !important;
+  z-index: 99 !important;
 }
 .menuContainer{
-  z-index: 6 !important;
 }
