@@ -5,7 +5,8 @@ import { FaCheck } from 'react-icons/fa';
 import LSCGStyle from '../styles/ListSVG.module.css';
 import { motion } from 'framer-motion';
 import { FormControl, Input, InputLabel } from '@mui/material';
-import {  toast } from 'react-toastify';
+import { toast } from 'react-toastify';
+import Collapsible from 'react-collapsible';
 
 interface SVGItem {
   id: number;
@@ -59,13 +60,13 @@ const ListSVG: FC<ListSVGProps> = memo(({
   setIsSelecting,
   selectedCells,
   setSelectedCells,
-  activeFloor, 
+  activeFloor,
 }) => {
   const [isAddingSVG, setIsAddingSVG] = useState(false);
   const [roomName, setRoomName] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [isFocused, setIsFocused] = useState(false);
-
+  const [sidebarHeight, setSidebarHeight] = useState('35%');
 
   const handleFocus = () => {
     setIsFocused(true);
@@ -116,23 +117,24 @@ const ListSVG: FC<ListSVGProps> = memo(({
   const handleSelectClick = () => {
     toast.info('Пожалуйста, выберете ячейки для комнаты и дайте ей название.');
     setIsSelecting(!isSelecting);
+    setSidebarHeight(isSelecting ? '35%' : '39%'); // Изменяем высоту sidebar
   };
-  
+
   const handleSaveRoom = () => {
     if (selectedCells.length === 0) {
       toast.error('Ошибка: Нужно выбрать хотя бы одну ячейку.');
       return;
     }
-  
+
     const storedRooms = JSON.parse(localStorage.getItem('selectedRooms') || '[]');
     const allPositions = storedRooms.flatMap((room: { positions: number[][], activeFloor: number }) =>
       room.activeFloor === activeFloor ? room.positions : []
     );
-  
+
     const hasIntersection = selectedCells.some(selectedPos =>
       allPositions.some(storedPos => storedPos[0] === selectedPos[0] && storedPos[1] === selectedPos[1])
     );
-  
+
     if (hasIntersection) {
       toast.error('Ошибка: Выбранные ячейки уже заняты другой комнатой на этом этаже.');
       setRoomName('');
@@ -140,7 +142,7 @@ const ListSVG: FC<ListSVGProps> = memo(({
       setSelectedCells([]);
       return;
     }
-  
+
     const newRoom = { activeFloor, roomName, positions: selectedCells };
     const updatedRooms = [...storedRooms, newRoom];
     localStorage.setItem('selectedRooms', JSON.stringify(updatedRooms));
@@ -148,64 +150,34 @@ const ListSVG: FC<ListSVGProps> = memo(({
     setIsSelecting(false);
     setSelectedCells([]);
     setErrorMessage('');
+    setSidebarHeight('35%'); // Возвращаем высоту sidebar к исходной
   };
+
+  const closeSelecting = () => {
+    setIsSelecting(false);
+    setSidebarHeight('35%'); // Возвращаем высоту sidebar к исходной
+  }
 
   if (!open) return null;
 
   return (
-    <motion.div 
-    style={{height: '100% !important'}}
-    initial={{ opacity: 0 }}
-    animate={{ opacity: 1, y: 0 }}
-    exit={{ opacity: 0 }}
-    transition={{ duration: 0.7 }}
-    className={LSCGStyle.sidebar}>
+    <motion.div
+      style={{ height: sidebarHeight }}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.7 }}
+      className={LSCGStyle.sidebar}>
       <div className={LCStyles.buttonContainer}>
         <button onClick={onClose} className={LCStyles.closeButton} title="Закрыть"><BiX /></button>
         <div style={{ display: 'flex' }}>
         </div>
-
-
       </div>
-      <div className={LSCGStyle.tableContainer}>
-        <table>
-          <thead className={LSCGStyle.tableHeader}>
-            <tr>
-              <th>Название</th>
-              <th>Элемент</th>
-            </tr>
-          </thead>
-          <tbody className={LCStyles.tableBody}>
-            {Object.keys(groupedSVGItems).map((groupKey) => (
-              <React.Fragment key={groupKey}>
-                {groupedSVGItems[groupKey].map((svg, index) => (
-                  <tr key={svg.id} className={LCStyles.tableRow}>
-                    <td>{index === 0 ? svgGroups[groupKey].name : ''}</td>
-                    <td className={LSCGStyle.tdContainer}>
-                      <div
-                        draggable
-                        className={LCStyles.cccccc}
-                        onDragStart={(e) => handleDragStart(e, svg)}
-                        title={svg.name}
-                      >
-                        {renderSVG(svg.name)}
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </React.Fragment>
-            ))}
-          </tbody>
-        </table>
-        </div>
-
-{/* TODO: прикольная идея с аккордионом, надо подумать!!!
-        {/* <div className={LSCGStyle.tableContainer}>
+      {<div className={LSCGStyle.tableContainer}>
         {Object.keys(groupedSVGItems).map((groupKey) => (
-          <Collapsible key={groupKey} trigger={svgGroups[groupKey].name}>
+          <Collapsible key={groupKey} open={true} trigger={svgGroups[groupKey].name} className={LSCGStyle.collapsible}>
             {groupedSVGItems[groupKey].map((svg) => (
-              <div key={svg.id} className={LCStyles.tableRow}>
-                <td>{svg.name}</td>
+              <div key={svg.id} className={LSCGStyle.tableRow}>
                 <td>
                   <div
                     draggable
@@ -220,10 +192,43 @@ const ListSVG: FC<ListSVGProps> = memo(({
             ))}
           </Collapsible>
         ))}
-      </div> */}
+      </div>}
 
-        <div style={{ position: 'sticky', bottom: '0', left: '0' }}>
-          <div className={LSCGStyle.roomSelectionContainer}>
+      <div className={LSCGStyle.roomSelectionContainer}>
+        <div className={LSCGStyle.Buttons}>
+          <motion.button
+            type="button"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={isSelecting ? handleSaveRoom : handleSelectClick} // Изменяем действие в зависимости от состояния
+            className={isSelecting ? LSCGStyle.saveButton : LSCGStyle.selectButton} // Динамически меняем стили
+          >
+            {isSelecting ? "Сохранить комнату" : "Назначить комнату"} 
+          </motion.button>
+          {isSelecting && (
+            <motion.button
+              type="button"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={closeSelecting} // Изменяем действие в зависимости от состояния
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.3 }}
+              className={LCStyles.closeButton}
+            >
+              <BiX />
+            </motion.button>
+          )} 
+          {errorMessage && <div className={LCStyles.errorMessage}>{errorMessage}</div>}
+        </div>
+        {isSelecting && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 10 }}
+            transition={{ duration: 0.5, ease: "easeInOut" }}
+          >
             <FormControl
               sx={{
                 m: 1,
@@ -240,31 +245,26 @@ const ListSVG: FC<ListSVGProps> = memo(({
               }}
               onFocus={handleFocus}
               onBlur={handleBlur}
-              variant="standard">
-              <InputLabel >Введите название комнаты</InputLabel>
+              variant="standard"
+              style={{
+                alignItems: 'center',
+                justifyContent: ' center',
+                textAlign: 'center',
+                width: '25vh'
+              }}
+            >
               <Input
-                style={{ width: '20vh' }}
+                style={{ width: '25vh', textAlign: 'center' }}
                 type="text"
                 value={roomName}
                 onChange={(e) => setRoomName(e.target.value)}
                 className={LCStyles.roomNameInput}
+                placeholder='Введите название комнаты'
               />
             </FormControl>
-            <div className={LSCGStyle.Buttons}>
-              <motion.button
-                type="button"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={isSelecting ? handleSaveRoom : handleSelectClick} // Изменяем действие в зависимости от состояния
-                className={isSelecting ? LSCGStyle.saveButton : LSCGStyle.selectButton} // Динамически меняем стили
-              >
-                {isSelecting ? "Сохранить комнату" : "Назначить комнату"} {/* Динамически меняем текст */}
-              </motion.button>
-
-              {errorMessage && <div className={LCStyles.errorMessage}>{errorMessage}</div>}
-            </div>
-          </div>
-        </div> 
+          </motion.div>
+        )}
+      </div>
     </motion.div>
   );
 });

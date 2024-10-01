@@ -178,7 +178,6 @@ const Floor: FC<FloorProps> = memo(({ children, droppedCameras, activeFloor, nav
                       {camera && (
                         <div
                           className={GStyles.cameraIcon}
-                          draggable
                           onDragStart={(e) => handleDragStart(e, camera)}
                           onDoubleClick={() => handleDoubleClick(camera)}
                           id={cameraId}
@@ -197,7 +196,6 @@ const Floor: FC<FloorProps> = memo(({ children, droppedCameras, activeFloor, nav
                       {svg && (
                         <div
                           className={GStyles.svgIcon}
-                          draggable
                           onDragStart={(e) => handleDragStart(e, svg)}
                           title={svg.name}
                           onContextMenu={(e) => displayMenu(e, '', cellKey)}
