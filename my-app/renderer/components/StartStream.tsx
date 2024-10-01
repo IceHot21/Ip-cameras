@@ -29,7 +29,7 @@ interface Prediction {
   item_predict: string;
   score_predict: string;
   date: string;
-  bbox: number[];
+  bbox: string;
 }
 
 const StartStream: FC<StartStreamProps> = ({ port, rtspUrl, id, cameraName, setCam, onClose, isPredictions, navigate}) => {
@@ -128,15 +128,18 @@ const StartStream: FC<StartStreamProps> = ({ port, rtspUrl, id, cameraName, setC
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     if(isPredictions == null) return
     if (Number(isPredictions.camera_port) == port) {
-        const [x, y, width, height] = isPredictions.bbox;
-        ctx.strokeStyle = 'red';
-        ctx.lineWidth = 2;
-        ctx.strokeRect(x, y, width, height);
-
-        ctx.fillStyle = 'red';
-        ctx.font = '16px Arial';
-        ctx.fillText(`${isPredictions.item_predict} (${isPredictions.score_predict.slice(0, 4)})`, x, y - 5);
-    };
+      console.log(isPredictions);
+      const bboxArray = isPredictions.bbox.split(',').map(Number);
+      const [x, y, width, height] = bboxArray;
+    
+      ctx.strokeStyle = 'red';
+      ctx.lineWidth = 2;
+      ctx.strokeRect(x, y, width, height);
+    
+      ctx.fillStyle = 'red';
+      ctx.font = '16px Arial';
+      ctx.fillText(`${isPredictions.item_predict} (${isPredictions.score_predict.slice(0, 4)})`, x, y - 5);
+    }
   }, [isPredictions, port, id]);
 
 
