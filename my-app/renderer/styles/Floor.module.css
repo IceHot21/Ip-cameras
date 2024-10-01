@@ -133,4 +133,16 @@
   transition: opacity 500ms, transform 500ms;
 }
 
+.container div input {
+  position: relative;
+  z-index: 99999;
+}
+
+.inputCoordinatesContainer {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  align-items: center;
+}
+
 

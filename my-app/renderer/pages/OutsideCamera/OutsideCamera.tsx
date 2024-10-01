@@ -54,6 +54,16 @@ const OutsideCamera: FC<OutsideProps> = ({ navigate }) => {
     const [isSelecting, setIsSelecting] = useState(false);
     const [selectedCells, setSelectedCells] = useState<number[][]>([]);
     const [isPredictions, setIsPredictions] = useState<Prediction | null>(null)
+    const [width, setWidth] = useState("928px");
+    const [height, setHeight] = useState("690px");
+    const [coordinates, setCoordinates] = useState("59.850491,30.305657");
+
+        
+
+    const [handleParametrEditing, setHandleParametrEditing] = useState("grid");
+
+
+
 
     useEffect(() => {
         const storedCameras = localStorage.getItem('droppedCameras');
@@ -64,6 +74,8 @@ const OutsideCamera: FC<OutsideProps> = ({ navigate }) => {
         if (storedSVGs) {
             setDroppedSVGs(JSON.parse(storedSVGs));
         }
+        const storedCoordinates = localStorage.getItem('Coordinates');
+        setCoordinates(storedCoordinates || "59.850491,30.305657");
     }, []);
 
     useEffect(() => {
@@ -122,6 +134,10 @@ const OutsideCamera: FC<OutsideProps> = ({ navigate }) => {
         setIsModalStreamOpen(true);
     }, []);
 
+    let gridContainerStyles = handleParametrEditing === 'grid'
+    ? { height: '100% !important' }
+    : { zIndex: '-1' };
+
     return (
         <div>
             <div className={OStyles.listContainer}>
@@ -144,6 +160,8 @@ const OutsideCamera: FC<OutsideProps> = ({ navigate }) => {
                     onDoubleClickCamera={handleDoubleClickCamera}
                     movedCameras={movedCameras}
                     droppedCameras={droppedCameras}
+                    handleParametrEditing={handleParametrEditing}
+                    setHandleParametrEditing={setHandleParametrEditing}
                 />
             )}
             <div className={OStyles.OutsideContainer}>
@@ -159,12 +177,17 @@ const OutsideCamera: FC<OutsideProps> = ({ navigate }) => {
                             rotationAngles={rotationAngles}
                             setRotationAngles={setRotationAngles}
                             isActive={true}
+                            width={width}
+                            height={height}
+                            coordinates={coordinates}
+                            handleParametrEditing={handleParametrEditing}
+                            setCoordinates={setCoordinates}
                         />
                     </div>
 
                 </div>
                 {isEditing && (
-                    <div className={OStyles.gridContainer}>
+                    <div className={OStyles.gridContainer} style={gridContainerStyles}>
                         <Grid
                             navigate={navigate}
                             isSelecting={isSelecting}

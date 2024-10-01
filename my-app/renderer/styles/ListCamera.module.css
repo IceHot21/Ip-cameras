@@ -7,17 +7,18 @@
   z-index: 1000;
   overflow-y: auto;
   transition: transform 0.3s ease-in-out;
-  transform: translateX(0); /* Измените на translateX(100%) для скрытия панели */
+  transform: translateX(0);
+  /* Измените на translateX(100%) для скрытия панели */
   margin-top: 8%;
 }
 
-.cccccc{
+.cccccc {
   height: 40px;
   width: 23px;
   text-align: center;
 }
 
-.closeButton{
+.closeButton {
   background: none;
   border: none;
   font-size: 35px;
@@ -26,7 +27,8 @@
   justify-content: center;
   align-items: center;
 }
-.refreshButton, 
+
+.refreshButton,
 .plusButton {
   background: none;
   border: none;
@@ -84,7 +86,7 @@
   padding-right: 2px;
 }
 
-.buttonContainer button:hover{
+.buttonContainer button:hover {
   transform: scale(1.1);
 }
 
@@ -109,25 +111,37 @@
   max-width: 800px;
 }
 
-.tableBody tr{
-  cursor:pointer;
+.tableBody tr {
+  cursor: pointer;
 }
 
-.tableBody .cameraId:hover{
+.tableBody .cameraId:hover {
   transform: scale(1.1);
 }
 
 .disabledRow {
-  opacity: 0.5; 
-  pointer-events: none; 
-  cursor: not-allowed; 
+  opacity: 0.5;
+  pointer-events: none;
+  cursor: not-allowed;
 }
 
 .disabledRow.isDisabled {
-  background-color: #ccc; 
+  background-color: #ccc;
 }
 
 .disabledRow {
-  opacity: 0.5; /* Пример стилизации: делает строку полупрозрачной */
-  pointer-events: none; /* Отключает возможность взаимодействия */
+  opacity: 0.5;
+  /* Пример стилизации: делает строку полупрозрачной */
+  pointer-events: none;
+  /* Отключает возможность взаимодействия */
+}
+
+.buttonListCameraContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.buttonListCameraContainer button {
+  margin-bottom: 10px;
 }

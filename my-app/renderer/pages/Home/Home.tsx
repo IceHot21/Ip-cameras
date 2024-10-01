@@ -13,6 +13,7 @@ import Floor from '../../components/Floor'; // Импортируем компо
 import { fetchWithRetry } from "../../refreshToken";
 import { formatDistanceToNow, format } from 'date-fns';
 import { ru } from 'date-fns/locale';
+import YandexMap from "../../components/YandexMap";
 
 interface HomeProps {
   numberHome: number;
@@ -68,6 +69,9 @@ const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
   const [ws, setWs] = useState<WebSocket | null>(null);
   const [selectedFloor, setSelectedFloor] = useState<number | null>(null);
   const [activeTab, setActiveTab] = useState<'inside' | 'outside'>('inside');
+  const [width, setWidth] = useState("928px");
+  const [height, setHeight] = useState("690px");
+  const [coordinates, setCoordinates] = useState("59.850491,30.305657");
 
   const floorProps = useMemo(() => ({
     navigate,
@@ -328,7 +332,8 @@ const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
           )}
           {activeTab === 'outside' && (
             <div className={HStyles.planOutside}>
-              <SVG className={HStyles.outSide} />
+              {/* <SVG className={HStyles.outSide} /> */}
+              <YandexMap width={width} height={height} coordinates={coordinates} />
               <span className={HStyles.cameraLabel}>Уличные камеры</span>
             </div>
           )}

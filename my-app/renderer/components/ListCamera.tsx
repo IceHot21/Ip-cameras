@@ -14,6 +14,8 @@ interface ListCameraProps {
   onDoubleClickCamera: (camera: Camera) => void;
   movedCameras: Set<number>;
   droppedCameras: { [key: string]: Camera };
+  handleParametrEditing: string;
+  setHandleParametrEditing: React.Dispatch<React.SetStateAction<string>>;
 }
 
 interface Camera {
@@ -36,6 +38,8 @@ const ListCamera: FC<ListCameraProps> = memo(({
   onDoubleClickCamera,
   movedCameras,
   droppedCameras,
+  handleParametrEditing,
+  setHandleParametrEditing
 }) => {
   const [cameras, setCameras] = useState<Camera[]>([]);
   const [loading, setLoading] = useState(true);
@@ -69,7 +73,7 @@ const ListCamera: FC<ListCameraProps> = memo(({
       console.log(response)
       console.log(droppedCameras);
       if (response.length > 0) {
-            // Преобразуем объект droppedCameras в массив
+        // Преобразуем объект droppedCameras в массив
         const droppedCamerasArray = Object.values(droppedCameras);
         // Получаем камеры из localStorage
         // Добавляем флаг isDisabled для камер, которые есть в localStorage
@@ -107,15 +111,23 @@ const ListCamera: FC<ListCameraProps> = memo(({
     setIsAddingCamera(!isAddingCamera);
   };
 
+  const editingParametrToggler = () => {
+    if (handleParametrEditing === 'grid') {
+      setHandleParametrEditing('map')
+    } else {
+      setHandleParametrEditing('grid')
+    }
+  }
+
   if (!open) return null;
 
   return (
     <motion.div className={LCStyles.sidebar}
-        style={{height: '100% !important'}}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0 }}
-        transition={{ duration: 0.7 }}>
+      style={{ height: '100% !important' }}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.7 }}>
       <div className={LCStyles.buttonContainer}>
         <button onClick={onClose} className={LCStyles.closeButton} title="Закрыть"><BiX /></button>
         <div style={{ display: 'flex' }}>
@@ -168,7 +180,13 @@ const ListCamera: FC<ListCameraProps> = memo(({
             </tbody>
           </table>
         </div>
+
       )}
+      <div className={LCStyles.buttonListCameraContainer}>
+        <button onClick={editingParametrToggler} className={LCStyles.addCameraButton}>
+          {handleParametrEditing === 'grid' ? 'Редактировать координаты' : 'Редактировать расположение камер'}
+        </button>
+      </div>
     </motion.div>
   );
 });

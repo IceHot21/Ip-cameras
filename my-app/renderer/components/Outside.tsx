@@ -5,6 +5,7 @@ import { useContextMenu, ItemParams, Menu, Item } from 'react-contexify';
 import "react-contexify/dist/ReactContexify.css";
 import { BsFillCameraVideoFill } from 'react-icons/bs';
 import SVGOUT from '../assets/SVGOUT.svg';
+import YandexMap from './YandexMap';
 
 interface Camera {
     id: number;
@@ -31,9 +32,14 @@ type OutsideProps = {
     rotationAngles: { [key: string]: number };
     setRotationAngles: React.Dispatch<React.SetStateAction<{ [key: string]: number }>>;
     isActive: boolean;
+    width: string;
+    height: string;
+    coordinates: string;
+    handleParametrEditing: string;
+    setCoordinates: React.Dispatch<React.SetStateAction<string>>;
 };
 
-const Outside: FC<OutsideProps> = ({ children, droppedCameras, navigate, onDoubleClickCamera, FlagLocal, rotationAngles, setRotationAngles, isActive }) => {
+const Outside: FC<OutsideProps> = ({ children, droppedCameras, navigate, onDoubleClickCamera, FlagLocal, rotationAngles, setRotationAngles, isActive, width, height, coordinates, handleParametrEditing, setCoordinates }) => {
     const [selectedCameras, setSelectedCameras] = useState<Camera[]>([]);
     const menuClick = "Меню";
     const { show } = useContextMenu({ id: menuClick });
@@ -145,12 +151,40 @@ const Outside: FC<OutsideProps> = ({ children, droppedCameras, navigate, onDoubl
         }
     }, [droppedCameras]);
 
+    const handleWidthChange = (e) => {
+        const newWidth = e.target.value;
+        const [lat, lng] = coordinates.split(',');
+        const newCoordinates = `${newWidth},${lng}`;
+        setCoordinates(newCoordinates);
+        localStorage.setItem('Coordinates', newCoordinates);
+    };
+
+    const handleHeightChange = (e) => {
+        const newHeight = e.target.value;
+        const [lat, lng] = coordinates.split(',');
+        const newCoordinates = `${lat},${newHeight}`;
+        setCoordinates(newCoordinates);
+        localStorage.setItem('Coordinates', newCoordinates);
+    };
+
+
+
     return (
         <div className={RStyles.body}>
             <div className={RStyles.container}>
                 <div>
-                    <SVGOUT className={RStyles.fonContainer} />
-                    <div className={RStyles.gridContainer} style={{ height: '100% !important' }}>
+                    {/* <SVGOUT className={RStyles.fonContainer} /> */}
+                    <YandexMap width={width} height={height} coordinates={coordinates} handleParametrEditing={handleParametrEditing} />
+                    {handleParametrEditing === 'map' && (
+                        <div className={RStyles.inputCoordinatesContainer}>
+                            <h4>Координаты высоты:</h4>
+                            <input type='number' value={coordinates.split(',')[0]} onChange={handleWidthChange} />
+                            <h4>Координаты ширины:</h4>
+                            <input type='number' value={coordinates.split(',')[1]} onChange={handleHeightChange}/>
+                        </div>
+                    )}
+
+                    <div className={RStyles.gridContainer}>
                         <div className={GStyles.grid}>
                             {Array.from({ length: 15 }).map((_, rowIndex) =>
                                 Array.from({ length: 20 }).map((_, colIndex) => {
