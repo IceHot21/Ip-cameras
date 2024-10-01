@@ -307,6 +307,7 @@ const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
         const handleDoubleClick = async () => {
           try {
             const response = await fetchWithRetry(`https://192.168.0.136:4200/prediction/screens/${event.date}`, 'GET', null, '/Home/Home');
+            debugger
             if (response.ok) {
               const blob = await response.blob();
               const url = window.URL.createObjectURL(blob);
@@ -319,13 +320,26 @@ const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
           }
         };
 
+        function getTranslatedEventString(event) {
+          const translations = {
+              "person": "человек",
+              "tv": "экран",
+              "suitcase": "чемодан"
+          };
+      
+          const translatedItem = translations[event.item_predict] || event.item_predict;
+          const probability = (Number(event.score_predict.slice(0, 6)) * 100).toFixed(2);
+      
+          return `Обнаружен ${translatedItem} с вероятностью ${probability}%`;
+      }
+
         return (
           <tr key={index} onDoubleClick={handleDoubleClick}>
             <td>{eventDate}</td>
             <td>Здание №1</td>
             <td>Этаж {Number(roomInfo.activeFloor) + 1}</td>
             <td>{roomInfo.roomName}</td>
-            <td>Обнаружен {event.item_predict} с вероятностью {(Number(event.score_predict.slice(0, 6)) * 100).toFixed(2)}%</td>
+            {getTranslatedEventString(event)}
           </tr>
         );
       });
