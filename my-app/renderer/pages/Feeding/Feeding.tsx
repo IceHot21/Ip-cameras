@@ -83,7 +83,6 @@ const Feeding: FC<FeedingProps> = ({ navigate }) => {
       const reader = new FileReader();
       reader.onload = () => {
         const predictions = JSON.parse(reader.result as string);
-        console.log(predictions);
         setIsPredictions(predictions);
       };
       reader.readAsText(event.data);
