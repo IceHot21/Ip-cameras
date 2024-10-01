@@ -215,7 +215,7 @@ const Feeding: FC<FeedingProps> = ({ navigate }) => {
         onSVGDrop={handleSVGDrop}
         floorIndex={activeFloor}
         isActive={true}
-        // isPredictions={isPredictions}
+        isPredictions={isPredictions}
         setDroppedSVGs={setDroppedSVGs}
         setDroppedCameras={setDroppedCameras}
       />
@@ -245,7 +245,7 @@ const Feeding: FC<FeedingProps> = ({ navigate }) => {
             onSVGDrop={handleSVGDrop}
             floorIndex={floorIndex}
             isActive={floorIndex === activeFloor}
-            // isPredictions={isPredictions} 
+            isPredictions={isPredictions} 
             setDroppedSVGs={setDroppedSVGs}
             setDroppedCameras={setDroppedCameras}
           />
@@ -305,6 +305,8 @@ const Feeding: FC<FeedingProps> = ({ navigate }) => {
           onDoubleClickCamera={handleDoubleClickCamera}
           movedCameras={movedCameras}
           droppedCameras={memoizedDroppedCameras}
+          handleParametrEditing={''}
+          setHandleParametrEditing={null}
         />
       )}
       {isListSVGOpen && (
