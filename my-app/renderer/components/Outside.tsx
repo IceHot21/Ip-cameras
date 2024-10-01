@@ -212,7 +212,7 @@ const Outside: FC<OutsideProps> = ({ children, droppedCameras, navigate, onDoubl
                                                     title={cameraId}
                                                     onContextMenu={(e) => displayMenu(e, cameraId)}
                                                 >
-                                                    <BsFillCameraVideoFill style={{ transform: `rotate(${rotationAngle}deg)`, height: '50%', width: '100%' }} />
+                                                    <BsFillCameraVideoFill style={{ transform: `rotate(${rotationAngle}deg)`, height: '50%', width: '100%', zIndex: 999999 }} />
                                                     <div
                                                         className={RStyles.cameraViewSector}
                                                         style={{
