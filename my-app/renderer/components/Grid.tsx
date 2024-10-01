@@ -128,35 +128,40 @@ const Grid: FC<GridProps> = ({
     const cameraId = props.cameraId;
     const svgKey = props.svgKey;
 
-    setRotationAngles((prevAngles) => {
-      const newAngle = id === "rotateLeft" ? (prevAngles[cameraId] || 0) - 45 : (prevAngles[cameraId] || 0) + 45;
-      const cameraKey = Object.keys(droppedCameras).find(key => `Камера ${droppedCameras[key].name.split(/[^a-zA-Z0-9]/)[0]}` === cameraId);
-      if (cameraKey) {
-        const updatedCamera = {
-          ...droppedCameras[cameraKey],
-          rotationAngle: newAngle,
+    if (id === "rotateLeft" || id === "rotateRight") {
+      setRotationAngles((prevAngles) => {
+        const newAngle = id === "rotateLeft" ? (prevAngles[cameraId] || 0) - 45 : (prevAngles[cameraId] || 0) + 45;
+        const cameraKey = Object.keys(droppedCameras).find(key => `Камера ${droppedCameras[key].name.split(/[^a-zA-Z0-9]/)[0]}` === cameraId);
+        if (cameraKey) {
+          const updatedCamera = {
+            ...droppedCameras[cameraKey],
+            rotationAngle: newAngle,
+          };
+          const updatedDroppedCameras = {
+            ...droppedCameras,
+            [cameraKey]: updatedCamera,
+          };
+          localStorage.setItem('droppedCameras', JSON.stringify(updatedDroppedCameras));
+        }
+        return {
+          ...prevAngles,
+          [cameraId]: newAngle,
         };
-        const updatedDroppedCameras = {
-          ...droppedCameras,
-          [cameraKey]: updatedCamera,
-        };
-        localStorage.setItem('droppedCameras', JSON.stringify(updatedDroppedCameras));
+      }); 
+    }
+    if (id === "deleteSVG") {
+      if (cameraId === "")
+      {
+        const newDroppedSVGs = { ...droppedSVGs };
+        delete newDroppedSVGs[svgKey];
+        setDroppedSVGs(newDroppedSVGs);
+        localStorage.setItem('droppedSVGs', JSON.stringify(newDroppedSVGs));
+      } else {
+        const newDroppedCameras = { ...droppedCameras };
+        delete newDroppedCameras[svgKey];
+        setDroppedCameras(newDroppedCameras);
+        localStorage.setItem('droppedCameras', JSON.stringify(newDroppedCameras));
       }
-      return {
-        ...prevAngles,
-        [cameraId]: newAngle,
-      };
-    });
-    if (id === "deleteSVG" && cameraId === "" ) {
-      const newDroppedSVGs = { ...droppedSVGs };
-      delete newDroppedSVGs[svgKey];
-      setDroppedSVGs(newDroppedSVGs);
-      localStorage.setItem('droppedSVGs', JSON.stringify(newDroppedSVGs));
-    } else {
-      const newDroppedCameras = { ...droppedCameras };
-      delete newDroppedCameras[svgKey];
-      setDroppedCameras(newDroppedCameras);
-      localStorage.setItem('droppedCameras', JSON.stringify(newDroppedCameras));
     }
   }, [setRotationAngles, droppedCameras, droppedSVGs, setDroppedSVGs]);
 
@@ -313,7 +318,7 @@ const Grid: FC<GridProps> = ({
       
       <Menu className={GStyles.menuContainer} id={menuClick} //@ts-ignore 
       onClose={handleMenuClose} >
-        <Item className={GStyles.menuItem} id='rotateRigth' onClick={handleItemClick}>Поворот вправо</Item>
+        <Item className={GStyles.menuItem} id='rotateRight' onClick={handleItemClick}>Поворот вправо</Item>
         <Item className={GStyles.menuItem} id='rotateLeft' onClick={handleItemClick}>Поворот влево</Item>
         <Separator />
         <Item id="deleteSVG" onClick={handleItemClick}>Удалить элемент</Item>
