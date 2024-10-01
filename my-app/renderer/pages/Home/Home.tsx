@@ -129,11 +129,28 @@ const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
     return null;
   }
 
+  function replaceEnglishWords(initialPredictions) {
+    const translations = {
+        "person": "человек",
+        "tv": "экран",
+        "suitcase": "чемодан"
+    };
+
+    return initialPredictions.map(item => {
+        if (item.item_predict && translations[item.item_predict]) {
+            item.item_predict = translations[item.item_predict];
+        }
+        return item;
+    });
+}
+
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await fetchWithRetry('https://192.168.0.136:4200/prediction/eventlist', 'GET', null, '/Home/Home');
         const initialPredictions = response.slice(0, 100); // Загружаем первые 100 предиктов
+        
+        replaceEnglishWords(initialPredictions)
         setPredictions(initialPredictions);
 
         // Найти все уникальные camera_port
@@ -290,6 +307,7 @@ const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
         const handleDoubleClick = async () => {
           try {
             const response = await fetchWithRetry(`https://192.168.0.136:4200/prediction/screens/${event.date}`, 'GET', null, '/Home/Home');
+            debugger
             if (response.ok) {
               const blob = await response.blob();
               const url = window.URL.createObjectURL(blob);
@@ -302,13 +320,28 @@ const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
           }
         };
 
+        function getTranslatedEventString(event) {
+          const translations = {
+              "person": "человек",
+              "tv": "экран",
+              "suitcase": "чемодан",
+              'chair': 'стул',
+              'dining table': 'рабочее место',
+          };
+      
+          const translatedItem = translations[event.item_predict] || event.item_predict;
+          const probability = (Number(event.score_predict.slice(0, 6)) * 100).toFixed(2);
+      
+          return `Обнаружен ${translatedItem} с вероятностью ${probability}%`;
+      }
+
         return (
           <tr key={index} onDoubleClick={handleDoubleClick}>
             <td>{eventDate}</td>
             <td>Здание №1</td>
             <td>Этаж {Number(roomInfo.activeFloor) + 1}</td>
             <td>{roomInfo.roomName}</td>
-            <td>Обнаружен {event.item_predict} с вероятностью {(Number(event.score_predict.slice(0, 6)) * 100).toFixed(2)}%</td>
+            <td>{getTranslatedEventString(event)}</td>
           </tr>
         );
       });

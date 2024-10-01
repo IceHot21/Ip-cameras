@@ -7,9 +7,10 @@
     z-index: 1000;
     transition: transform 0.3s ease-in-out;
     transform: translateX(0);
-    /* Измените на translateX(100%) для скрытия панели */
+    display: flex;
+    flex-direction: column;
     margin-top: 8%;
-    height: 45vh;
+    height: 26vh;
 }
 
 .tableContainer::-webkit-scrollbar {
@@ -40,9 +41,10 @@
 
 .Buttons {
     display: flex;
-    gap: 1vh;
-    align-items: flex-end;
+    height: 100%;
+    width: 100%;
     justify-content: center;
+
 }
 
 .selectButton,
@@ -56,8 +58,7 @@
     color: white;
     cursor: pointer;
     transition: all 0.3s ease;
-    margin-bottom: 10px;
-    font-size: 12px;
+    font-size: 13px;
 }
 
 .selectButton:hover {
@@ -70,12 +71,12 @@
 
 .roomSelectionContainer {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     justify-content: center;
     width: 100%;
-    gap: 1vh;
     bottom: 0;
     left: 0;
+    align-items: center;
     position: sticky;
 }
 
@@ -84,6 +85,7 @@
     border: 1px solid #ddd;
     padding: 8px;
     text-align: center;
+    width: 4vh;
 }
 
 .tdContainer{
@@ -105,9 +107,29 @@
 
 .tableContainer {
     padding: 0 20px;
-    width: 44vh;
+    width: 30vh;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     overflow: auto;
-    height: 35vh;
+    height: 26vh;
+    align-items: flex-start;
+    justify-content: center;
+    text-align: center;
+}
+
+.tableRow{
+    padding: 0 1vh;
+}
+
+.collapsible span{
+    font-size: 1.6vh;
+    padding: 1vh;
+}
+
+.tableContainer svg{
+    cursor: grab ;
+}
+
+.tableContainer svg:active{
+    cursor: grabbing ;
 }
