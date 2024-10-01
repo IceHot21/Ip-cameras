@@ -15,6 +15,8 @@ import { formatDistanceToNow, format } from 'date-fns';
 import { ru } from 'date-fns/locale';
 import YandexMap from "../../components/YandexMap";
 import ModalWindow from "../../components/ModalWindow";
+import axios from "axios";
+import { saveAs } from 'file-saver';
 
 interface HomeProps {
   numberHome: number;
@@ -303,23 +305,26 @@ const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
         const roomInfo = roomInfoMap[event.camera_port] || { activeFloor: 'Неизвестно', roomName: 'Неизвестно' };
         //@ts-ignore
         const eventDate = formatTime(event.date); // Преобразуем миллисекунды в объект Date
-
+  
         const handleDoubleClick = async () => {
           try {
-            const response = await fetchWithRetry(`https://192.168.0.136:4200/prediction/screens/${event.date}`, 'GET', null, '/Home/Home');
-            debugger
-            if (response.ok) {
-              const blob = await response.blob();
-              const url = window.URL.createObjectURL(blob);
-              openModal(url);
-            } else {
-              console.error('Failed to download file');
-            }
+            // const response = await fetchWithRetry(`https://192.168.0.136:4200/prediction/screens/${event.date}`, 'GET', null, '/Home/Home');
+            const response = await axios.get(`https://192.168.0.136:4200/prediction/screens/${event.date}`, {
+              responseType: 'blob',
+              withCredentials: true,
+          });
+          const blob = new Blob([response.data]);
+          const imageUrl = URL.createObjectURL(blob);
+              // saveAs(blob, `frame-${event.date}.png`);
+              // openModal(response); // Передаем URL в модальное окно
+              console.log('File downloaded successfully', response);
+              openModal(imageUrl);
+
           } catch (error) {
             console.error('Error downloading file:', error);
           }
         };
-
+  
         function getTranslatedEventString(event) {
           const translations = {
               "person": "человек",
@@ -331,15 +336,15 @@ const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
           const probability = (Number(event.score_predict.slice(0, 6)) * 100).toFixed(2);
       
           return `Обнаружен ${translatedItem} с вероятностью ${probability}%`;
-      }
-
+        }
+  
         return (
-          <tr key={index} onDoubleClick={handleDoubleClick}>
+          <tr key={index}>
             <td>{eventDate}</td>
             <td>Здание №1</td>
             <td>Этаж {Number(roomInfo.activeFloor) + 1}</td>
             <td>{roomInfo.roomName}</td>
-            {getTranslatedEventString(event)}
+            <td onDoubleClick={handleDoubleClick} style={{ cursor: 'pointer' }}>{getTranslatedEventString(event)}</td>
           </tr>
         );
       });
