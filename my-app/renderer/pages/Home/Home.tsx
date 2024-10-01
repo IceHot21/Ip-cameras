@@ -14,6 +14,7 @@ import { fetchWithRetry } from "../../refreshToken";
 import { formatDistanceToNow, format } from 'date-fns';
 import { ru } from 'date-fns/locale';
 import YandexMap from "../../components/YandexMap";
+import ModalWindow from "../../components/ModalWindow";
 
 interface HomeProps {
   numberHome: number;
@@ -72,6 +73,8 @@ const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
   const [width, setWidth] = useState("928px");
   const [height, setHeight] = useState("690px");
   const [coordinates, setCoordinates] = useState("59.850491,30.305657");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalImageUrl, setModalImageUrl] = useState('');
 
   const floorProps = useMemo(() => ({
     navigate,
@@ -266,6 +269,16 @@ const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
     return `${day}.${month}.${year} ${hours}:${minutes}:${seconds}`;
   };
 
+  const openModal = (imageUrl: string) => {
+    setModalImageUrl(imageUrl);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setModalImageUrl('');
+  };
+
   const renderTableRows = () => {
     return predictions
       .filter(event => selectedFloor === null || roomInfoMap[event.camera_port]?.activeFloor === selectedFloor)
@@ -274,8 +287,23 @@ const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
         //@ts-ignore
         const eventDate = formatTime(event.date); // Преобразуем миллисекунды в объект Date
 
+        const handleDoubleClick = async () => {
+          try {
+            const response = await fetchWithRetry(`https://192.168.0.136:4200/prediction/screens/${event.date}`, 'GET', null, '/Home/Home');
+            if (response.ok) {
+              const blob = await response.blob();
+              const url = window.URL.createObjectURL(blob);
+              openModal(url);
+            } else {
+              console.error('Failed to download file');
+            }
+          } catch (error) {
+            console.error('Error downloading file:', error);
+          }
+        };
+
         return (
-          <tr key={index}>
+          <tr key={index} onDoubleClick={handleDoubleClick}>
             <td>{eventDate}</td>
             <td>Здание №1</td>
             <td>Этаж {Number(roomInfo.activeFloor) + 1}</td>
@@ -317,7 +345,9 @@ const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
           {activeTab === 'inside' && (
             <div className={HStyles.planInside}>
               <div className={HStyles.plan}>
-                <MemoizedFloor {...floorProps} />
+                <MemoizedFloor setDroppedCameras={function (value: React.SetStateAction<{ [key: string]: Camera; }>): void {
+                  throw new Error("Function not implemented.");
+                } } {...floorProps} />
               </div>
               <span className={HStyles.cameraLabel}>
                 <button className={HStyles.prevFloor} onClick={prevFloor}>
@@ -333,7 +363,7 @@ const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
           {activeTab === 'outside' && (
             <div className={HStyles.planOutside}>
               {/* <SVG className={HStyles.outSide} /> */}
-              <YandexMap width={width} height={height} coordinates={coordinates} />
+              <YandexMap width={width} height={height} coordinates={coordinates} handleParametrEditing={undefined} />
               <span className={HStyles.cameraLabel}>Уличные камеры</span>
             </div>
           )}
@@ -418,6 +448,7 @@ const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
           
         </div>
       </div>
+      <ModalWindow isOpen={isModalOpen} onClose={closeModal} imageUrl={modalImageUrl} />
     </div>
   );
 };

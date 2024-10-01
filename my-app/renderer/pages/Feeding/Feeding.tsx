@@ -304,8 +304,9 @@ const Feeding: FC<FeedingProps> = ({ navigate }) => {
           FlagLocal={memoizedFlagLocalToggle}
           onDoubleClickCamera={handleDoubleClickCamera}
           movedCameras={movedCameras}
-          droppedCameras={memoizedDroppedCameras}
-        />
+          droppedCameras={memoizedDroppedCameras} handleParametrEditing={''} setHandleParametrEditing={function (value: React.SetStateAction<string>): void {
+            throw new Error('Function not implemented.');
+          } }        />
       )}
       {isListSVGOpen && (
         <MemoizedListSVG
