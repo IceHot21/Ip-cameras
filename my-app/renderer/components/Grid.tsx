@@ -43,6 +43,7 @@ interface GridProps {
   setDroppedCameras: React.Dispatch<React.SetStateAction<{ [key: string]: Camera }>>;
 }
 
+
 const Grid: FC<GridProps> = ({
   navigate,
   onCameraDrop,
@@ -65,6 +66,7 @@ const Grid: FC<GridProps> = ({
   const [roomNames, setRoomNames] = useState<{ [key: string]: string }>({});
   const menuClick = "Меню";
   const { show } = useContextMenu({ id: menuClick });
+  const [zIndex, setZIndex] = useState('auto');
 
   useEffect(() => {
     if (selectedCameras) {
@@ -114,16 +116,38 @@ const Grid: FC<GridProps> = ({
 
   const displayMenu = useCallback((e: React.MouseEvent<HTMLDivElement>, cameraId: string, svgKey?: string) => {
     e.preventDefault();
+    setZIndex('1');
     show({ event: e, props: { cameraId, svgKey } });
   }, [show]);
+
+  const handleMenuClose = useCallback(() => {
+    setZIndex('auto'); // Возвращаем z-index в auto при закрытии меню
+  }, []);
 
   const handleItemClick = useCallback(({ id, event, props }: ItemParams<any, any>) => {
     const cameraId = props.cameraId;
     const svgKey = props.svgKey;
 
-    if (id === "rotateLeft" || id === "rotateRight") {
-      setRotationAngles((prevAngles) => ({ ...prevAngles, [cameraId]: id === "rotateLeft" ? (prevAngles[cameraId] || 0) - 45 : (prevAngles[cameraId] || 0) + 45, }));
-    } else if (id === "deleteSVG") {
+    setRotationAngles((prevAngles) => {
+      const newAngle = id === "rotateLeft" ? (prevAngles[cameraId] || 0) - 45 : (prevAngles[cameraId] || 0) + 45;
+      const cameraKey = Object.keys(droppedCameras).find(key => `Камера ${droppedCameras[key].name.split(/[^a-zA-Z0-9]/)[0]}` === cameraId);
+      if (cameraKey) {
+        const updatedCamera = {
+          ...droppedCameras[cameraKey],
+          rotationAngle: newAngle,
+        };
+        const updatedDroppedCameras = {
+          ...droppedCameras,
+          [cameraKey]: updatedCamera,
+        };
+        localStorage.setItem('droppedCameras', JSON.stringify(updatedDroppedCameras));
+      }
+      return {
+        ...prevAngles,
+        [cameraId]: newAngle,
+      };
+    });
+    if (id === "deleteSVG") {
       const newDroppedSVGs = { ...droppedSVGs };
       delete newDroppedSVGs[svgKey];
       setDroppedSVGs(newDroppedSVGs);
@@ -253,6 +277,17 @@ const Grid: FC<GridProps> = ({
                     <BsFillCameraVideoFill style={{ transform: `rotate(${rotationAngle}deg)` }} />
                   </div>
                 )}
+                 {svg && (
+                        <div
+                          className={GStyles.svgIcon}
+                          draggable
+                          onDragStart={(e) => handleDragStart(e, svg)}
+                          title={svg.name}
+                          onContextMenu={(e) => displayMenu(e, '', cellKey)}
+                        >
+                          {renderSVG(svg.name)}
+                        </div>
+                      )}
                 {isSaved && roomName && (
                   <Tippy content={roomName}>
                     <div style={{ width: '100%', height: '100%' }} />
@@ -263,7 +298,9 @@ const Grid: FC<GridProps> = ({
           })
         )}
       </div>
-      <Menu className={GStyles.menuContainer} id={menuClick} >
+      
+      <Menu className={GStyles.menuContainer} id={menuClick} //@ts-ignore 
+      onClose={handleMenuClose} >
         <Item className={GStyles.menuItem} id='rotateRigth' onClick={handleItemClick}>Поворот вправо</Item>
         <Item className={GStyles.menuItem} id='rotateLeft' onClick={handleItemClick}>Поворот влево</Item>
         <Separator />

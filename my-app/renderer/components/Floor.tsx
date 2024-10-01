@@ -10,11 +10,13 @@ interface Camera {
   id: number;
   port: number;
   name: string;
-  address: string;
-  floor?: number;
-  cell?: string;
-  initialPosition?: { rowIndex: number; colIndex: number };
+  floor: number;
+  cell: string;
+  initialPosition: { rowIndex: number; colIndex: number };
   rtspUrl: string;
+  isDisabled: boolean;
+  address: string;
+  rotationAngle: number;
 }
 
 interface SVGItem {
@@ -96,22 +98,6 @@ const Floor: FC<FloorProps> = memo(({ children, droppedCameras, activeFloor, nav
     show({ event: e, props: { cameraId, svgKey } });
   }, [show]);
 
-  const handleItemClick = useCallback(({ id, event, props }: ItemParams<any, any>) => {
-    const cameraId = props.cameraId;
-    if (id === "rotateLeft" || id === "rotateRight") {
-      setRotationAngles((prevAngles) => ({
-        ...prevAngles,
-        [cameraId]: id === "rotateLeft" ? (prevAngles[cameraId] || 0) + 45 : (prevAngles[cameraId] || 0) - 45,
-      }));
-    } else if (id === "deleteSVG") {
-      const svgKey = props.svgKey;
-      let newDroppedSVGs = { ...droppedSVGs };
-      delete newDroppedSVGs[svgKey];
-      setDroppedSVGs(newDroppedSVGs);
-      localStorage.setItem('droppedSVGs', JSON.stringify(newDroppedSVGs));
-    }
-  }, [setRotationAngles, droppedSVGs]);
-
   const handleDoubleClick = useCallback((camera: Camera) => {
     if (!selectedCameras.some(c => c.id === camera.id)) {
       setSelectedCameras([camera]);
@@ -130,57 +116,37 @@ const Floor: FC<FloorProps> = memo(({ children, droppedCameras, activeFloor, nav
     e.preventDefault();
     const itemDataCamera = e.dataTransfer.getData('droppedItem');
     const itemDataSVG = e.dataTransfer.getData('svgItem');
-    
+  
     if (itemDataCamera) {
       const item: Camera = JSON.parse(itemDataCamera);
-
       if ('port' in item) {
         const camera = item as Camera;
-        const port = camera.port;
-        const cameraName = camera.name;
-        const ipAddress = camera.rtspUrl;
-        const rtspUrl = `rtsp://admin:Dd7560848@${ipAddress}`;
         const newCellKey = `${floorIndex}-${rowIndex}-${colIndex}`;
-        const existingCameraKey = Object.keys(droppedCameras).find(key => droppedCameras[key].name === cameraName);
-
-        setDroppedCameras((prevDroppedCameras) => {
-          const updatedCameras = { ...prevDroppedCameras };
-
-          if (existingCameraKey && existingCameraKey !== newCellKey) {
-            delete updatedCameras[existingCameraKey]; // Удаляем старую ячейку
-          }
-
-          const newCamera: Camera = {
-            id: Object.keys(updatedCameras).length + 1,
-            port,
-            rtspUrl,
-            name: cameraName,
-            floor: floorIndex,
-            cell: newCellKey,
-            initialPosition: { rowIndex, colIndex },
-            address: camera.address,
-          };
-
-          updatedCameras[newCellKey] = newCamera; // Обновляем новое положение камеры
-          return updatedCameras;
-        });
+        const existingCameraKey = Object.keys(droppedCameras).find(key => droppedCameras[key].name === camera.name);
+  
+        if (existingCameraKey && existingCameraKey !== newCellKey) {
+          delete droppedCameras[existingCameraKey];
+        }
+  
+        const newCamera: Camera = {
+          ...camera,
+          cell: newCellKey,
+          initialPosition: { rowIndex, colIndex },
+          rotationAngle: rotationAngles[camera.name] || 0
+        };
+  
+        setDroppedCameras({ ...droppedCameras, [newCellKey]: newCamera });
+        localStorage.setItem('droppedCameras', JSON.stringify({ ...droppedCameras, [newCellKey]: newCamera }));
       }
     }
-
+  
     if (itemDataSVG) {
       const item: SVGItem = JSON.parse(itemDataSVG);
-      const svg = item as SVGItem;
       const newCellKey = `${floorIndex}-${rowIndex}-${colIndex}`;
-      
-      setDroppedSVGs((prevDroppedSVGs) => {
-        const updatedSVGs = { ...prevDroppedSVGs, [newCellKey]: svg };
-        localStorage.setItem('droppedSVGs', JSON.stringify(updatedSVGs));
-        return updatedSVGs;
-      });
-
-      onSVGDrop(svg, rowIndex, colIndex);
+      setDroppedSVGs({ ...droppedSVGs, [newCellKey]: item });
+      localStorage.setItem('droppedSVGs', JSON.stringify({ ...droppedSVGs, [newCellKey]: item }));
     }
-  }, [floorIndex, droppedCameras, setDroppedCameras, setDroppedSVGs, onSVGDrop]);
+  }, [floorIndex, droppedCameras, droppedSVGs, rotationAngles, setDroppedCameras, setDroppedSVGs]);
 
 
   return (
@@ -218,7 +184,7 @@ const Floor: FC<FloorProps> = memo(({ children, droppedCameras, activeFloor, nav
                           id={cameraId}
                           title={cameraId}
                         >
-                          <BsFillCameraVideoFill style={{ transform: `rotate(${rotationAngle}deg)`, height: '50%', width: '100%' }} />
+                          <BsFillCameraVideoFill style={{ transform: `rotate(${rotationAngle}deg)` }} />
                           <div
                             className={RStyles.cameraViewSector}
                             style={{
@@ -248,7 +214,7 @@ const Floor: FC<FloorProps> = memo(({ children, droppedCameras, activeFloor, nav
         </div>
         {children}
       </div>
-      {/* <Menu id={menuClick}>
+{/*       <Menu id={menuClick}>
         <Item id="rotateLeft" onClick={handleItemClick}>Повернуть влево</Item>
         <Item id="rotateRight" onClick={handleItemClick}>Повернуть вправо</Item>
         <Separator />

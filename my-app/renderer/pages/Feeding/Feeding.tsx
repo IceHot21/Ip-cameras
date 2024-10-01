@@ -10,6 +10,7 @@ import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import { useRouter } from 'next/router';
 import { ToastContainer, toast } from 'react-toastify'; // Импортируем toast и ToastContainer
 import 'react-toastify/dist/ReactToastify.css'; // Добавляем стили для уведомлений
+import { Height } from '@mui/icons-material';
 
 interface Camera {
   id: number;
@@ -60,7 +61,16 @@ const Feeding: FC<FeedingProps> = ({ navigate }) => {
   const [selectedCells, setSelectedCells] = useState<number[][]>([]);
   const [isPredictions, setIsPredictions] = useState<Prediction | null>(null)
   const [ws, setWs] = useState<WebSocket | null>(null);
+  const [zIndex, setZIndex] = useState('auto');
 
+
+  const [handleParametrEditing, setHandleParametrEditing] = useState("grid");
+  let gridContainerStyles = handleParametrEditing === 'grid'
+  ? { height: '100% !important' }
+  : { zIndex: '-1' };
+  const handleZIndex = () => {
+    setZIndex('1');
+  }
   useEffect(() => {
     const socket = new WebSocket('ws://192.168.0.136:9999');
 
@@ -124,6 +134,7 @@ const Feeding: FC<FeedingProps> = ({ navigate }) => {
 
   useEffect(() => {
     setIsEditing(isListCameraOpen || isListSVGOpen);
+    setHandleParametrEditing('grid')
   }, [isListCameraOpen, isListSVGOpen]);
 
   useEffect(() => {
@@ -244,7 +255,7 @@ const Feeding: FC<FeedingProps> = ({ navigate }) => {
   ), [activeFloor, memoizedDroppedCameras, memoizedDroppedSVGs, memoizedRotationAngles, handleCameraDrop, handleFloorChange, handleDoubleClickCamera, navigate, floors, memoizedFlagLocalToggle]);
 
   const memoizedGridContent = useMemo(() => (
-    <div className={FStyles.gridContainer}>
+    <div className={FStyles.gridContainer} style={gridContainerStyles}>
       <MemoizedGrid
         setDroppedSVGs={setDroppedSVGs}
         setDroppedCameras={setDroppedCameras}

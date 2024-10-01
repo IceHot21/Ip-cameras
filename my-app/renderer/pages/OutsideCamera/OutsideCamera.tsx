@@ -175,6 +175,7 @@ const OutsideCamera: FC<OutsideProps> = ({ navigate }) => {
                             onDoubleClickCamera={handleDoubleClickCamera}
                             FlagLocal={() => setFlagLocal(prev => !prev)}
                             rotationAngles={rotationAngles}
+                            activeFloor={null}
                             setRotationAngles={setRotationAngles}
                             isActive={true}
                             width={width}

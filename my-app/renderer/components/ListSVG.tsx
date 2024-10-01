@@ -59,7 +59,7 @@ const ListSVG: FC<ListSVGProps> = memo(({
   setIsSelecting,
   selectedCells,
   setSelectedCells,
-  activeFloor
+  activeFloor, 
 }) => {
   const [isAddingSVG, setIsAddingSVG] = useState(false);
   const [roomName, setRoomName] = useState('');
@@ -117,22 +117,22 @@ const ListSVG: FC<ListSVGProps> = memo(({
     toast.info('Пожалуйста, выберете ячейки для комнаты и дайте ей название.');
     setIsSelecting(!isSelecting);
   };
-
+  
   const handleSaveRoom = () => {
-    if (selectedCells.length === 0) { // Проверка на пустой выбор
+    if (selectedCells.length === 0) {
       toast.error('Ошибка: Нужно выбрать хотя бы одну ячейку.');
       return;
     }
-
+  
     const storedRooms = JSON.parse(localStorage.getItem('selectedRooms') || '[]');
     const allPositions = storedRooms.flatMap((room: { positions: number[][], activeFloor: number }) =>
       room.activeFloor === activeFloor ? room.positions : []
     );
-
+  
     const hasIntersection = selectedCells.some(selectedPos =>
       allPositions.some(storedPos => storedPos[0] === selectedPos[0] && storedPos[1] === selectedPos[1])
     );
-
+  
     if (hasIntersection) {
       toast.error('Ошибка: Выбранные ячейки уже заняты другой комнатой на этом этаже.');
       setRoomName('');
@@ -140,7 +140,7 @@ const ListSVG: FC<ListSVGProps> = memo(({
       setSelectedCells([]);
       return;
     }
-
+  
     const newRoom = { activeFloor, roomName, positions: selectedCells };
     const updatedRooms = [...storedRooms, newRoom];
     localStorage.setItem('selectedRooms', JSON.stringify(updatedRooms));

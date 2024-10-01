@@ -49,6 +49,7 @@
   position: absolute;
   top: 0;
   height: 100% !important;
+  z-index: auto !important;
 }
 
 @keyframes fadeIn {

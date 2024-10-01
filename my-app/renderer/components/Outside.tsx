@@ -6,6 +6,7 @@ import "react-contexify/dist/ReactContexify.css";
 import { BsFillCameraVideoFill } from 'react-icons/bs';
 import SVGOUT from '../assets/SVGOUT.svg';
 import YandexMap from './YandexMap';
+import zIndex from '@mui/material/styles/zIndex';
 
 interface Camera {
     id: number;
@@ -32,6 +33,7 @@ type OutsideProps = {
     rotationAngles: { [key: string]: number };
     setRotationAngles: React.Dispatch<React.SetStateAction<{ [key: string]: number }>>;
     isActive: boolean;
+    activeFloor: number;
     width: string;
     height: string;
     coordinates: string;
@@ -39,7 +41,7 @@ type OutsideProps = {
     setCoordinates: React.Dispatch<React.SetStateAction<string>>;
 };
 
-const Outside: FC<OutsideProps> = ({ children, droppedCameras, navigate, onDoubleClickCamera, FlagLocal, rotationAngles, setRotationAngles, isActive, width, height, coordinates, handleParametrEditing, setCoordinates }) => {
+const Outside: FC<OutsideProps> = ({ children, droppedCameras, navigate, onDoubleClickCamera, activeFloor, FlagLocal, rotationAngles, setRotationAngles, isActive, width, height, coordinates, handleParametrEditing, setCoordinates }) => {
     const [selectedCameras, setSelectedCameras] = useState<Camera[]>([]);
     const menuClick = "Меню";
     const { show } = useContextMenu({ id: menuClick });
@@ -188,7 +190,7 @@ const Outside: FC<OutsideProps> = ({ children, droppedCameras, navigate, onDoubl
                         <div className={GStyles.grid}>
                             {Array.from({ length: 15 }).map((_, rowIndex) =>
                                 Array.from({ length: 20 }).map((_, colIndex) => {
-                                    const cellKey = `${rowIndex}-${colIndex}`;
+                                    const cellKey = `${activeFloor}-${rowIndex}-${colIndex}`;
                                     const camera = droppedCameras[cellKey];
                                     const cameraId = camera ? `Камера ${camera.name}` : '';
                                     const rotationAngle = rotationAngles[cameraId] || 0;
