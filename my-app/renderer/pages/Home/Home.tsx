@@ -364,11 +364,10 @@ const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
   return (
     <div className={HStyles.homeContainer}>
       <div className={HStyles.leftContainer}>
-      
-        
-
         <div className={HStyles.carouselContainer}>
+        <div className={HStyles.carouselHeader}>
           <div className={HStyles.carouselTitle}>Выбор здания</div>
+          </div>
           <div className={HStyles.carousel}>
             {numberHome > 1 && (
               <button className={HStyles.prevButton} onClick={prevSlide}>
@@ -398,7 +397,9 @@ const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
           </div>
         </div>
         <div className={HStyles.statisticsContainer}>
+        <div className={HStyles.carouselHeader}>
           <div className={HStyles.carouselTitle1}>Статистика</div>
+          </div>
           
         </div>
       </div>

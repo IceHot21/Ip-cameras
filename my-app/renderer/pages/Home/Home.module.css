@@ -481,7 +481,6 @@
 .leftContainer {
   display: flex;
   flex-direction: column;
-  border-right: 1px solid #006c2a;
 }
 
 .planContainer {
@@ -493,21 +492,20 @@
 .carouselContainer {
   display: flex;
   align-items: center;
-  padding: 1vh;
+  border-radius: 3vh;
+  margin: 1vh;
   justify-content: center;
   flex-direction: column;
+  border: 1px solid #006c2a
 }
 
 .carouselTitle,
 .carouselTitle1 {
   padding: 1vh;
-  width: 100%;
-  border-top: 1px solid #006c2a;
-  border-bottom: 1px solid #006c2a;
   text-align: center;
-  background: #006c2a;
-  color: white;
+  color: black;
   font-size: 2vh;
+  border-bottom: 1px solid #006c2a;
 }
 
 .carouselTitle1
@@ -554,7 +552,13 @@
 }
 
 .statisticsContainer {
-  width: 100%;
-  padding: 0 !important;
+  margin: 1vh !important;
   height: 36.6vh;
+  border: 1px solid #006c2a;
+}
+
+.carouselHeader {
+  width: 100%;
+  background: #ccc;
+  border-radius: 3vh 3vh 0 0;
 }
