@@ -275,6 +275,13 @@ const Grid: FC<GridProps> = ({
                     onContextMenu={(e) => displayMenu(e, cameraId)}
                   >
                     <BsFillCameraVideoFill style={{ transform: `rotate(${rotationAngle}deg)` }} />
+                    <div
+                            className={GStyles.cameraViewSector}
+                            style={{
+                              transform: `rotate(${rotationAngle}deg)`,
+                              clipPath: `polygon(50% 50%, 100% 0%, 100% 100%)`,
+                            }}
+                          />
                   </div>
                 )}
                  {svg && (
