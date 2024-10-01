@@ -124,7 +124,8 @@ const Grid: FC<GridProps> = ({
     setZIndex('auto'); // Возвращаем z-index в auto при закрытии меню
   }, []);
 
-  const handleItemClick = useCallback(({ id, event, props }: ItemParams<any, any>) => {
+  const handleItemClick = useCallback(({ id, event, props,  }: ItemParams<any, any>) => {
+    debugger
     const cameraId = props.cameraId;
     const svgKey = props.svgKey;
 
@@ -147,11 +148,16 @@ const Grid: FC<GridProps> = ({
         [cameraId]: newAngle,
       };
     });
-    if (id === "deleteSVG") {
+    if (id === "deleteSVG" && cameraId === "" ) {
       const newDroppedSVGs = { ...droppedSVGs };
       delete newDroppedSVGs[svgKey];
       setDroppedSVGs(newDroppedSVGs);
       localStorage.setItem('droppedSVGs', JSON.stringify(newDroppedSVGs));
+    } else {
+      const newDroppedCameras = { ...droppedCameras };
+      delete newDroppedCameras[svgKey];
+      setDroppedCameras(newDroppedCameras);
+      localStorage.setItem('droppedCameras', JSON.stringify(newDroppedCameras));
     }
   }, [setRotationAngles, droppedCameras, droppedSVGs, setDroppedSVGs]);
 
@@ -272,7 +278,7 @@ const Grid: FC<GridProps> = ({
                     onDoubleClick={() => handleDoubleClick(camera)}
                     id={cameraId}
                     title={cameraId}
-                    onContextMenu={(e) => displayMenu(e, cameraId)}
+                    onContextMenu={(e) => displayMenu(e, cameraId, cellKey)}
                   >
                     <BsFillCameraVideoFill style={{ transform: `rotate(${rotationAngle}deg)` }} />
                     <div
