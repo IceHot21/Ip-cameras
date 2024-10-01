@@ -125,7 +125,6 @@ const Grid: FC<GridProps> = ({
   }, []);
 
   const handleItemClick = useCallback(({ id, event, props,  }: ItemParams<any, any>) => {
-    debugger
     const cameraId = props.cameraId;
     const svgKey = props.svgKey;
 

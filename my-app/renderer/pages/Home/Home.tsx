@@ -129,11 +129,28 @@ const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
     return null;
   }
 
+  function replaceEnglishWords(initialPredictions) {
+    const translations = {
+        "person": "человек",
+        "tv": "экран",
+        "suitcase": "чемодан"
+    };
+
+    return initialPredictions.map(item => {
+        if (item.item_predict && translations[item.item_predict]) {
+            item.item_predict = translations[item.item_predict];
+        }
+        return item;
+    });
+}
+
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await fetchWithRetry('https://192.168.0.136:4200/prediction/eventlist', 'GET', null, '/Home/Home');
         const initialPredictions = response.slice(0, 100); // Загружаем первые 100 предиктов
+        
+        replaceEnglishWords(initialPredictions)
         setPredictions(initialPredictions);
 
         // Найти все уникальные camera_port
