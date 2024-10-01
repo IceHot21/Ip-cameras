@@ -1,5 +1,5 @@
 .body {
-  width: auto !important;
+  width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -37,7 +37,6 @@
   background-color: transparent;
   border: 1px solid transparent !important;
   position: relative;
-  z-index: 100 !important;
 }
 
 .indexText {
