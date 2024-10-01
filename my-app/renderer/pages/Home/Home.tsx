@@ -324,7 +324,9 @@ const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
           const translations = {
               "person": "человек",
               "tv": "экран",
-              "suitcase": "чемодан"
+              "suitcase": "чемодан",
+              'chair': 'стул',
+              'dining table': 'рабочее место',
           };
       
           const translatedItem = translations[event.item_predict] || event.item_predict;
@@ -339,7 +341,7 @@ const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
             <td>Здание №1</td>
             <td>Этаж {Number(roomInfo.activeFloor) + 1}</td>
             <td>{roomInfo.roomName}</td>
-            {getTranslatedEventString(event)}
+            <td>{getTranslatedEventString(event)}</td>
           </tr>
         );
       });
