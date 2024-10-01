@@ -74,10 +74,10 @@ const ListCamera: FC<ListCameraProps> = memo(({
         });
         setCameras(updatedCameras);
       } else {
-        console.error('Failed to discover cameras');
+        console.error('Не удалось обнаружить камеры');
       }
     } catch (error) {
-      console.error('Error discovering cameras:', error);
+      console.error('Ошибка при обнаружении камер:', error);
     } finally {
       setLoading(false);
     }
@@ -105,7 +105,6 @@ const ListCamera: FC<ListCameraProps> = memo(({
     const storedCameras = localStorage.getItem('droppedCameras');
     if (storedCameras) {
       const cameras = JSON.parse(storedCameras);
-      // Приводим объект к массиву, если это объект
       const camerasArray = Array.isArray(cameras) ? cameras : Object.values(cameras);
       return camerasArray.find((cam: Camera) => cam.port === port);
     }
@@ -113,6 +112,12 @@ const ListCamera: FC<ListCameraProps> = memo(({
   };
 
   if (!open) return null;
+
+  // Получение данных из localStorage
+  const selectedRooms = JSON.parse(localStorage.getItem('selectedRooms') || '[]');
+  const selectedRoom = selectedRooms.length > 0 ? selectedRooms[0] : {}; // Извлекаем первый элемент массива
+  const activeFloor = selectedRoom.activeFloor || 0; // Установите значение по умолчанию
+  const positions = selectedRoom.positions ? selectedRoom.positions.map(pos => `${activeFloor}-${pos.join('-')}`) : []; // Проверка на существование
 
   return (
     <motion.div className={LCStyles.sidebar}
@@ -150,6 +155,18 @@ const ListCamera: FC<ListCameraProps> = memo(({
               {cameras.map((camera) => {
                 const cameraId = `${camera.port}`;
                 const isDisabled = movedCameras.has(camera.id) || camera.isDisabled || (camera.initialPosition && (camera.initialPosition.rowIndex !== -1 || camera.initialPosition.colIndex !== -1));
+                let nameRoom = ''; // Значение по умолчанию
+
+                // Для каждой камеры находим соответствующую комнату
+                selectedRooms.forEach((room) => {
+                  const activeFloor = room.activeFloor || 0; // Этаж для комнаты
+                  const positions = room.positions ? room.positions.map(pos => `${activeFloor}-${pos.join('-')}`) : []; // Преобразование позиций
+
+                  const cell = `${camera.cell}`; // Формат ячейки для камеры
+                  if (positions.includes(cell)) {
+                    nameRoom = room.roomName; // Устанавливаем имя комнаты для текущей камеры
+                  }
+                });
 
                 if (camera.isDisabled === false) {
                   return (
@@ -162,7 +179,7 @@ const ListCamera: FC<ListCameraProps> = memo(({
                       <td>{cameraId[4]}</td>
                       <td>Установите камеру</td>
                       <td>{ }</td>
-                      <td>NameRoom</td>
+                      <td>{nameRoom}</td> {/* Имя комнаты для активной камеры */}
                       <td>{camera.name}</td>
                       <td>
                         <div
@@ -177,8 +194,19 @@ const ListCamera: FC<ListCameraProps> = memo(({
                     </tr>
                   );
                 } else {
-                  // Камера отключена — берем значения из localStorage
                   const storedCamera = getCameraFromLocalStorage(camera.port);
+                  let storedNameRoom = '';
+
+                  // Проверка для отключенных камер
+                  selectedRooms.forEach((room) => {
+                    const activeFloor = room.activeFloor || 0; // Этаж
+                    const positions = room.positions ? room.positions.map(pos => `${activeFloor}-${pos.join('-')}`) : []; // Преобразование позиций
+
+                    const cell = `${storedCamera?.cell}`; // Формат ячейки для камеры
+                    if (positions.includes(cell)) {
+                      storedNameRoom = room.roomName; // Устанавливаем имя комнаты для отключенной камеры
+                    }
+                  });
 
                   return (
                     <tr
@@ -195,8 +223,8 @@ const ListCamera: FC<ListCameraProps> = memo(({
                             ? ' '
                             : `${parseInt(storedCamera.cell.split('-')[0], 10) + 1}`)
                           : 'Неизвестно'}
-                      </td>                      
-                      <td>NameRoom</td>
+                      </td>
+                      <td>{storedNameRoom}</td> {/* Имя комнаты для отключенной камеры */}
                       <td>{storedCamera ? storedCamera.name : camera.name}</td>
                       <td>
                         <div

@@ -329,7 +329,9 @@ const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
           const translations = {
               "person": "человек",
               "tv": "экран",
-              "suitcase": "чемодан"
+              "suitcase": "чемодан",
+              'chair': 'стул',
+              'dining table': 'рабочее место',
           };
       
           const translatedItem = translations[event.item_predict] || event.item_predict;

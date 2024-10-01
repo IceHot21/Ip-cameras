@@ -8,9 +8,8 @@ import ListSVG from '../../components/ListSVG';
 import ModalStream from '../../components/ModalStream';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import { useRouter } from 'next/router';
-import { ToastContainer, toast } from 'react-toastify'; // Импортируем toast и ToastContainer
-import 'react-toastify/dist/ReactToastify.css'; // Добавляем стили для уведомлений
-import { Height } from '@mui/icons-material';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 interface Camera {
   id: number;
@@ -59,10 +58,12 @@ const Feeding: FC<FeedingProps> = ({ navigate }) => {
   const [activeFloor, setActiveFloor] = useState<number>(0);
   const [isSelecting, setIsSelecting] = useState(false);
   const [selectedCells, setSelectedCells] = useState<number[][]>([]);
-  const [isPredictions, setIsPredictions] = useState<Prediction | null>(null)
+  const [isPredictions, setIsPredictions] = useState<Prediction | null>(null);
   const [ws, setWs] = useState<WebSocket | null>(null);
   const [gridZIndex, setGridZIndex] = useState('auto');
-
+  const [savedCells, setSavedCells] = useState<number[][]>([]);
+  const [roomNames, setRoomNames] = useState<{ [key: string]: string }>({});
+  const [roomCenters, setRoomCenters] = useState<{ [key: string]: { x: number; y: number } }>({});
 
   useEffect(() => {
     const socket = new WebSocket('ws://192.168.0.136:9999');
@@ -83,7 +84,6 @@ const Feeding: FC<FeedingProps> = ({ navigate }) => {
       const reader = new FileReader();
       reader.onload = () => {
         const predictions = JSON.parse(reader.result as string);
-        console.log(predictions);
         setIsPredictions(predictions);
       };
       reader.readAsText(event.data);
@@ -213,12 +213,14 @@ const Feeding: FC<FeedingProps> = ({ navigate }) => {
         onSVGDrop={handleSVGDrop}
         floorIndex={activeFloor}
         isActive={true}
-        // isPredictions={isPredictions}
+        savedCells={savedCells}
+        roomNames={roomNames}
+        roomCenters={roomCenters}
         setDroppedSVGs={setDroppedSVGs}
         setDroppedCameras={setDroppedCameras}
       />
     </div>
-  ), [activeFloor, memoizedDroppedCameras, memoizedDroppedSVGs, memoizedRotationAngles, handleCameraDrop, handleFloorChange, handleDoubleClickCamera, navigate, memoizedFlagLocalToggle]);
+  ), [activeFloor, memoizedDroppedCameras, memoizedDroppedSVGs, memoizedRotationAngles, handleCameraDrop, handleFloorChange, handleDoubleClickCamera, navigate, memoizedFlagLocalToggle, savedCells, roomNames, roomCenters]);
 
   const memoizedInactiveFloorsContent = useMemo(() => (
     <div className={FStyles.inactiveFloors}>
@@ -243,14 +245,16 @@ const Feeding: FC<FeedingProps> = ({ navigate }) => {
             onSVGDrop={handleSVGDrop}
             floorIndex={floorIndex}
             isActive={floorIndex === activeFloor}
-            // isPredictions={isPredictions} 
+            savedCells={savedCells}
+            roomNames={roomNames}
+            roomCenters={roomCenters}
             setDroppedSVGs={setDroppedSVGs}
             setDroppedCameras={setDroppedCameras}
           />
         </div>
       ))}
     </div>
-  ), [activeFloor, memoizedDroppedCameras, memoizedDroppedSVGs, memoizedRotationAngles, handleCameraDrop, handleFloorChange, handleDoubleClickCamera, navigate, floors, memoizedFlagLocalToggle]);
+  ), [activeFloor, memoizedDroppedCameras, memoizedDroppedSVGs, memoizedRotationAngles, handleCameraDrop, handleFloorChange, handleDoubleClickCamera, navigate, floors, memoizedFlagLocalToggle, savedCells, roomNames, roomCenters]);
 
   const memoizedGridContent = useMemo(() => (
     <div className={FStyles.gridContainer} style={gridContainerStyles}>
@@ -270,6 +274,8 @@ const Feeding: FC<FeedingProps> = ({ navigate }) => {
         setRotationAngles={setRotationAngles}
         selectedCells={memoizedSelectedCells}
         setSelectedCells={setSelectedCells}
+        setRoomCenters={setRoomCenters}
+        setRoomNames={setRoomNames}
       />
     </div>
   ), [activeFloor, memoizedDroppedCameras, memoizedDroppedSVGs, memoizedRotationAngles, memoizedSelectedCells, isSelecting, handleCameraDrop, handleSVGDrop, handleDoubleClickCamera, navigate, memoizedFlagLocalToggle]);
@@ -292,7 +298,6 @@ const Feeding: FC<FeedingProps> = ({ navigate }) => {
           onClick={handleListCameraToggle}
           title="Открыть список камер"
         />
-
       </div>
       {isListCameraOpen && (
         <MemoizedListCamera
@@ -306,7 +311,6 @@ const Feeding: FC<FeedingProps> = ({ navigate }) => {
           handleParametrEditing={''}
           setHandleParametrEditing={null}
         />
-
       )}
       {isListSVGOpen && (
         <MemoizedListSVG
