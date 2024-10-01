@@ -19,7 +19,7 @@ if (isProd) {
   const { width, height } = screen.getPrimaryDisplay().workAreaSize
 
   const mainWindow = createWindow('main', {
-    title: "ТД-ЭЛ Сервер",
+    title: "IP Cameras",
     width: width, 
     height: height, 
     autoHideMenuBar: true,

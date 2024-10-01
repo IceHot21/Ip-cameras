@@ -1,8 +1,7 @@
-import { useState, useEffect, FC, memo } from 'react';
+import { useState, useEffect, FC, memo, Dispatch, SetStateAction } from 'react';
 import LCStyles from '../styles/ListCamera.module.css';
 import { BsFillCameraVideoFill } from "react-icons/bs";
-import { BiX, BiRevision, BiSolidLayerPlus } from "react-icons/bi";
-import { FaCheck } from 'react-icons/fa';
+import { BiX, BiRevision } from "react-icons/bi";
 import { fetchWithRetry } from '../refreshToken';
 import { motion } from 'framer-motion';
 
@@ -15,7 +14,7 @@ interface ListCameraProps {
   movedCameras: Set<number>;
   droppedCameras: { [key: string]: Camera };
   handleParametrEditing: string;
-  setHandleParametrEditing: React.Dispatch<React.SetStateAction<string>>;
+  setHandleParametrEditing: Dispatch<SetStateAction<string>>;
 }
 
 interface Camera {
@@ -38,8 +37,6 @@ const ListCamera: FC<ListCameraProps> = memo(({
   onDoubleClickCamera,
   movedCameras,
   droppedCameras,
-  handleParametrEditing,
-  setHandleParametrEditing
 }) => {
   const [cameras, setCameras] = useState<Camera[]>([]);
   const [loading, setLoading] = useState(true);
@@ -50,7 +47,6 @@ const ListCamera: FC<ListCameraProps> = memo(({
   useEffect(() => {
     if (open) {
       handleDiscoverCameras();
-
     }
   }, [open]);
 
@@ -70,18 +66,12 @@ const ListCamera: FC<ListCameraProps> = memo(({
 
     try {
       const response = await fetchWithRetry('https://192.168.0.136:4200/stream/cameras', 'GET', null, '/list-cameras');
-      console.log(response)
-      console.log(droppedCameras);
       if (response.length > 0) {
-        // Преобразуем объект droppedCameras в массив
         const droppedCamerasArray = Object.values(droppedCameras);
-        // Получаем камеры из localStorage
-        // Добавляем флаг isDisabled для камер, которые есть в localStorage
         const updatedCameras = response.map((camera) => {
           const isStored = droppedCamerasArray.some(storedCamera => storedCamera.port === camera.port);
           return { ...camera, isDisabled: isStored };
         });
-
         setCameras(updatedCameras);
       } else {
         console.error('Failed to discover cameras');
@@ -92,6 +82,7 @@ const ListCamera: FC<ListCameraProps> = memo(({
       setLoading(false);
     }
   };
+
   const handleDoubleClick = (camera: Camera) => {
     if (!selectedCameras.some(c => c.id === camera.id)) {
       setSelectedCameras([camera]);
@@ -104,20 +95,22 @@ const ListCamera: FC<ListCameraProps> = memo(({
 
   const handleDragStart = (e: React.DragEvent<HTMLDivElement>, camera: Camera) => {
     e.dataTransfer.setData('droppedCameras', JSON.stringify(camera));
-    console.log('Drag start:', camera);
   };
 
   const handleAddCameraClick = () => {
     setIsAddingCamera(!isAddingCamera);
   };
 
-  const editingParametrToggler = () => {
-    if (handleParametrEditing === 'grid') {
-      setHandleParametrEditing('map')
-    } else {
-      setHandleParametrEditing('grid')
+  const getCameraFromLocalStorage = (port: number) => {
+    const storedCameras = localStorage.getItem('droppedCameras');
+    if (storedCameras) {
+      const cameras = JSON.parse(storedCameras);
+      // Приводим объект к массиву, если это объект
+      const camerasArray = Array.isArray(cameras) ? cameras : Object.values(cameras);
+      return camerasArray.find((cam: Camera) => cam.port === port);
     }
-  }
+    return null;
+  };
 
   if (!open) return null;
 
@@ -145,8 +138,11 @@ const ListCamera: FC<ListCameraProps> = memo(({
           <table>
             <thead className={LCStyles.tableHeader}>
               <tr>
+                <th>ID</th>
+                <th>Здание/Улица</th>
+                <th>Этаж</th>
+                <th>Имя комнаты</th>
                 <th>Название камеры</th>
-                <th>IP</th>
                 <th></th>
               </tr>
             </thead>
@@ -155,38 +151,71 @@ const ListCamera: FC<ListCameraProps> = memo(({
                 const cameraId = `${camera.port}`;
                 const isDisabled = movedCameras.has(camera.id) || camera.isDisabled || (camera.initialPosition && (camera.initialPosition.rowIndex !== -1 || camera.initialPosition.colIndex !== -1));
 
-                return (
-                  <tr
-                    key={camera.id}
-                    onDoubleClick={() => handleDoubleClick(camera)}
-                    id={cameraId}
-                    className={isDisabled ? `${LCStyles.tableRow} ${LCStyles.disabledRow}` : LCStyles.tableRow}
-                  >
-                    <td>{camera.name}</td>
-                    <td>{camera.rtspUrl}</td>
-                    <td>
-                      <div
-                        draggable
-                        onDragStart={(e) => handleDragStart(e, camera)}
-                        id={cameraId}
-                        title={cameraId}
-                      >
-                        <BsFillCameraVideoFill className={LCStyles.cameraId} />
-                      </div>
-                    </td>
-                  </tr>
-                );
+                if (camera.isDisabled === false) {
+                  return (
+                    <tr
+                      key={camera.id}
+                      onDoubleClick={() => handleDoubleClick(camera)}
+                      id={cameraId}
+                      className={isDisabled ? `${LCStyles.tableRow} ${LCStyles.disabledRow}` : LCStyles.tableRow}
+                    >
+                      <td>{cameraId[4]}</td>
+                      <td>Установите камеру</td>
+                      <td>{ }</td>
+                      <td>NameRoom</td>
+                      <td>{camera.name}</td>
+                      <td>
+                        <div
+                          draggable
+                          onDragStart={(e) => handleDragStart(e, camera)}
+                          id={cameraId}
+                          title={cameraId}
+                        >
+                          <BsFillCameraVideoFill className={LCStyles.cameraId} />
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                } else {
+                  // Камера отключена — берем значения из localStorage
+                  const storedCamera = getCameraFromLocalStorage(camera.port);
+
+                  return (
+                    <tr
+                      key={camera.id}
+                      onDoubleClick={() => handleDoubleClick(camera)}
+                      id={cameraId}
+                      className={isDisabled ? `${LCStyles.tableRow} ${LCStyles.disabledRow}` : LCStyles.tableRow}
+                    >
+                      <td>{storedCamera ? storedCamera.id : camera.id}</td>
+                      <td>{storedCamera ? (storedCamera.cell?.startsWith("null") ? 'Улица' : `Здание`) : 'Неизвестно'}</td>
+                      <td>
+                        {storedCamera
+                          ? (storedCamera.cell?.startsWith("null")
+                            ? ' '
+                            : `${parseInt(storedCamera.cell.split('-')[0], 10) + 1}`)
+                          : 'Неизвестно'}
+                      </td>                      
+                      <td>NameRoom</td>
+                      <td>{storedCamera ? storedCamera.name : camera.name}</td>
+                      <td>
+                        <div
+                          draggable
+                          onDragStart={(e) => handleDragStart(e, camera)}
+                          id={cameraId}
+                          title={cameraId}
+                        >
+                          <BsFillCameraVideoFill className={LCStyles.cameraId} />
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                }
               })}
             </tbody>
           </table>
         </div>
-
       )}
-      <div className={LCStyles.buttonListCameraContainer}>
-        <button onClick={editingParametrToggler} className={LCStyles.addCameraButton}>
-          {handleParametrEditing === 'grid' ? 'Редактировать координаты' : 'Редактировать расположение камер'}
-        </button>
-      </div>
     </motion.div>
   );
 });
