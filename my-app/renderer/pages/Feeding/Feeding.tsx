@@ -61,16 +61,9 @@ const Feeding: FC<FeedingProps> = ({ navigate }) => {
   const [selectedCells, setSelectedCells] = useState<number[][]>([]);
   const [isPredictions, setIsPredictions] = useState<Prediction | null>(null)
   const [ws, setWs] = useState<WebSocket | null>(null);
-  const [zIndex, setZIndex] = useState('auto');
+  const [gridZIndex, setGridZIndex] = useState('auto');
 
 
-  const [handleParametrEditing, setHandleParametrEditing] = useState("grid");
-  let gridContainerStyles = handleParametrEditing === 'grid'
-  ? { height: '100% !important' }
-  : { zIndex: '-1' };
-  const handleZIndex = () => {
-    setZIndex('1');
-  }
   useEffect(() => {
     const socket = new WebSocket('ws://192.168.0.136:9999');
 
@@ -134,7 +127,7 @@ const Feeding: FC<FeedingProps> = ({ navigate }) => {
 
   useEffect(() => {
     setIsEditing(isListCameraOpen || isListSVGOpen);
-    setHandleParametrEditing('grid')
+    setGridZIndex(isListCameraOpen || isListSVGOpen ? '1' : 'auto');
   }, [isListCameraOpen, isListSVGOpen]);
 
   useEffect(() => {
@@ -188,6 +181,11 @@ const Feeding: FC<FeedingProps> = ({ navigate }) => {
     setSelectedCameras([camera]);
     setIsModalStreamOpen(true);
   }, []);
+
+  const gridContainerStyles = {
+    height: '100% !important',
+    zIndex: gridZIndex,
+  };
 
   const floors = [0, 1, 2]; // Массив этажей
 
@@ -304,9 +302,11 @@ const Feeding: FC<FeedingProps> = ({ navigate }) => {
           FlagLocal={memoizedFlagLocalToggle}
           onDoubleClickCamera={handleDoubleClickCamera}
           movedCameras={movedCameras}
-          droppedCameras={memoizedDroppedCameras} handleParametrEditing={''} setHandleParametrEditing={function (value: React.SetStateAction<string>): void {
-            throw new Error('Function not implemented.');
-          } }        />
+          droppedCameras={memoizedDroppedCameras}
+          handleParametrEditing={''}
+          setHandleParametrEditing={null}
+        />
+
       )}
       {isListSVGOpen && (
         <MemoizedListSVG
