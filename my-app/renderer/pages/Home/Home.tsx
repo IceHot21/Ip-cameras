@@ -48,6 +48,7 @@ interface Prediction {
   camera_port: number;
   item_predict: string;
   score_predict: string;
+  bbox: string;
   date: string;
 }
 
@@ -78,6 +79,7 @@ const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
   const [coordinates, setCoordinates] = useState("59.850491,30.305657");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalImageUrl, setModalImageUrl] = useState('');
+  const [predictionsData, setPredictionsData] = useState([]);
 
   const floorProps = useMemo(() => ({
     navigate,
@@ -289,13 +291,15 @@ const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
     return `${day}.${month}.${year} ${hours}:${minutes}:${seconds}`;
   };
 
-  const openModal = (imageUrl: string) => {
+  const openModal = (imageUrl: string, predictions: any[]) => {
     setModalImageUrl(imageUrl);
+    setPredictionsData(predictions);
     setIsModalOpen(true);
   };
 
   const closeModal = () => {
     setIsModalOpen(false);
+    setPredictionsData([]);
     setModalImageUrl('');
   };
 
@@ -319,7 +323,7 @@ const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
               // saveAs(blob, `frame-${event.date}.png`);
               // openModal(response); // Передаем URL в модальное окно
               console.log('File downloaded successfully', response);
-              openModal(imageUrl);
+              openModal(imageUrl, [event.item_predict, event.score_predict, event.bbox]);
 
           } catch (error) {
             console.error('Error downloading file:', error);
@@ -401,7 +405,7 @@ const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
         <div className={HStyles.carouselHeader}>
           <div className={HStyles.carouselTitle1}>Статистика</div>
           </div>
-          <ModalWindow isOpen={isModalOpen} onClose={closeModal} imageUrl={modalImageUrl} />
+          <ModalWindow isOpen={isModalOpen} onClose={closeModal} imageUrl={modalImageUrl} predictionsData={predictionsData} />
         </div>
       </div>
       {/* Правый контейнер */}
