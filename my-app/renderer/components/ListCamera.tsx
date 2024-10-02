@@ -116,7 +116,7 @@ const ListCamera: FC<ListCameraProps> = memo(({
   // Получение данных из localStorage
   const selectedRooms = JSON.parse(localStorage.getItem('selectedRooms') || '[]');
   const selectedRoom = selectedRooms.length > 0 ? selectedRooms[0] : {}; // Извлекаем первый элемент массива
-  const activeFloor = selectedRoom.activeFloor || 0; // Установите значение по умолчанию
+  const activeFloor = selectedRoom.activeFloor || -1; // Установите значение по умолчанию
   const positions = selectedRoom.positions ? selectedRoom.positions.map(pos => `${activeFloor}-${pos.join('-')}`) : []; // Проверка на существование
 
   return (

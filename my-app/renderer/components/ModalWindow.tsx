@@ -1,5 +1,7 @@
 import React, { FC, useEffect, useRef } from 'react';
 import HStyles from '../pages/Home/Home.module.css'; // Подключите ваши стили
+import LCStyles from '../styles/ListCamera.module.css';
+import { BiX } from 'react-icons/bi';
 
 interface ModalWindowProps {
   isOpen: boolean;
@@ -68,6 +70,7 @@ const ModalWindow: FC<ModalWindowProps> = ({ isOpen, onClose, imageUrl, predicti
   return (
     <div className={HStyles.modalOverlay} onClick={onClose}>
       <div className={HStyles.modalContent} onClick={(e) => e.stopPropagation()}>
+        <button onClick={onClose} className={LCStyles.closeButton} title="Закрыть"><BiX /></button>
         <img
           ref={imgRef}
           src={imageUrl}
@@ -80,7 +83,7 @@ const ModalWindow: FC<ModalWindowProps> = ({ isOpen, onClose, imageUrl, predicti
           className={HStyles.modalCanvas}
           style={{ position: 'absolute', top: '52.7vh', left: '1.2vh', pointerEvents: 'none', backgroundColor: 'transparent' }}
         />
-        <button onClick={onClose} className={HStyles.modalCloseButton}>Закрыть</button>
+        
       </div>
     </div>
   );

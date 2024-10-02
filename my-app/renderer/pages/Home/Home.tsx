@@ -1,22 +1,15 @@
 import React, { FC, useMemo, useState, useEffect, memo, useCallback } from "react";
 import HStyles from "./Home.module.css";
-import { BsArrowDownUp } from "react-icons/bs";
 import Svg1 from "../../assets/Svg1.svg";
 import Svg2 from '../../assets/Svg2.svg';
 import Svg3 from '../../assets/Svg3.svg';
-import SVG from "../../assets/SVG.svg";
 import { useRouter } from "next/router";
 import Build123 from '../../assets/Build123.svg'
 import { FaBell, FaChevronLeft, FaChevronRight, FaInfoCircle } from "react-icons/fa";
-import { Button } from "@mui/material";
 import Floor from '../../components/Floor'; // Импортируем компонент Floor
 import { fetchWithRetry } from "../../refreshToken";
-import { formatDistanceToNow, format } from 'date-fns';
-import { ru } from 'date-fns/locale';
-import YandexMap from "../../components/YandexMap";
 import ModalWindow from "../../components/ModalWindow";
 import axios from "axios";
-import { saveAs } from 'file-saver';
 import Outside from "../../components/Outside";
 
 interface HomeProps {
@@ -85,6 +78,9 @@ const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
   const [selectedCameras, setSelectedCameras] = useState<Camera[]>([]);
   const [FlagLocal, setFlagLocal] = useState(true);
   const [isModalStreamOpen, setIsModalStreamOpen] = useState(false);
+  const router = useRouter();
+  const { floor } = router.query;
+  const [activeFloor, setActiveFloor] = useState<number>(0);
 
   const memoizedFlagLocalToggle = useCallback(() => setFlagLocal(prev => !prev), []);
 
@@ -156,6 +152,12 @@ const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
     });
   }
 
+  useEffect(() => {
+    if (floor) {
+      setActiveFloor(Number(floor));
+    }
+  }, [floor]);
+  
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -233,7 +235,6 @@ const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
     };
   }, []);
 
-  const router = useRouter();
   const svgImages = [Svg1, Svg2, Svg3];
   const current = new Date();
   const date = `${current.getDate()}/${current.getMonth() + 1}/${current.getFullYear()} ${current.getHours()}:${current.getMinutes()}:${current.getSeconds()}`;
@@ -252,13 +253,6 @@ const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
       setDroppedSVGs(JSON.parse(storedSVGs));
     }
   }, []);
-
-  const FloorClick = () => {
-    router.push({
-      pathname: '/Feeding/Feeding',
-      query: { floor: currentSvgIndex },
-    });
-  }
 
   useEffect(() => {
     if (FlagLocal) {
@@ -394,15 +388,15 @@ const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
   }, []);
 
   const handleCameraDrop = useCallback((camera: Camera, rowIndex: number, colIndex: number) => {
-    const cellKey = `${null}-${rowIndex}-${colIndex}`;
+    const cellKey = `${activeFloor}-${rowIndex}-${colIndex}`;
     const updatedCamera: Camera = {
       ...camera,
-      floor: null,
+      floor: activeFloor,
       cell: cellKey,
       initialPosition: { rowIndex, colIndex },
     };
     setDroppedCameras((prev) => ({ ...prev, [cellKey]: updatedCamera }));
-  }, [null]);
+  }, [activeFloor]);
 
   const planContainer = useMemo(() => (
     <div className={HStyles.planContainer}>

@@ -12,10 +12,13 @@ interface Camera {
     id: number;
     port: number;
     name: string;
-    address: string;
-    cell?: string;
-    initialPosition?: { rowIndex: number; colIndex: number };
+    floor: number;
+    cell: string;
+    initialPosition: { rowIndex: number; colIndex: number };
     rtspUrl: string;
+    isDisabled: boolean;
+    address: string;
+    rotationAngle: number;
 }
 
 interface SVGItem {
@@ -54,8 +57,8 @@ const Outside: FC<OutsideProps> = ({ children, droppedCameras, navigate, onDoubl
 
     useEffect(() => {
         const savedDroppedCameras = localStorage.getItem('droppedCameras');
-
         if (savedDroppedCameras) {
+            console.log(savedDroppedCameras);
             const parsedDroppedCameras = JSON.parse(savedDroppedCameras);
             const initialRotationAngles: { [key: string]: number } = {};
 
@@ -74,15 +77,6 @@ const Outside: FC<OutsideProps> = ({ children, droppedCameras, navigate, onDoubl
 
     const handleDragStart = useCallback((e: React.DragEvent<HTMLDivElement>, item: Camera) => {
         e.dataTransfer.setData('droppedItem', JSON.stringify(item));
-    }, []);
-
-    const renderSVG = useCallback((svgName: string) => {
-        const SVGComponent = lazy(() => import(`../assets/${svgName}.svg`));
-        return (
-            <Suspense>
-                <SVGComponent />
-            </Suspense>
-        );
     }, []);
 
     const displayMenu = useCallback((e: React.MouseEvent<HTMLDivElement>, cameraId: string, svgKey?: string) => {
@@ -128,7 +122,7 @@ const Outside: FC<OutsideProps> = ({ children, droppedCameras, navigate, onDoubl
                 const cameraName = camera.name;
                 const ipAddress = camera.rtspUrl;
                 const rtspUrl = `rtsp://admin:Dd7560848@${ipAddress}`;
-                const newCellKey = `${rowIndex}-${colIndex}`;
+                const newCellKey = `${activeFloor}-${rowIndex}-${colIndex}`;
 
                 const existingCameraKey = Object.keys(droppedCameras).find(key => droppedCameras[key].name === cameraName);
                 if (existingCameraKey) {
@@ -138,13 +132,10 @@ const Outside: FC<OutsideProps> = ({ children, droppedCameras, navigate, onDoubl
                 }
 
                 const newCamera: Camera = {
-                    id: Object.keys(droppedCameras).length + 1,
-                    port,
-                    rtspUrl,
-                    name: cameraName,
+                    ...camera,
                     cell: newCellKey,
                     initialPosition: { rowIndex, colIndex },
-                    address: camera.address,
+                    rotationAngle: rotationAngles[camera.name] || 0
                 };
 
                 droppedCameras[newCellKey] = newCamera;
