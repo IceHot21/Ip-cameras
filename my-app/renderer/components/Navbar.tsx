@@ -68,7 +68,7 @@ const Navigation = ({ onMenuItemClick }) => {
     { name: "Схема здания", action: "/Feeding/Feeding", icon: <BiCarousel size={24} /> },
    /*  { name: "Уличные камеры", action: "/OutsideCamera/OutsideCamera", icon: <MdOutlineCameraOutdoor size={24} /> }, */
     /* { name: "Видеоархив", action: "/Videoarchive/Videoarchive", icon: <BiCameraMovie size={24} /> }, */
-    { name: "Настройки", action: "/Setting/Setting", icon: <IoSettingsOutline size={24} /> },
+ /*    { name: "Настройки", action: "/Setting/Setting", icon: <IoSettingsOutline size={24} /> }, */
     { name: "Регистрация", action: "/Registration/Registration", icon: <MdAppRegistration size={24} /> },
     { name: "Перезагрузка", action: "/LoginPage/LoginPage", icon: <BiRepeat size={24} /> },
   ];
