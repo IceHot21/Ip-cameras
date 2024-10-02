@@ -70,7 +70,7 @@ const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
   const [selectedFloor, setSelectedFloor] = useState<number | null>(null);
   const [activeTab, setActiveTab] = useState<'inside' | 'outside'>('inside');
   const [width, setWidth] = useState("622px");
-  const [height, setHeight] = useState("492px");
+  const [height, setHeight] = useState("500px");
   const [coordinates, setCoordinates] = useState("59.850491,30.305657");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalImageUrl, setModalImageUrl] = useState('');

@@ -56,7 +56,7 @@ const OutsideCamera: FC<OutsideProps> = ({ navigate }) => {
     const [isPredictions, setIsPredictions] = useState<Prediction | null>(null)
     const [width, setWidth] = useState("928px");
     const [height, setHeight] = useState("690px");
-    const [coordinates, setCoordinates] = useState("59.850491,30.305657");
+    const [coordinates, setCoordinates] = useState("52.850491,30.305657");
 
 
     const [handleParametrEditing, setHandleParametrEditing] = useState("grid");

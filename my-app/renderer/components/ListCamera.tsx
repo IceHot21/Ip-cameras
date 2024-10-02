@@ -199,7 +199,7 @@ const ListCamera: FC<ListCameraProps> = memo(({
 
                   // Проверка для отключенных камер
                   selectedRooms.forEach((room) => {
-                    const activeFloor = room.activeFloor || -1; // Этаж
+                    const activeFloor = room.activeFloor || 0; // Этаж
                     const positions = room.positions ? room.positions.map(pos => `${activeFloor}-${pos.join('-')}`) : []; // Преобразование позиций
 
                     const cell = `${storedCamera?.cell}`; // Формат ячейки для камеры
