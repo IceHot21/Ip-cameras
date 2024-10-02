@@ -6,11 +6,13 @@ import Svg3 from '../../assets/Svg3.svg';
 import { useRouter } from "next/router";
 import Build123 from '../../assets/Build123.svg'
 import { FaBell, FaChevronLeft, FaChevronRight, FaInfoCircle } from "react-icons/fa";
+import { Button, Dialog, DialogContent, DialogTitle } from "@mui/material";
 import Floor from '../../components/Floor'; // Импортируем компонент Floor
 import { fetchWithRetry } from "../../refreshToken";
 import ModalWindow from "../../components/ModalWindow";
 import axios from "axios";
 import Outside from "../../components/Outside";
+import ModalStream from "../../components/ModalStream";
 
 interface HomeProps {
   numberHome: number;
@@ -77,10 +79,13 @@ const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
   const [predictionsData, setPredictionsData] = useState([]);
   const [selectedCameras, setSelectedCameras] = useState<Camera[]>([]);
   const [FlagLocal, setFlagLocal] = useState(true);
-  const [isModalStreamOpen, setIsModalStreamOpen] = useState(false);
   const router = useRouter();
   const { floor } = router.query;
   const [activeFloor, setActiveFloor] = useState<number>(0);
+  const [isModalStreamOpen, setIsModalStreamOpen] = useState(true);
+  const [cameraForModalStream, setCameraForModalStream] = useState<any>(null);
+  const [aboba, setAboba] = useState(false);
+  const [isPredictions, setIsPredictions] = useState<Prediction | null>(null);
 
   const memoizedFlagLocalToggle = useCallback(() => setFlagLocal(prev => !prev), []);
 
@@ -100,6 +105,9 @@ const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
     floorIndex: currentSvgIndex,
     isActive: true,
     setDroppedSVGs,
+    setIsModalStreamOpen,
+    setCameraForModalStream,
+    setAboba,
   }), [
     navigate,
     droppedCameras,
@@ -215,6 +223,7 @@ const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
           }
           return updatedPredictions;
         });
+        setIsPredictions(newPrediction)
 
         // Обновляем roomInfoMap для нового предикта
         const roomInfo = findCellByPort(newPrediction.camera_port);
@@ -401,7 +410,7 @@ const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
       {activeTab === 'inside' && (
         <div className={HStyles.planInside}>
           <div className={HStyles.plan}>
-            <MemoizedFloor savedCells={[]} roomNames={{}} roomCenters={{}} setDroppedCameras={function (value: React.SetStateAction<{ [key: string]: Camera; }>): void {
+            <MemoizedFloor savedCells={[]} roomNames={{}} setAboba={setAboba} roomCenters={{}} setIsModalStreamOpen={setIsModalStreamOpen} setDroppedCameras={function (value: React.SetStateAction<{ [key: string]: Camera; }>): void {
               throw new Error("Function not implemented.");
             }} {...floorProps} />
           </div>
@@ -549,6 +558,21 @@ const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
         </div>
 
       </div>
+
+      <Dialog open={isModalStreamOpen && aboba} onClose={() => setIsModalStreamOpen(false)}>
+        <DialogTitle>Уведомления за день</DialogTitle>
+        <DialogContent>
+          <div>
+            <ModalStream
+              navigate={navigate}
+              selectedCameras={cameraForModalStream}
+              setCam={setSelectedCameras}
+              isPredictions={isPredictions}
+              onClose={() => setIsModalStreamOpen(false)}
+            />
+          </div>
+        </DialogContent>
+      </Dialog>
 
     </div>
   );

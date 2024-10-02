@@ -38,7 +38,7 @@ const ModalStream: FC<ModalStreamProps> = memo(({ selectedCameras, setCam, onClo
     setCameras(selectedCameras);
   }, [selectedCameras]);
 
-  if (!selectedCameras.length) return null;
+  if (!selectedCameras?.length) return null;
 
   return (
     <div className={MSStyles.modalOverlay}>
