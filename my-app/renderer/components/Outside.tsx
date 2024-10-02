@@ -1,4 +1,4 @@
-import React, { FC, lazy, Suspense, useEffect, useState, useCallback } from 'react';
+import React, { FC, lazy, Suspense, useEffect, useState, useCallback, useMemo } from 'react';
 import RStyles from '../styles/Floor.module.css';
 import GStyles from '../styles/Grid.module.css';
 import { useContextMenu, ItemParams, Menu, Item } from 'react-contexify';
@@ -169,6 +169,48 @@ const Outside: FC<OutsideProps> = ({ children, droppedCameras, navigate, onDoubl
         localStorage.setItem('Coordinates', newCoordinates);
     };
 
+    // Используем useMemo для оптимизации рендеринга сетки
+    const gridCells = useMemo(() => {
+        return Array.from({ length: 15 }).map((_, rowIndex) =>
+            Array.from({ length: 20 }).map((_, colIndex) => {
+                const cellKey = `${activeFloor}-${rowIndex}-${colIndex}`;
+                const camera = droppedCameras[cellKey];
+                const cameraId = camera ? `Камера ${camera.name}` : '';
+                const rotationAngle = rotationAngles[cameraId] || 0;
+                return (
+                    <div
+                        key={cellKey}
+                        id={cellKey}
+                        className={`${GStyles.gridCell} ${RStyles.transparentCell}`}
+                        onDragOver={handleDragOver}
+                        onDrop={(e) => handleDrop(e, rowIndex, colIndex)}
+                    >
+                        {camera && (
+                            <div
+                                className={GStyles.cameraIcon}
+                                draggable
+                                onDragStart={(e) => handleDragStart(e, camera)}
+                                onDoubleClick={() => handleDoubleClick(camera)}
+                                id={cameraId}
+                                title={cameraId}
+                                onContextMenu={(e) => displayMenu(e, cameraId)}
+                            >
+                                <BsFillCameraVideoFill style={{ transform: `rotate(${rotationAngle}deg)`, height: '50%', width: '100%', zIndex: 999999 }} />
+                                <div
+                                    className={RStyles.cameraViewSector}
+                                    style={{
+                                        transform: `rotate(${rotationAngle}deg)`,
+                                        clipPath: `polygon(50% 50%, 100% 0%, 100% 100%)`,
+                                    }}
+                                />
+                            </div>
+                        )}
+                    </div>
+                );
+            })
+        );
+    }, [activeFloor, droppedCameras, rotationAngles, handleDragOver, handleDrop, handleDragStart, handleDoubleClick, displayMenu]);
+
     return (
         <div className={RStyles.body}>
             <div className={RStyles.container}>
@@ -186,44 +228,7 @@ const Outside: FC<OutsideProps> = ({ children, droppedCameras, navigate, onDoubl
 
                     <div className={RStyles.gridContainer}>
                         <div className={GStyles.grid}>
-                            {Array.from({ length: 15 }).map((_, rowIndex) =>
-                                Array.from({ length: 20 }).map((_, colIndex) => {
-                                    const cellKey = `${activeFloor}-${rowIndex}-${colIndex}`;
-                                    const camera = droppedCameras[cellKey];
-                                    const cameraId = camera ? `Камера ${camera.name}` : '';
-                                    const rotationAngle = rotationAngles[cameraId] || 0;
-                                    return (
-                                        <div
-                                            key={cellKey}
-                                            id={cellKey}
-                                            className={`${GStyles.gridCell} ${RStyles.transparentCell}`}
-                                            onDragOver={handleDragOver}
-                                            onDrop={(e) => handleDrop(e, rowIndex, colIndex)}
-                                        >
-                                            {camera && (
-                                                <div
-                                                    className={GStyles.cameraIcon}
-                                                    draggable
-                                                    onDragStart={(e) => handleDragStart(e, camera)}
-                                                    onDoubleClick={() => handleDoubleClick(camera)}
-                                                    id={cameraId}
-                                                    title={cameraId}
-                                                    onContextMenu={(e) => displayMenu(e, cameraId)}
-                                                >
-                                                    <BsFillCameraVideoFill style={{ transform: `rotate(${rotationAngle}deg)`, height: '50%', width: '100%', zIndex: 999999 }} />
-                                                    <div
-                                                        className={RStyles.cameraViewSector}
-                                                        style={{
-                                                            transform: `rotate(${rotationAngle}deg)`,
-                                                            clipPath: `polygon(50% 50%, 100% 0%, 100% 100%)`,
-                                                        }}
-                                                    />
-                                                </div>
-                                            )}
-                                        </div>
-                                    );
-                                })
-                            )}
+                            {gridCells}
                         </div>
                     </div>
                 </div>

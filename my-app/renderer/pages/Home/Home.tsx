@@ -316,7 +316,7 @@ const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
     setModalImageUrl('');
   };
 
-  const renderTableRows = () => {
+  const renderTableRows = useMemo(() => {
     return predictions
       .filter(event => selectedFloor === null || roomInfoMap[event.camera_port]?.activeFloor === selectedFloor)
       .map((event, index) => {
@@ -375,16 +375,19 @@ const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
           getTranslatedEventString(event)
         );
       });
-  };
+  }, [predictions, roomInfoMap, selectedFloor]);
 
-  const floorOptions = Array.from({ length: svgImages.length }, (_, index) => (
-    <option key={index} value={index}>{index + 1}</option>
-  ));
+  const floorOptions = useMemo(() => {
+    return Array.from({ length: svgImages.length }, (_, index) => (
+      <option key={index} value={index}>{index + 1}</option>
+    ));
+  }, [svgImages.length]);
 
   const handleFloorChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedValue = event.target.value;
     setSelectedFloor(selectedValue === '' ? null : Number(selectedValue));
   };
+
   const handleDoubleClickCamera = useCallback((camera: Camera) => {
     setSelectedCameras([camera]);
     setIsModalStreamOpen(true);
@@ -401,6 +404,49 @@ const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
     setDroppedCameras((prev) => ({ ...prev, [cellKey]: updatedCamera }));
   }, [null]);
 
+  const planContainer = useMemo(() => (
+    <div className={HStyles.planContainer}>
+      {activeTab === 'inside' && (
+        <div className={HStyles.planInside}>
+          <div className={HStyles.plan}>
+            <MemoizedFloor savedCells={[]} roomNames={{}} roomCenters={{}} setDroppedCameras={function (value: React.SetStateAction<{ [key: string]: Camera; }>): void {
+              throw new Error("Function not implemented.");
+            }} {...floorProps} />
+          </div>
+          <span className={HStyles.cameraLabel}>
+            <button className={HStyles.prevFloor} onClick={prevFloor}>
+              <FaChevronLeft />
+            </button>
+            Этаж {currentSvgIndex + 1}
+            <button className={HStyles.nextFloor} onClick={nextFloor}>
+              <FaChevronRight />
+            </button>
+          </span>
+        </div>
+      )}
+      {activeTab === 'outside' && (
+        <div className={HStyles.planOutside}>
+          <Outside
+            activeFloor={-1}
+            droppedCameras={droppedCameras}
+            rotationAngles={rotationAngles}
+            setRotationAngles={setRotationAngles}
+            onCameraDropped={handleCameraDrop}
+            onDoubleClickCamera={handleDoubleClickCamera}
+            FlagLocal={memoizedFlagLocalToggle}
+            coordinates={coordinates}
+            setCoordinates={setCoordinates}
+            handleParametrEditing={''}
+            isActive={true}
+            width={width}
+            height={height} navigate={function (path: string): Promise<boolean> {
+              throw new Error("Function not implemented.");
+            }} children={""} />
+          <span className={HStyles.cameraLabel}>Уличные камеры</span>
+        </div>
+      )}
+    </div>
+  ), [activeTab, currentSvgIndex, droppedCameras, rotationAngles, coordinates, width, height, handleCameraDrop, handleDoubleClickCamera, memoizedFlagLocalToggle, floorProps]);
 
   return (
     <div className={HStyles.homeContainer}>
@@ -465,47 +511,7 @@ const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
           </button>
 
         </div>
-        <div className={HStyles.planContainer}>
-          {activeTab === 'inside' && (
-            <div className={HStyles.planInside}>
-              <div className={HStyles.plan}>
-                <MemoizedFloor savedCells={[]} roomNames={{}} roomCenters={{}} setDroppedCameras={function (value: React.SetStateAction<{ [key: string]: Camera; }>): void {
-                  throw new Error("Function not implemented.");
-                }} {...floorProps} />
-              </div>
-              <span className={HStyles.cameraLabel}>
-                <button className={HStyles.prevFloor} onClick={prevFloor}>
-                  <FaChevronLeft />
-                </button>
-                Этаж {currentSvgIndex + 1}
-                <button className={HStyles.nextFloor} onClick={nextFloor}>
-                  <FaChevronRight />
-                </button>
-              </span>
-            </div>
-          )}
-          {activeTab === 'outside' && (
-            <div className={HStyles.planOutside}>
-              <Outside
-                activeFloor={-1}
-                droppedCameras={droppedCameras}
-                rotationAngles={rotationAngles}
-                setRotationAngles={setRotationAngles}
-                onCameraDropped={handleCameraDrop}
-                onDoubleClickCamera={handleDoubleClickCamera}
-                FlagLocal={memoizedFlagLocalToggle}
-                coordinates={coordinates}
-                setCoordinates={setCoordinates}
-                handleParametrEditing={''}
-                isActive={true}
-                width={width}
-                height={height} navigate={function (path: string): Promise<boolean> {
-                  throw new Error("Function not implemented.");
-                }} children={""} />
-              <span className={HStyles.cameraLabel}>Уличные камеры</span>
-            </div>
-          )}
-        </div>
+        {planContainer}
         <div className={HStyles.containerT}>
           {/* Содержимое containerT */}
           <div className={HStyles.panelContainer}>
@@ -540,7 +546,7 @@ const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
               <div className={HStyles.tableBodyWrapper}>
                 <table>
                   <tbody className={HStyles.tableBody}>
-                    {renderTableRows()}
+                    {renderTableRows}
                   </tbody>
                 </table>
               </div>
