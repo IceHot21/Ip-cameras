@@ -97,11 +97,6 @@ const Grid: FC<GridProps> = ({
         };
       }
     });
-
-    // Сохраняем centerNameRooms в localStorage
-    localStorage.setItem('centerNameRooms', JSON.stringify(centerNameRooms));
-    setRoomCenters(centers);
-    setRoomNames(centerNameRooms);
   };
 
   useEffect(() => {

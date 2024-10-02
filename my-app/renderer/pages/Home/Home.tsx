@@ -17,6 +17,7 @@ import YandexMap from "../../components/YandexMap";
 import ModalWindow from "../../components/ModalWindow";
 import axios from "axios";
 import { saveAs } from 'file-saver';
+import Outside from "../../components/Outside";
 
 interface HomeProps {
   numberHome: number;
@@ -442,7 +443,7 @@ const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
           {activeTab === 'outside' && (
             <div className={HStyles.planOutside}>
               {/* <SVG className={HStyles.outSide} /> */}
-              <YandexMap width={width} height={height} coordinates={coordinates} handleParametrEditing={undefined} />
+              <Outside  />
               <span className={HStyles.cameraLabel}>Уличные камеры</span>
             </div>
           )}
