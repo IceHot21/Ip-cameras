@@ -1,4 +1,4 @@
-import React, { FC, useMemo, useState, useEffect, memo } from "react";
+import React, { FC, useMemo, useState, useEffect, memo, useCallback } from "react";
 import HStyles from "./Home.module.css";
 import { BsArrowDownUp } from "react-icons/bs";
 import Svg1 from "../../assets/Svg1.svg";
@@ -68,6 +68,8 @@ const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [currentSvgIndex, setCurrentSvgIndex] = useState(0);
   const [droppedCameras, setDroppedCameras] = useState<{ [key: string]: Camera }>({});
+  const [rotationAngles, setRotationAngles] = useState<{ [key: string]: number }>({});
+  const [onCameraDropped, setOnCameraDropped] = useState<{ [key: string]: Camera }>({});
   const [droppedSVGs, setDroppedSVGs] = useState<{ [key: string]: SVGItem }>({});
   const [roomInfoMap, setRoomInfoMap] = useState<{ [port: number]: RoomInfo }>({});
   const [predictions, setPredictions] = useState<Prediction[]>([]);
@@ -80,6 +82,11 @@ const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalImageUrl, setModalImageUrl] = useState('');
   const [predictionsData, setPredictionsData] = useState([]);
+  const [selectedCameras, setSelectedCameras] = useState<Camera[]>([]);
+  const [FlagLocal, setFlagLocal] = useState(true);
+  const [isModalStreamOpen, setIsModalStreamOpen] = useState(false);
+
+  const memoizedFlagLocalToggle = useCallback(() => setFlagLocal(prev => !prev), []);
 
   const floorProps = useMemo(() => ({
     navigate,
@@ -136,25 +143,25 @@ const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
 
   function replaceEnglishWords(initialPredictions) {
     const translations = {
-        "person": "человек",
-        "tv": "экран",
-        "suitcase": "чемодан"
+      "person": "человек",
+      "tv": "экран",
+      "suitcase": "чемодан"
     };
 
     return initialPredictions.map(item => {
-        if (item.item_predict && translations[item.item_predict]) {
-            item.item_predict = translations[item.item_predict];
-        }
-        return item;
+      if (item.item_predict && translations[item.item_predict]) {
+        item.item_predict = translations[item.item_predict];
+      }
+      return item;
     });
-}
+  }
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await fetchWithRetry('https://192.168.0.136:4200/prediction/eventlist', 'GET', null, '/Home/Home');
         const initialPredictions = response.slice(0, 100); // Загружаем первые 100 предиктов
-        
+
         replaceEnglishWords(initialPredictions)
         setPredictions(initialPredictions);
 
@@ -253,6 +260,12 @@ const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
     });
   }
 
+  useEffect(() => {
+    if (FlagLocal) {
+      setIsModalStreamOpen(true);
+    }
+  }, [FlagLocal]);
+
   const prevSlide = () => {
     setCurrentIndex((prevIndex) => (prevIndex - 1 + numberHome) % numberHome);
   };
@@ -310,49 +323,56 @@ const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
         const roomInfo = roomInfoMap[event.camera_port] || { activeFloor: 'Неизвестно', roomName: 'Неизвестно' };
         //@ts-ignore
         const eventDate = formatTime(event.date); // Преобразуем миллисекунды в объект Date
-  
+
         const handleDoubleClick = async () => {
           try {
             // const response = await fetchWithRetry(`https://192.168.0.136:4200/prediction/screens/${event.date}`, 'GET', null, '/Home/Home');
             const response = await axios.get(`https://192.168.0.136:4200/prediction/screens/${event.date}`, {
               responseType: 'blob',
               withCredentials: true,
-          });
-          const blob = new Blob([response.data]);
-          const imageUrl = URL.createObjectURL(blob);
-              // saveAs(blob, `frame-${event.date}.png`);
-              // openModal(response); // Передаем URL в модальное окно
-              console.log('File downloaded successfully', response);
-              openModal(imageUrl, [event.item_predict, event.score_predict, event.bbox]);
+            });
+            const blob = new Blob([response.data]);
+            const imageUrl = URL.createObjectURL(blob);
+            // saveAs(blob, `frame-${event.date}.png`);
+            // openModal(response); // Передаем URL в модальное окно
+            console.log('File downloaded successfully', response);
+            openModal(imageUrl, [event.item_predict, event.score_predict, event.bbox]);
 
           } catch (error) {
             console.error('Error downloading file:', error);
           }
         };
-  
+
+        const translations = {
+          "person": "человек",
+          "tv": "экран",
+          "suitcase": "чемодан",
+          'chair': 'стул',
+          'dining table': 'рабочее место',
+        };
         function getTranslatedEventString(event) {
-          const translations = {
-              "person": "человек",
-              "tv": "экран",
-              "suitcase": "чемодан",
-              'chair': 'стул',
-              'dining table': 'рабочее место',
-          };
-      
-          const translatedItem = translations[event.item_predict] || event.item_predict;
-          const probability = (Number(event.score_predict.slice(0, 6)) * 100).toFixed(2);
-      
-          return `Обнаружен ${translatedItem} с вероятностью ${probability}%`;
+          if ((Number(event.score_predict?.slice(0, 6)) * 100) > 80) {
+            const translatedItem = translations[event.item_predict] || event.item_predict;
+            const probability = (Number(event.score_predict.slice(0, 6)) * 100).toFixed(2);
+            return (
+              <tr key={index}>
+                <td>{eventDate}</td>
+                <td>Здание №1</td>
+                <td>Этаж {Number(roomInfo.activeFloor) + 1}</td>
+                <td>{roomInfo.roomName}</td>
+                <td onDoubleClick={handleDoubleClick} style={{ cursor: 'pointer' }}>{`Обнаружен ${translatedItem} с вероятностью ${probability}%`}</td>
+              </tr>
+            )
+          }
+          else {
+            return;
+          }
+
+
         }
-  
+
         return (
-          <tr key={index}>
-            <td>{eventDate}</td>
-            <td>Здание №1</td>
-            <td>Этаж {Number(roomInfo.activeFloor) + 1}</td>
-            <td>{roomInfo.roomName}</td>
-            <td onDoubleClick={handleDoubleClick} style={{ cursor: 'pointer' }}>{getTranslatedEventString(event)}</td>
-          </tr>
+          getTranslatedEventString(event)
         );
       });
   };
@@ -365,13 +385,29 @@ const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
     const selectedValue = event.target.value;
     setSelectedFloor(selectedValue === '' ? null : Number(selectedValue));
   };
+  const handleDoubleClickCamera = useCallback((camera: Camera) => {
+    setSelectedCameras([camera]);
+    setIsModalStreamOpen(true);
+  }, []);
+
+  const handleCameraDrop = useCallback((camera: Camera, rowIndex: number, colIndex: number) => {
+    const cellKey = `${null}-${rowIndex}-${colIndex}`;
+    const updatedCamera: Camera = {
+      ...camera,
+      floor: null,
+      cell: cellKey,
+      initialPosition: { rowIndex, colIndex },
+    };
+    setDroppedCameras((prev) => ({ ...prev, [cellKey]: updatedCamera }));
+  }, [null]);
+
 
   return (
     <div className={HStyles.homeContainer}>
       <div className={HStyles.leftContainer}>
         <div className={HStyles.carouselContainer}>
-        <div className={HStyles.carouselHeader}>
-          <div className={HStyles.carouselTitle}>Выбор здания</div>
+          <div className={HStyles.carouselHeader}>
+            <div className={HStyles.carouselTitle}>Выбор здания</div>
           </div>
           <div className={HStyles.carousel}>
             {numberHome > 1 && (
@@ -386,7 +422,7 @@ const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
                   className={`${HStyles.buildingIcon} ${getSlideClass(index)}`}
                   onClick={() => setCurrentIndex(index)}
                 >
-                  
+
                   <Build123 />
                   {index === currentIndex && (
                     <span style={{ fontSize: "50px" }}>Здание №{index + 1}</span>
@@ -402,15 +438,19 @@ const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
           </div>
         </div>
         <div className={HStyles.statisticsContainer}>
-        <div className={HStyles.carouselHeader}>
-          <div className={HStyles.carouselTitle1}>Статистика</div>
+          <div className={HStyles.carouselHeader}>
+            <div className={HStyles.carouselTitle1}>Статистика</div>
           </div>
-          <ModalWindow isOpen={isModalOpen} onClose={closeModal} imageUrl={modalImageUrl} predictionsData={predictionsData} />
+          <ModalWindow
+            isOpen={isModalOpen}
+            onClose={closeModal}
+            imageUrl={modalImageUrl}
+            predictionsData={predictionsData} />
         </div>
       </div>
       {/* Правый контейнер */}
       <div className={HStyles.rightContainer}>
-      <div className={HStyles.tabs}>
+        <div className={HStyles.tabs}>
           <button
             className={`${HStyles.tabButton} ${activeTab === 'inside' ? HStyles.activeTab : ''}`}
             onClick={() => setActiveTab('inside')}
@@ -423,15 +463,15 @@ const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
           >
             Уличные камеры
           </button>
-          
+
         </div>
         <div className={HStyles.planContainer}>
           {activeTab === 'inside' && (
             <div className={HStyles.planInside}>
               <div className={HStyles.plan}>
-                <MemoizedFloor setDroppedCameras={function (value: React.SetStateAction<{ [key: string]: Camera; }>): void {
+                <MemoizedFloor savedCells={[]} roomNames={{}} roomCenters={{}} setDroppedCameras={function (value: React.SetStateAction<{ [key: string]: Camera; }>): void {
                   throw new Error("Function not implemented.");
-                } } {...floorProps} />
+                }} {...floorProps} />
               </div>
               <span className={HStyles.cameraLabel}>
                 <button className={HStyles.prevFloor} onClick={prevFloor}>
@@ -446,8 +486,22 @@ const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
           )}
           {activeTab === 'outside' && (
             <div className={HStyles.planOutside}>
-              {/* <SVG className={HStyles.outSide} /> */}
-              <Outside  />
+              <Outside
+                activeFloor={-1}
+                droppedCameras={droppedCameras}
+                rotationAngles={rotationAngles}
+                setRotationAngles={setRotationAngles}
+                onCameraDropped={handleCameraDrop}
+                onDoubleClickCamera={handleDoubleClickCamera}
+                FlagLocal={memoizedFlagLocalToggle}
+                coordinates={coordinates}
+                setCoordinates={setCoordinates}
+                handleParametrEditing={''}
+                isActive={true}
+                width={width}
+                height={height} navigate={function (path: string): Promise<boolean> {
+                  throw new Error("Function not implemented.");
+                }} children={""} />
               <span className={HStyles.cameraLabel}>Уличные камеры</span>
             </div>
           )}
@@ -493,9 +547,9 @@ const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
             </div>
           </div>
         </div>
-        
+
       </div>
-   
+
     </div>
   );
 };

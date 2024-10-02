@@ -175,7 +175,7 @@ const OutsideCamera: FC<OutsideProps> = ({ navigate }) => {
                             onDoubleClickCamera={handleDoubleClickCamera}
                             FlagLocal={() => setFlagLocal(prev => !prev)}
                             rotationAngles={rotationAngles}
-                            activeFloor={null}
+                            activeFloor={-1}
                             setRotationAngles={setRotationAngles}
                             isActive={true}
                             width={width}
@@ -196,7 +196,7 @@ const OutsideCamera: FC<OutsideProps> = ({ navigate }) => {
                             onSVGDrop={handleSVGDrop}
                             droppedCameras={droppedCameras}
                             droppedSVGs={droppedSVGs}
-                            activeFloor={null}
+                            activeFloor={-1}
                             onDoubleClickCamera={handleDoubleClickCamera}
                             FlagLocal={() => setFlagLocal(prev => !prev)}
                             rotationAngles={rotationAngles}
@@ -204,8 +204,9 @@ const OutsideCamera: FC<OutsideProps> = ({ navigate }) => {
                             selectedCells={selectedCells}
                             setSelectedCells={setSelectedCells}
                             setDroppedSVGs={setDroppedSVGs}
-                            setDroppedCameras={setDroppedCameras}
-                        />
+                            setDroppedCameras={setDroppedCameras} setRoomCenters={function (value: React.SetStateAction<{ [key: string]: { x: number; y: number; }; }>): void {
+                                throw new Error('Function not implemented.');
+                            } } setRoomNames={undefined}                        />
                     </div>
                 )}
             </div>

@@ -169,8 +169,6 @@ const Outside: FC<OutsideProps> = ({ children, droppedCameras, navigate, onDoubl
         localStorage.setItem('Coordinates', newCoordinates);
     };
 
-
-
     return (
         <div className={RStyles.body}>
             <div className={RStyles.container}>

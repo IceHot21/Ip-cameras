@@ -199,11 +199,11 @@ const ListCamera: FC<ListCameraProps> = memo(({
 
                   // Проверка для отключенных камер
                   selectedRooms.forEach((room) => {
-                    const activeFloor = room.activeFloor || 0; // Этаж
+                    const activeFloor = room.activeFloor || -1; // Этаж
                     const positions = room.positions ? room.positions.map(pos => `${activeFloor}-${pos.join('-')}`) : []; // Преобразование позиций
 
                     const cell = `${storedCamera?.cell}`; // Формат ячейки для камеры
-                    if (positions.includes(cell)) {
+                    if (positions.includes(cell) && activeFloor !== -1) {
                       storedNameRoom = room.roomName; // Устанавливаем имя комнаты для отключенной камеры
                     }
                   });
@@ -216,10 +216,10 @@ const ListCamera: FC<ListCameraProps> = memo(({
                       className={isDisabled ? `${LCStyles.tableRow} ${LCStyles.disabledRow}` : LCStyles.tableRow}
                     >
                       <td>{storedCamera ? storedCamera.id : camera.id}</td>
-                      <td>{storedCamera ? (storedCamera.cell?.startsWith("null") ? 'Улица' : `Здание`) : 'Неизвестно'}</td>
+                      <td>{storedCamera ? (storedCamera.cell?.startsWith(-1) ? 'Улица' : `Здание`) : 'Неизвестно'}</td>
                       <td>
                         {storedCamera
-                          ? (storedCamera.cell?.startsWith("null")
+                          ? (storedCamera.cell?.startsWith(-1)
                             ? ' '
                             : `${parseInt(storedCamera.cell.split('-')[0], 10) + 1}`)
                           : 'Неизвестно'}

@@ -12,10 +12,12 @@ const ModalWindow: FC<ModalWindowProps> = ({ isOpen, onClose, imageUrl, predicti
   if (!isOpen) return null;
 
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const imgRef = useRef<HTMLImageElement | null>(null);
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    if (!canvas) return;
+    const img = imgRef.current;
+    if (!canvas || !img) return;
 
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
@@ -26,33 +28,57 @@ const ModalWindow: FC<ModalWindowProps> = ({ isOpen, onClose, imageUrl, predicti
       "suitcase": "чемодан",
       'chair': 'стул',
       'dining table': 'рабочее место',
-  }
+    };
+
     // Очищаем canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // Рисуем bounding box и текст
-    const bboxArray = predictionsData[2].split(',').map(Number);
-    const [x, y, width, height] = bboxArray;
+    // Ожидаем загрузки изображения
+    img.onload = () => {
+      // Устанавливаем размеры canvas равными размерам изображения
+      canvas.width = img.width;
+      canvas.height = img.height;
 
-    ctx.strokeStyle = 'red';
-    ctx.lineWidth = 2;
-    ctx.strokeRect(x, y, width, height);
+      // Рисуем bounding box и текст
+      const bboxArray = predictionsData[2].split(',').map(Number);
+      const [x, y, width, height] = bboxArray;
 
-    ctx.fillStyle = 'red';
-    ctx.font = '16px Arial';
-    ctx.fillText(`${translations[predictionsData[0]]}(${predictionsData[1].slice(0, 4)})`, x, y - 5);
-  }, [predictionsData]);
+      // Масштабируем координаты bounding box
+      const scaleX = img.width / 1920;
+      const scaleY = img.height / 1080;
+
+      const scaledX = x * scaleX;
+      const scaledY = y * scaleY;
+      const scaledWidth = width * scaleX;
+      const scaledHeight = height * scaleY;
+
+      ctx.strokeStyle = 'red';
+      ctx.lineWidth = 2;
+      ctx.strokeRect(scaledX, scaledY, scaledWidth, scaledHeight);
+
+      ctx.fillStyle = 'red';
+      ctx.font = '16px Arial';
+      ctx.fillText(`${translations[predictionsData[0]]}(${predictionsData[1].slice(0, 4)})`, scaledX, scaledY - 5);
+    };
+
+    // Загружаем изображение
+    img.src = imageUrl;
+  }, [predictionsData, imageUrl]);
 
   return (
     <div className={HStyles.modalOverlay} onClick={onClose}>
       <div className={HStyles.modalContent} onClick={(e) => e.stopPropagation()}>
-        <img src={imageUrl} alt="Screenshot" className={HStyles.modalImage} />
+        <img
+          ref={imgRef}
+          src={imageUrl}
+          alt="Screenshot"
+          className={HStyles.modalImage}
+          style={{ display: 'block', width: '100%', height: 'auto' }}
+        />
         <canvas
           ref={canvasRef}
           className={HStyles.modalCanvas}
-          style={{ position: 'absolute', top: 0, left: 0, pointerEvents: 'none', marginTop:'35px', backgroundColor: 'transparent' }}
-          width={1920} // Установите ширину и высоту в соответствии с вашим изображением
-          height={1080}
+          style={{ position: 'absolute', top: '52.7vh', left: '1.2vh', pointerEvents: 'none', backgroundColor: 'transparent' }}
         />
         <button onClick={onClose} className={HStyles.modalCloseButton}>Закрыть</button>
       </div>
