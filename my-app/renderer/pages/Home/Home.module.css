@@ -186,6 +186,7 @@
   flex-direction: column;
   align-content: center;
   flex-wrap: wrap;
+  height: 578px;
 }
 
 .planInside {
@@ -194,6 +195,7 @@
   flex-direction: column;
   align-content: center;
   flex-wrap: wrap;
+  height: 578px;
 }
 
 .cameraLabel {

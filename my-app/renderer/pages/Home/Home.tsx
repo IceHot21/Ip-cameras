@@ -69,8 +69,8 @@ const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
   const [ws, setWs] = useState<WebSocket | null>(null);
   const [selectedFloor, setSelectedFloor] = useState<number | null>(null);
   const [activeTab, setActiveTab] = useState<'inside' | 'outside'>('inside');
-  const [width, setWidth] = useState("928px");
-  const [height, setHeight] = useState("690px");
+  const [width, setWidth] = useState("622px");
+  const [height, setHeight] = useState("492px");
   const [coordinates, setCoordinates] = useState("59.850491,30.305657");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalImageUrl, setModalImageUrl] = useState('');
@@ -157,7 +157,7 @@ const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
       setActiveFloor(Number(floor));
     }
   }, [floor]);
-  
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -361,8 +361,6 @@ const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
           else {
             return;
           }
-
-
         }
 
         return (
@@ -420,22 +418,24 @@ const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
       )}
       {activeTab === 'outside' && (
         <div className={HStyles.planOutside}>
-          <Outside
-            activeFloor={-1}
-            droppedCameras={droppedCameras}
-            rotationAngles={rotationAngles}
-            setRotationAngles={setRotationAngles}
-            onCameraDropped={handleCameraDrop}
-            onDoubleClickCamera={handleDoubleClickCamera}
-            FlagLocal={memoizedFlagLocalToggle}
-            coordinates={coordinates}
-            setCoordinates={setCoordinates}
-            handleParametrEditing={''}
-            isActive={true}
-            width={width}
-            height={height} navigate={function (path: string): Promise<boolean> {
-              throw new Error("Function not implemented.");
-            }} children={""} />
+          <div className={HStyles.plan}>
+            <Outside
+              activeFloor={-1}
+              droppedCameras={droppedCameras}
+              rotationAngles={rotationAngles}
+              setRotationAngles={setRotationAngles}
+              onCameraDropped={handleCameraDrop}
+              onDoubleClickCamera={handleDoubleClickCamera}
+              FlagLocal={memoizedFlagLocalToggle}
+              coordinates={coordinates}
+              setCoordinates={setCoordinates}
+              handleParametrEditing={''}
+              isActive={true}
+              width={width}
+              height={height} navigate={function (path: string): Promise<boolean> {
+                throw new Error("Function not implemented.");
+              }} children={""} />
+          </div>
           <span className={HStyles.cameraLabel}>Уличные камеры</span>
         </div>
       )}

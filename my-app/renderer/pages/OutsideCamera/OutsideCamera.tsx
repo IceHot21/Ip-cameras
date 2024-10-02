@@ -58,11 +58,8 @@ const OutsideCamera: FC<OutsideProps> = ({ navigate }) => {
     const [height, setHeight] = useState("690px");
     const [coordinates, setCoordinates] = useState("59.850491,30.305657");
 
-        
 
     const [handleParametrEditing, setHandleParametrEditing] = useState("grid");
-
-
 
 
     useEffect(() => {
