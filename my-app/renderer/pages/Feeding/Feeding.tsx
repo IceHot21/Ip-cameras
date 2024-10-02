@@ -339,7 +339,7 @@ const Feeding: FC<FeedingProps> = ({ navigate }) => {
           onClose={() => setIsModalStreamOpen(false)}
         />
       )}
-      <ToastContainer
+      {/* <ToastContainer
         position="bottom-right"
         autoClose={3000}
         hideProgressBar={false}
@@ -349,7 +349,7 @@ const Feeding: FC<FeedingProps> = ({ navigate }) => {
         pauseOnFocusLoss
         draggable
         pauseOnHover
-      />
+      /> */}
     </div>
   );
 };

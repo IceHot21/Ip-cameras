@@ -40,8 +40,8 @@
 }
 
 .tableContainer {
-  padding: 20px;
-  width: 44vh;
+  padding: 1vh;
+  width: 46vh;
   display: flex;
   justify-content: center;
   flex-direction: column;

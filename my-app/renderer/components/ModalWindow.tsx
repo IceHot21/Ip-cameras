@@ -60,7 +60,7 @@ const ModalWindow: FC<ModalWindowProps> = ({ isOpen, onClose, imageUrl, predicti
 
       ctx.fillStyle = 'red';
       ctx.font = '16px Arial';
-      ctx.fillText(`${translations[predictionsData[0]]}(${predictionsData[1].slice(0, 4)})`, scaledX, scaledY - 5);
+      ctx.fillText(`${predictionsData[0]}(${predictionsData[1].slice(0, 4)})`, scaledX, scaledY - 5);
     };
 
     // Загружаем изображение
@@ -70,18 +70,18 @@ const ModalWindow: FC<ModalWindowProps> = ({ isOpen, onClose, imageUrl, predicti
   return (
     <div className={HStyles.modalOverlay} onClick={onClose}>
       <div className={HStyles.modalContent} onClick={(e) => e.stopPropagation()}>
-        <button onClick={onClose} className={LCStyles.closeButton} title="Закрыть"><BiX /></button>
+        <button onClick={onClose} className={LCStyles.closeButton}  style={{position: 'absolute', marginTop: '-2.8vh', marginLeft: '60vh'} }title="Закрыть"><BiX /></button>
         <img
           ref={imgRef}
           src={imageUrl}
           alt="Screenshot"
           className={HStyles.modalImage}
-          style={{ display: 'block', width: '100%', height: 'auto' }}
+          style={{ display: 'block', width: '100%', height: 'auto' , marginTop: '2.1vh',  borderRadius: '0 0 3vh 3vh' }}
         />
         <canvas
           ref={canvasRef}
           className={HStyles.modalCanvas}
-          style={{ position: 'absolute', top: '52.7vh', left: '1.2vh', pointerEvents: 'none', backgroundColor: 'transparent' }}
+          style={{ position: 'absolute', top: '62.1vh', left: '1.2vh', pointerEvents: 'none', backgroundColor: 'transparent' }}
         />
         
       </div>

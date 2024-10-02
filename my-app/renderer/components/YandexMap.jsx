@@ -3,7 +3,7 @@ import YMStyles from '../styles/YandexMap.module.css';
 {/* <script src="https://maps.api.2gis.ru/2.0/loader.js?pkg=full"></script> */}
 
 const YandexMap = ({ width, height, coordinates, handleParametrEditing}) => {
-const mapUrl = `https://static.maps.2gis.com/1.0?s=311x250@2x&c=${coordinates}&z=18`
+const mapUrl = `https://static.maps.2gis.com/1.0?s=337x247@2x&c=${coordinates}&z=18`
 
   return (
     <div className={YMStyles.yandexMapContainer}>

@@ -115,14 +115,12 @@ const ListSVG: FC<ListSVGProps> = memo(({
   };
 
   const handleSelectClick = () => {
-    toast.info('Пожалуйста, выберете ячейки для комнаты и дайте ей название.');
     setIsSelecting(!isSelecting);
     setSidebarHeight(isSelecting ? '35%' : '39%'); // Изменяем высоту sidebar
   };
 
   const handleSaveRoom = () => {
     if (selectedCells.length === 0) {
-      toast.error('Ошибка: Нужно выбрать хотя бы одну ячейку.');
       return;
     }
 
@@ -136,7 +134,6 @@ const ListSVG: FC<ListSVGProps> = memo(({
     );
 
     if (hasIntersection) {
-      toast.error('Ошибка: Выбранные ячейки уже заняты другой комнатой на этом этаже.');
       setRoomName('');
       setIsSelecting(false);
       setSelectedCells([]);

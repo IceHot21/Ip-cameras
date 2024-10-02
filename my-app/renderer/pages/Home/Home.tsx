@@ -13,6 +13,7 @@ import ModalWindow from "../../components/ModalWindow";
 import axios from "axios";
 import Outside from "../../components/Outside";
 import ModalStream from "../../components/ModalStream";
+import { GiClick } from "react-icons/gi";
 
 interface HomeProps {
   numberHome: number;
@@ -71,8 +72,8 @@ const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
   const [ws, setWs] = useState<WebSocket | null>(null);
   const [selectedFloor, setSelectedFloor] = useState<number | null>(null);
   const [activeTab, setActiveTab] = useState<'inside' | 'outside'>('inside');
-  const [width, setWidth] = useState("622px");
-  const [height, setHeight] = useState("500px");
+  const [width, setWidth] = useState("676px");
+  const [height, setHeight] = useState("494px");
   const [coordinates, setCoordinates] = useState("59.850491,30.305657");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalImageUrl, setModalImageUrl] = useState('');
@@ -363,7 +364,7 @@ const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
                 <td>Здание №1</td>
                 <td>Этаж {Number(roomInfo.activeFloor) + 1}</td>
                 <td>{roomInfo.roomName}</td>
-                <td onDoubleClick={handleDoubleClick} style={{ cursor: 'pointer' }}>{`Обнаружен ${translatedItem} с вероятностью ${probability}%`}</td>
+                <td onClick={handleDoubleClick} style={{ cursor: 'pointer' }}>{`Обнаружен ${translatedItem} с вероятностью ${probability}%`}</td>
               </tr>
             )
           }
@@ -453,129 +454,128 @@ const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
 
   return (
     <div className={HStyles.homeContainer}>
-      <div className={HStyles.leftContainer}>
-        <div className={HStyles.carouselContainer}>
-          <div className={HStyles.carouselHeader}>
-            <div className={HStyles.carouselTitle}>Выбор здания</div>
-          </div>
-          <div className={HStyles.carousel}>
-            {numberHome > 1 && (
-              <button className={HStyles.prevButton} onClick={prevSlide}>
-                <FaChevronLeft />
-              </button>
-            )}
-            <div className={HStyles.carouselInner}>
-              {Array.from({ length: numberHome }, (_, index) => (
-                <div
-                  key={index}
-                  className={`${HStyles.buildingIcon} ${getSlideClass(index)}`}
-                  onClick={() => setCurrentIndex(index)}
-                >
-
-                  <Build123 />
-                  {index === currentIndex && (
-                    <span style={{ fontSize: "50px" }}>Здание №{index + 1}</span>
-                  )}
-                </div>
-              ))}
-            </div>
-            {numberHome > 2 && (
-              <button className={HStyles.nextButton} onClick={nextSlide}>
-                <FaChevronRight />
-              </button>
-            )}
-          </div>
+    <div className={HStyles.leftContainer}>
+      <div className={HStyles.carouselContainer}>
+        <div className={HStyles.carouselHeader}>
+          <div className={HStyles.carouselTitle}>Выбор здания</div>
         </div>
-        <div className={HStyles.statisticsContainer}>
-          <div className={HStyles.carouselHeader}>
-            <div className={HStyles.carouselTitle1}>Статистика</div>
+        <div className={HStyles.carousel}>
+          {numberHome > 1 && (
+            <button className={HStyles.prevButton} onClick={prevSlide}>
+              <FaChevronLeft />
+            </button>
+          )}
+          <div className={HStyles.carouselInner}>
+            {Array.from({ length: numberHome }, (_, index) => (
+              <div
+                key={index}
+                className={`${HStyles.buildingIcon} ${getSlideClass(index)}`}
+                onClick={() => setCurrentIndex(index)}
+              >
+
+                <Build123 />
+                {index === currentIndex && (
+                  <span style={{ fontSize: "50px" }}>Здание №{index + 1}</span>
+                )}
+              </div>
+            ))}
           </div>
-          <ModalWindow
-            isOpen={isModalOpen}
-            onClose={closeModal}
-            imageUrl={modalImageUrl}
-            predictionsData={predictionsData} />
+          {numberHome > 2 && (
+            <button className={HStyles.nextButton} onClick={nextSlide}>
+              <FaChevronRight />
+            </button>
+          )}
         </div>
       </div>
-      {/* Правый контейнер */}
-      <div className={HStyles.rightContainer}>
-        <div className={HStyles.tabs}>
-          <button
-            className={`${HStyles.tabButton} ${activeTab === 'inside' ? HStyles.activeTab : ''}`}
-            onClick={() => setActiveTab('inside')}
-          >
-            Внутренние камеры
-          </button>
-          <button
-            className={`${HStyles.tabButton} ${activeTab === 'outside' ? HStyles.activeTab : ''}`}
-            onClick={() => setActiveTab('outside')}
-          >
-            Уличные камеры
-          </button>
-
-        </div>
-        {planContainer}
-        <div className={HStyles.containerT}>
-          {/* Содержимое containerT */}
-          <div className={HStyles.panelContainer}>
-            <div className={HStyles.panelHeading}>
-              <div className={HStyles.panelTitle}>
-                <div className={HStyles.selectContainer}>
-                  <label className={HStyles.labelSelect}>Журнал событий</label>
-                  <div className={HStyles.selectObject}>
-                    <label className={HStyles.labelSelect}>Выбрать этаж:</label>
-                    <select value={selectedFloor || ''} onChange={handleFloorChange}>
-                      <option value="">Все этажи</option>
-                      {floorOptions}
-                    </select>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className={HStyles.tableContainer}>
-              <div className={HStyles.tableHeaderWrapper}>
-                <table>
-                  <thead className={HStyles.tableHeader}>
-                    <tr>
-                      <th>Дата и время</th>
-                      <th>Здание</th>
-                      <th>Номер этажа</th>
-                      <th>Помещение</th>
-                      <th>Событие</th>
-                    </tr>
-                  </thead>
-                </table>
-              </div>
-              <div className={HStyles.tableBodyWrapper}>
-                <table>
-                  <tbody className={HStyles.tableBody}>
-                    {renderTableRows}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-        </div>
-
+      <div className={HStyles.statisticsContainer}>
+      {!isModalOpen ? (
+      <label style={{width: '100%', fontSize: '2vh'}}>Выберите событие для того, чтобы вывести снимок <GiClick  /></label>
+    ) : (
+      <ModalWindow
+        isOpen={isModalOpen}
+        onClose={closeModal}
+        imageUrl={modalImageUrl}
+        predictionsData={predictionsData}
+      />
+    )}
       </div>
-
-      <Dialog open={isModalStreamOpen && aboba} onClose={() => setIsModalStreamOpen(false)}>
-        <DialogTitle>Уведомления за день</DialogTitle>
-        <DialogContent>
-          <div>
-            <ModalStream
-              navigate={navigate}
-              selectedCameras={cameraForModalStream}
-              setCam={setSelectedCameras}
-              isPredictions={isPredictions}
-              onClose={() => setIsModalStreamOpen(false)}
-            />
-          </div>
-        </DialogContent>
-      </Dialog>
-
     </div>
-  );
+    {/* Правый контейнер */}
+    <div className={HStyles.rightContainer}>
+      <div className={HStyles.containerH}>
+      {<div className={HStyles.tabs}>
+        <button
+          className={`${HStyles.tabButton} ${activeTab === 'inside' ? HStyles.activeTab : ''}`}
+          onClick={() => setActiveTab('inside')}
+        >
+          Внутренние камеры
+        </button>
+        <button
+          className={`${HStyles.tabButton} ${activeTab === 'outside' ? HStyles.activeTab : ''}`}
+          onClick={() => setActiveTab('outside')}
+        >
+          Уличные камеры
+        </button>
+
+      </div>}
+      {planContainer}
+      </div>
+      
+      <div className={HStyles.containerT}>
+        {/* Содержимое containerT */}
+        <div className={HStyles.panelContainer}>
+          <div className={HStyles.panelHeading} style={{borderBottom: '1px solid #006c2a'}}>
+            <div className={HStyles.panelTitle}>
+              <div className={HStyles.selectContainer}>
+                <label className={HStyles.labelSelect1}>Журнал событий</label>
+                <div className={HStyles.selectObject}>
+                  <label className={HStyles.labelSelect}>Выбрать этаж:</label>
+                  <select value={selectedFloor || ''} onChange={handleFloorChange}>
+                    <option value="">Все этажи</option>
+                    {floorOptions}
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className={HStyles.tableContainer}>
+              <table>
+                <thead className={HStyles.tableHeader}>
+                  <tr>
+                    <th>Дата и время</th>
+                    <th>Здание</th>
+                    <th>Номер этажа</th>
+                    <th>Помещение</th>
+                    <th>Событие</th>
+                  </tr>
+                </thead>
+              <tbody className={HStyles.tableBody}>
+                {renderTableRows}
+              </tbody>
+            </table>
+          </div>
+      </div>
+    </div>
+
+    <Dialog open={isModalStreamOpen && aboba} onClose={() => setIsModalStreamOpen(false)}>
+      <DialogTitle>Уведомления за день</DialogTitle>
+      <DialogContent>
+        <div>
+          <ModalStream
+            navigate={navigate}
+            selectedCameras={cameraForModalStream}
+            setCam={setSelectedCameras}
+            isPredictions={isPredictions}
+            onClose={() => setIsModalStreamOpen(false)}
+          />
+        </div>
+      </DialogContent>
+    </Dialog>
+
+  </div>
+
+  </div >
+);
 };
 
 export default Home;
