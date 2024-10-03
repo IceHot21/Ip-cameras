@@ -331,7 +331,7 @@ const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
         const handleDoubleClick = async () => {
           try {
             // const response = await fetchWithRetry(`https://192.168.0.136:4200/prediction/screens/${event.date}`, 'GET', null, '/Home/Home');
-            const response = await axios.get(`https://192.168.0.136:4200/prediction/screens/${event.date}`, {
+            const response = await axios.get(`https://192.168.0.136:4200/prediction/screens/${event.camera_port}-${event.date}`, {
               responseType: 'blob',
               withCredentials: true,
             });
