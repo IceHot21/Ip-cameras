@@ -21,6 +21,7 @@ interface StartStreamProps {
   setCam: (cameras: Camera[]) => void;
   onClose: () => void;
   isPredictions: Prediction | null;
+  FlagLocal: () => void;
 }
 
 interface Prediction {
@@ -32,46 +33,10 @@ interface Prediction {
   bbox: string;
 }
 
-const StartStream: FC<StartStreamProps> = ({ port, rtspUrl, id, cameraName, setCam, onClose, isPredictions, navigate}) => {
+const StartStream: FC<StartStreamProps> = ({ port, rtspUrl, id, cameraName, setCam, onClose, isPredictions, navigate, FlagLocal }) => {
   const [error, setError] = useState(null);
   const [players, setPlayers] = useState(null);
   const [isRecording, setIsRecording] = useState(false);
-  // const [isPredictions, setIsPredictions] = useState<Prediction | null>(null)
-  // const [ws, setWs] = useState<WebSocket | null>(null);
-
-  // useEffect(() => {
-  //   const socket = new WebSocket('ws://192.168.0.136:9999');
-
-  //   socket.onopen = () => {
-  //     console.log('Connected to WebSocket server');
-  //   };
-
-  //   socket.onclose = () => {
-  //     console.log('Disconnected from WebSocket server');
-  //   };
-
-  //   socket.onerror = (error) => {
-  //     console.error('WebSocket error:', error);
-  //   };
-
-  //   socket.onmessage = (event) => {
-  //     const reader = new FileReader();
-  //     reader.onload = () => {
-  //       const predictions = JSON.parse(reader.result as string);
-  //       console.log(predictions);
-  //       setIsPredictions(predictions);
-  //     };
-  //     reader.readAsText(event.data);
-  //   };
-
-  //   setWs(socket);
-
-  //   return () => {
-  //     socket.close();
-  //   };
-  // }, [port]);
-
-
 
   useEffect(() => {
       const url = `ws://192.168.0.136:${port}`;
@@ -91,11 +56,6 @@ const StartStream: FC<StartStreamProps> = ({ port, rtspUrl, id, cameraName, setC
       setPlayers(player);
 
       console.log(`Stream started for camera ${cameraName} on canvas ${id}`);
-      // return () => {
-      //   if (player) {
-      //     player.destroy();
-      //   }
-      // };
   }, [port, id]);
 
   useEffect(() => {
@@ -146,6 +106,7 @@ const StartStream: FC<StartStreamProps> = ({ port, rtspUrl, id, cameraName, setC
   const handleDelete = async () => {
     players.destroy()
     onClose();
+    FlagLocal();
   };
 
   const handleStartRecording = () => {
@@ -208,14 +169,6 @@ const StartStream: FC<StartStreamProps> = ({ port, rtspUrl, id, cameraName, setC
         </div>
         <canvas id={`canvas${id}`} width="1920" height="1080" />
         <canvas id={`overlayCanvas${id}`} style={{ position: 'absolute', top: 0, left: 0, pointerEvents: 'none', marginTop:'35px', backgroundColor: 'transparent' }} />
-        {/* <div className={SSStyles.buttonsContainer}>
-          <button
-            onClick={isRecording ? handleStopRecording : handleStartRecording}
-          >
-            {isRecording ? 'Стоп' : 'Запись'}
-          </button>
-          <button onClick={handleTakeScreenshot}>Сделать скриншот</button>
-        </div> */}
         {error && <div style={{ color: 'red' }}>{error}</div>}
       </div>
     </div>

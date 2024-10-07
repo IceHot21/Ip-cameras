@@ -204,15 +204,6 @@ const Grid: FC<GridProps> = ({
     e.preventDefault();
   }, []);
 
-  const handleDoubleClick = useCallback((camera: Camera) => {
-    if (!selectedCameras.some(c => c.id === camera.id)) {
-      setSelectedCameras([camera]);
-      onDoubleClickCamera(camera);
-      FlagLocal();
-    } else {
-      setSelectedCameras([]);
-    }
-  }, [selectedCameras, onDoubleClickCamera, FlagLocal]);
 
   const handleDrop = useCallback((e: React.DragEvent<HTMLDivElement>, rowIndex: number, colIndex: number) => {
     e.preventDefault();
@@ -314,7 +305,6 @@ const Grid: FC<GridProps> = ({
                     className={GStyles.cameraIcon}
                     draggable
                     onDragStart={(e) => handleDragStart(e, camera)}
-                    onDoubleClick={() => handleDoubleClick(camera)}
                     id={cameraId}
                     title={cameraId}
                     onContextMenu={(e) => displayMenu(e, cameraId, cellKey)}

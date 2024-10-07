@@ -80,7 +80,7 @@ const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
   const [modalImageUrl, setModalImageUrl] = useState('');
   const [predictionsData, setPredictionsData] = useState([]);
   const [selectedCameras, setSelectedCameras] = useState<Camera[]>([]);
-  const [FlagLocal, setFlagLocal] = useState(true);
+  const [FlagLocal, setFlagLocal] = useState(false);
   const router = useRouter();
   const { floor } = router.query;
   const [activeFloor, setActiveFloor] = useState<number>(0);
@@ -245,7 +245,12 @@ const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
     return () => {
       socket.close();
     };
+
   }, []);
+
+  useEffect(() => {
+    console.log(FlagLocal)
+  }, [FlagLocal]);
 
   const svgImages = [Svg1, Svg2, Svg3];
   const current = new Date();
@@ -602,10 +607,10 @@ const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
             //@ts-ignore
             isPredictions={isPredictions}
             onClose={() => setIsModalStreamOpen(false)}
+            FlagLocal={memoizedFlagLocalToggle}
           />
         )}
       </div>
-
     </div >
   );
 };

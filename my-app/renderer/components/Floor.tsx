@@ -49,11 +49,11 @@ const Floor: FC<FloorProps> = memo(({ children, droppedCameras, activeFloor, nav
   const menuClick = "Меню";
   const { show } = useContextMenu({ id: menuClick });
 
-  useEffect(() => {
+/*   useEffect(() => {
     if (selectedCameras) {
       FlagLocal();
     }
-  }, [selectedCameras]);
+  }, [selectedCameras]); */
 
   useEffect(() => {
     const savedCells = localStorage.getItem('centerNameRooms');

@@ -50,7 +50,7 @@ const Feeding: FC<FeedingProps> = ({ navigate }) => {
   const [droppedSVGs, setDroppedSVGs] = useState<{ [key: string]: SVGItem }>({});
   const [selectedCameras, setSelectedCameras] = useState<Camera[]>([]);
   const [isModalStreamOpen, setIsModalStreamOpen] = useState(false);
-  const [FlagLocal, setFlagLocal] = useState(true);
+  const [FlagLocal, setFlagLocal] = useState(false);
   const [movedCameras, setMovedCameras] = useState<Set<number>>(new Set());
   const [rotationAngles, setRotationAngles] = useState<{ [key: string]: number }>({});
   const router = useRouter();
@@ -333,6 +333,7 @@ const Feeding: FC<FeedingProps> = ({ navigate }) => {
           setCam={setSelectedCameras}
           isPredictions={isPredictions}
           onClose={() => setIsModalStreamOpen(false)}
+          FlagLocal={memoizedFlagLocalToggle}
         />
       )}
     </div>

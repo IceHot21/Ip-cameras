@@ -48,12 +48,12 @@ const Outside: FC<OutsideProps> = ({ children, droppedCameras, navigate, onDoubl
     const [selectedCameras, setSelectedCameras] = useState<Camera[]>([]);
     const menuClick = "Меню";
     const { show } = useContextMenu({ id: menuClick });
-
+/* 
     useEffect(() => {
         if (selectedCameras) {
             FlagLocal();
         }
-    }, [selectedCameras]);
+    }, [selectedCameras]); */
 
     useEffect(() => {
         const savedDroppedCameras = localStorage.getItem('droppedCameras');
