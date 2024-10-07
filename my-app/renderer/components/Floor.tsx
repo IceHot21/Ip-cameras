@@ -42,14 +42,9 @@ type FloorProps = {
   setDroppedSVGs: any;
   setDroppedCameras: React.Dispatch<React.SetStateAction<{ [key: string]: Camera }>>;
   savedCells: number[][];
-  roomNames: { [key: string]: string };
-  roomCenters: { [key: string]: { x: number; y: number } };
-  setIsModalStreamOpen: React.Dispatch<React.SetStateAction<boolean>>
-  setCameraForModalStream: React.Dispatch<React.SetStateAction<any>>
-  setAboba: React.Dispatch<React.SetStateAction<boolean>>
 };
 
-const Floor: FC<FloorProps> = memo(({ children, droppedCameras, activeFloor, navigate, onFloorChange, onDoubleClickCamera, FlagLocal, rotationAngles, setRotationAngles, droppedSVGs, onSVGDrop, floorIndex, isActive, setDroppedSVGs, setDroppedCameras, savedCells, roomNames, roomCenters, setIsModalStreamOpen, setCameraForModalStream, setAboba }) => {
+const Floor: FC<FloorProps> = memo(({ children, droppedCameras, activeFloor, navigate, onFloorChange, onDoubleClickCamera, FlagLocal, rotationAngles, setRotationAngles, droppedSVGs, onSVGDrop, floorIndex, isActive, setDroppedSVGs, setDroppedCameras, savedCells }) => {
   const [selectedCameras, setSelectedCameras] = useState<Camera[]>([]);
   const menuClick = "Меню";
   const { show } = useContextMenu({ id: menuClick });
@@ -159,11 +154,6 @@ const Floor: FC<FloorProps> = memo(({ children, droppedCameras, activeFloor, nav
     }
   }, [floorIndex, droppedCameras, droppedSVGs, rotationAngles, setDroppedCameras, setDroppedSVGs]);
 
-  const sendCameraToModalHome = (camera:any) => {
-    setCameraForModalStream([camera]);
-    setIsModalStreamOpen(true);
-    setAboba(true);
-  }
 
   return (
     <div className={RStyles.body}>
@@ -201,10 +191,7 @@ const Floor: FC<FloorProps> = memo(({ children, droppedCameras, activeFloor, nav
                         <div
                           className={GStyles.cameraIcon}
                           onDragStart={(e) => handleDragStart(e, camera)}
-                          onDoubleClick={() => handleDoubleClick(camera)}
-                          // _______________________________________________________________
-                          onClick={() => sendCameraToModalHome(camera)}
-                          // _______________________________________________________________
+                          onClick={() => handleDoubleClick(camera)}
                           id={cameraId}
                           title={cameraId}
                         >

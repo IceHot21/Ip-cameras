@@ -7,7 +7,7 @@ import { useRouter } from "next/router";
 import Build123 from '../../assets/Build123.svg'
 import { FaBell, FaChevronLeft, FaChevronRight, FaInfoCircle } from "react-icons/fa";
 import { Button, Dialog, DialogContent, DialogTitle } from "@mui/material";
-import Floor from '../../components/Floor'; // Импортируем компонент Floor
+import Floor from '../../components/Floor';
 import { fetchWithRetry } from "../../refreshToken";
 import ModalWindow from "../../components/ModalWindow";
 import axios from "axios";
@@ -58,6 +58,7 @@ interface SVGItem {
   name: string;
 }
 
+const MemoizedModalStream = memo(ModalStream);
 const MemoizedFloor = memo(Floor);
 
 const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
@@ -87,7 +88,11 @@ const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
   const [cameraForModalStream, setCameraForModalStream] = useState<any>(null);
   const [aboba, setAboba] = useState(false);
   const [isPredictions, setIsPredictions] = useState<Prediction | null>(null);
+  const [selectedCells, setSelectedCells] = useState<number[][]>([]);
 
+  const [roomNames, setRoomNames] = useState<{ [key: string]: string }>({});
+  const [roomCenters, setRoomCenters] = useState<{ [key: string]: { x: number; y: number } }>({});
+  const [savedCells, setSavedCells] = useState<number[][]>([]);
   const memoizedFlagLocalToggle = useCallback(() => setFlagLocal(prev => !prev), []);
 
   const floorProps = useMemo(() => ({
@@ -171,15 +176,13 @@ const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
     const fetchData = async () => {
       try {
         const response = await fetchWithRetry('https://192.168.0.136:4200/prediction/eventlist', 'GET', null, '/Home/Home');
-        const initialPredictions = response.slice(0, 100); // Загружаем первые 100 предиктов
+        const initialPredictions = response.slice(0, 100);
 
         replaceEnglishWords(initialPredictions)
         setPredictions(initialPredictions);
 
-        // Найти все уникальные camera_port
         const uniquePorts = [...new Set(initialPredictions.map(event => event.camera_port))];
 
-        // Сопоставить каждый уникальный camera_port с соответствующим этажом и комнатой)
         const roomInfoMap: { [port: number]: RoomInfo } = {};
         uniquePorts.forEach(port => {
           //@ts-ignore
@@ -220,13 +223,12 @@ const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
         setPredictions(prevPredictions => {
           const updatedPredictions = [newPrediction, ...prevPredictions];
           if (updatedPredictions.length > 100) {
-            updatedPredictions.pop(); // Удаляем самый старый предикт, если их больше 100
+            updatedPredictions.pop();
           }
           return updatedPredictions;
         });
         setIsPredictions(newPrediction)
 
-        // Обновляем roomInfoMap для нового предикта
         const roomInfo = findCellByPort(newPrediction.camera_port);
         if (roomInfo) {
           setRoomInfoMap(prevRoomInfoMap => ({
@@ -299,7 +301,7 @@ const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
     const date = new Date(Number(timeInMilliseconds));
 
     const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0'); // Месяцы начинаются с 0
+    const month = String(date.getMonth() + 1).padStart(2, '0');
     const day = String(date.getDate()).padStart(2, '0');
     const hours = String(date.getHours()).padStart(2, '0');
     const minutes = String(date.getMinutes()).padStart(2, '0');
@@ -326,7 +328,7 @@ const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
       .map((event, index) => {
         const roomInfo = roomInfoMap[event.camera_port] || { activeFloor: 'Неизвестно', roomName: 'Неизвестно' };
         //@ts-ignore
-        const eventDate = formatTime(event.date); // Преобразуем миллисекунды в объект Date
+        const eventDate = formatTime(event.date);
 
         const handleDoubleClick = async () => {
           try {
@@ -385,10 +387,27 @@ const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
     ));
   }, [svgImages.length]);
 
-  const handleFloorChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+  const handleFloorChange1 = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedValue = event.target.value;
     setSelectedFloor(selectedValue === '' ? null : Number(selectedValue));
   };
+
+  const handleFloorChange = useCallback((floor: number) => {
+    setActiveFloor(floor);
+  }, []);
+
+  const handleSVGDrop = useCallback((svg: SVGItem, rowIndex: number, colIndex: number) => {
+    const cellKey = `${activeFloor}-${rowIndex}-${colIndex}`;
+    setDroppedSVGs((prev) => ({ ...prev, [cellKey]: svg }));
+  }, [activeFloor]);
+
+  const handleLeftClick = useCallback(() => {
+    setActiveFloor((prevFloor) => (prevFloor - 1 + svgImages.length) % svgImages.length);
+  }, [svgImages.length]);
+
+  const handleRightClick = useCallback(() => {
+    setActiveFloor((prevFloor) => (prevFloor + 1) % svgImages.length);
+  }, [svgImages.length]);
 
   const handleDoubleClickCamera = useCallback((camera: Camera) => {
     setSelectedCameras([camera]);
@@ -406,22 +425,43 @@ const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
     setDroppedCameras((prev) => ({ ...prev, [cellKey]: updatedCamera }));
   }, [activeFloor]);
 
+  const memoizedDroppedCameras = useMemo(() => droppedCameras, [droppedCameras]);
+  const memoizedDroppedSVGs = useMemo(() => droppedSVGs, [droppedSVGs]);
+  const memoizedRotationAngles = useMemo(() => rotationAngles, [rotationAngles]);
+  const memoizedSelectedCells = useMemo(() => selectedCells, [selectedCells]);
+
   const planContainer = useMemo(() => (
     <div className={HStyles.planContainer}>
       {activeTab === 'inside' && (
         <div className={HStyles.planInside}>
           <div className={HStyles.plan}>
-            <MemoizedFloor savedCells={[]} roomNames={{}} setAboba={setAboba} roomCenters={{}} setIsModalStreamOpen={setIsModalStreamOpen} setDroppedCameras={function (value: React.SetStateAction<{ [key: string]: Camera; }>): void {
-              throw new Error("Function not implemented.");
-            }} {...floorProps} />
+            <MemoizedFloor
+              navigate={navigate}
+              children={null}
+              onCameraDropped={handleCameraDrop}
+              droppedCameras={memoizedDroppedCameras}
+              activeFloor={activeFloor}
+              onFloorChange={handleFloorChange}
+              onDoubleClickCamera={handleDoubleClickCamera}
+              FlagLocal={memoizedFlagLocalToggle}
+              rotationAngles={memoizedRotationAngles}
+              setRotationAngles={setRotationAngles}
+              droppedSVGs={memoizedDroppedSVGs}
+              onSVGDrop={handleSVGDrop}
+              floorIndex={activeFloor}
+              isActive={true}
+              setDroppedSVGs={setDroppedSVGs}
+              setDroppedCameras={setDroppedCameras}
+              savedCells={savedCells}
+            />
           </div>
           <span className={HStyles.cameraLabel}>
             <button className={HStyles.prevFloor} onClick={prevFloor}>
-              <FaChevronLeft />
+              <FaChevronLeft onClick={handleLeftClick} />
             </button>
             Этаж {currentSvgIndex + 1}
             <button className={HStyles.nextFloor} onClick={nextFloor}>
-              <FaChevronRight />
+              <FaChevronRight onClick={handleRightClick} />
             </button>
           </span>
         </div>
@@ -454,91 +494,89 @@ const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
 
   return (
     <div className={HStyles.homeContainer}>
-    <div className={HStyles.leftContainer}>
-      <div className={HStyles.carouselContainer}>
-        <div className={HStyles.carouselHeader}>
-          <div className={HStyles.carouselTitle}>Выбор здания</div>
-        </div>
-        <div className={HStyles.carousel}>
-          {numberHome > 1 && (
-            <button className={HStyles.prevButton} onClick={prevSlide}>
-              <FaChevronLeft />
-            </button>
-          )}
-          <div className={HStyles.carouselInner}>
-            {Array.from({ length: numberHome }, (_, index) => (
-              <div
-                key={index}
-                className={`${HStyles.buildingIcon} ${getSlideClass(index)}`}
-                onClick={() => setCurrentIndex(index)}
-              >
-
-                <Build123 />
-                {index === currentIndex && (
-                  <span style={{ fontSize: "50px" }}>Здание №{index + 1}</span>
-                )}
-              </div>
-            ))}
+      <div className={HStyles.leftContainer}>
+        <div className={HStyles.carouselContainer}>
+          <div className={HStyles.carouselHeader}>
+            <div className={HStyles.carouselTitle}>Выбор здания</div>
           </div>
-          {numberHome > 2 && (
-            <button className={HStyles.nextButton} onClick={nextSlide}>
-              <FaChevronRight />
-            </button>
+          <div className={HStyles.carousel}>
+            {numberHome > 1 && (
+              <button className={HStyles.prevButton} onClick={prevSlide}>
+                <FaChevronLeft />
+              </button>
+            )}
+            <div className={HStyles.carouselInner}>
+              {Array.from({ length: numberHome }, (_, index) => (
+                <div
+                  key={index}
+                  className={`${HStyles.buildingIcon} ${getSlideClass(index)}`}
+                  onClick={() => setCurrentIndex(index)}
+                >
+
+                  <Build123 />
+                  {index === currentIndex && (
+                    <span style={{ fontSize: "50px" }}>Здание №{index + 1}</span>
+                  )}
+                </div>
+              ))}
+            </div>
+            {numberHome > 2 && (
+              <button className={HStyles.nextButton} onClick={nextSlide}>
+                <FaChevronRight />
+              </button>
+            )}
+          </div>
+        </div>
+        <div className={HStyles.statisticsContainer}>
+          {!isModalOpen ? (
+            <label style={{ width: '100%', fontSize: '2vh' }}>Выберите событие для того, чтобы вывести снимок <GiClick /></label>
+          ) : (
+            <ModalWindow
+              isOpen={isModalOpen}
+              onClose={closeModal}
+              imageUrl={modalImageUrl}
+              predictionsData={predictionsData}
+            />
           )}
         </div>
       </div>
-      <div className={HStyles.statisticsContainer}>
-      {!isModalOpen ? (
-      <label style={{width: '100%', fontSize: '2vh'}}>Выберите событие для того, чтобы вывести снимок <GiClick  /></label>
-    ) : (
-      <ModalWindow
-        isOpen={isModalOpen}
-        onClose={closeModal}
-        imageUrl={modalImageUrl}
-        predictionsData={predictionsData}
-      />
-    )}
-      </div>
-    </div>
-    {/* Правый контейнер */}
-    <div className={HStyles.rightContainer}>
-      <div className={HStyles.containerH}>
-      {<div className={HStyles.tabs}>
-        <button
-          className={`${HStyles.tabButton} ${activeTab === 'inside' ? HStyles.activeTab : ''}`}
-          onClick={() => setActiveTab('inside')}
-        >
-          Внутренние камеры
-        </button>
-        <button
-          className={`${HStyles.tabButton} ${activeTab === 'outside' ? HStyles.activeTab : ''}`}
-          onClick={() => setActiveTab('outside')}
-        >
-          Уличные камеры
-        </button>
+      <div className={HStyles.rightContainer}>
+        <div className={HStyles.containerH}>
+          {<div className={HStyles.tabs}>
+            <button
+              className={`${HStyles.tabButton} ${activeTab === 'inside' ? HStyles.activeTab : ''}`}
+              onClick={() => setActiveTab('inside')}
+            >
+              Внутренние камеры
+            </button>
+            <button
+              className={`${HStyles.tabButton} ${activeTab === 'outside' ? HStyles.activeTab : ''}`}
+              onClick={() => setActiveTab('outside')}
+            >
+              Уличные камеры
+            </button>
 
-      </div>}
-      {planContainer}
-      </div>
-      
-      <div className={HStyles.containerT}>
-        {/* Содержимое containerT */}
-        <div className={HStyles.panelContainer}>
-          <div className={HStyles.panelHeading} style={{borderBottom: '1px solid #006c2a'}}>
-            <div className={HStyles.panelTitle}>
-              <div className={HStyles.selectContainer}>
-                <label className={HStyles.labelSelect1}>Журнал событий</label>
-                <div className={HStyles.selectObject}>
-                  <label className={HStyles.labelSelect}>Выбрать этаж:</label>
-                  <select value={selectedFloor || ''} onChange={handleFloorChange}>
-                    <option value="">Все этажи</option>
-                    {floorOptions}
-                  </select>
+          </div>}
+          {planContainer}
+        </div>
+
+        <div className={HStyles.containerT}>
+          <div className={HStyles.panelContainer}>
+            <div className={HStyles.panelHeading} style={{ borderBottom: '1px solid #006c2a' }}>
+              <div className={HStyles.panelTitle}>
+                <div className={HStyles.selectContainer}>
+                  <label className={HStyles.labelSelect1}>Журнал событий</label>
+                  <div className={HStyles.selectObject}>
+                    <label className={HStyles.labelSelect}>Выбрать этаж:</label>
+                    <select value={selectedFloor || ''} onChange={handleFloorChange1}>
+                      <option value="">Все этажи</option>
+                      {floorOptions}
+                    </select>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-          <div className={HStyles.tableContainer}>
+            <div className={HStyles.tableContainer}>
               <table>
                 <thead className={HStyles.tableHeader}>
                   <tr>
@@ -549,33 +587,27 @@ const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
                     <th>Событие</th>
                   </tr>
                 </thead>
-              <tbody className={HStyles.tableBody}>
-                {renderTableRows}
-              </tbody>
-            </table>
+                <tbody className={HStyles.tableBody}>
+                  {renderTableRows}
+                </tbody>
+              </table>
+            </div>
           </div>
-      </div>
-    </div>
-
-    <Dialog open={isModalStreamOpen && aboba} onClose={() => setIsModalStreamOpen(false)}>
-      <DialogTitle>Уведомления за день</DialogTitle>
-      <DialogContent>
-        <div>
-          <ModalStream
+        </div>
+        {isModalStreamOpen && (
+          <MemoizedModalStream
             navigate={navigate}
-            selectedCameras={cameraForModalStream}
+            selectedCameras={selectedCameras}
             setCam={setSelectedCameras}
+            //@ts-ignore
             isPredictions={isPredictions}
             onClose={() => setIsModalStreamOpen(false)}
           />
-        </div>
-      </DialogContent>
-    </Dialog>
+        )}
+      </div>
 
-  </div>
-
-  </div >
-);
+    </div >
+  );
 };
 
 export default Home;

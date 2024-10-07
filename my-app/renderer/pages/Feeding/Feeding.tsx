@@ -213,11 +213,9 @@ const Feeding: FC<FeedingProps> = ({ navigate }) => {
         onSVGDrop={handleSVGDrop}
         floorIndex={activeFloor}
         isActive={true}
-        savedCells={savedCells}
-        roomNames={roomNames}
-        roomCenters={roomCenters}
         setDroppedSVGs={setDroppedSVGs}
         setDroppedCameras={setDroppedCameras}
+        savedCells={savedCells}
       />
     </div>
   ), [activeFloor, memoizedDroppedCameras, memoizedDroppedSVGs, memoizedRotationAngles, handleCameraDrop, handleFloorChange, handleDoubleClickCamera, navigate, memoizedFlagLocalToggle, savedCells, roomNames, roomCenters]);
@@ -245,11 +243,9 @@ const Feeding: FC<FeedingProps> = ({ navigate }) => {
             onSVGDrop={handleSVGDrop}
             floorIndex={floorIndex}
             isActive={floorIndex === activeFloor}
-            savedCells={savedCells}
-            roomNames={roomNames}
-            roomCenters={roomCenters}
             setDroppedSVGs={setDroppedSVGs}
             setDroppedCameras={setDroppedCameras}
+            savedCells={savedCells}
           />
         </div>
       ))}
@@ -339,17 +335,6 @@ const Feeding: FC<FeedingProps> = ({ navigate }) => {
           onClose={() => setIsModalStreamOpen(false)}
         />
       )}
-      {/* <ToastContainer
-        position="bottom-right"
-        autoClose={3000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-      /> */}
     </div>
   );
 };
