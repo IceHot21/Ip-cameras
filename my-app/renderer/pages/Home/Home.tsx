@@ -283,10 +283,12 @@ const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
 
   const nextFloor = () => {
     setCurrentSvgIndex((prevSvgIndex) => (prevSvgIndex + 1) % svgImages.length);
+    setActiveFloor((prevFloor) => (prevFloor + 1) % svgImages.length);
   };
 
   const prevFloor = () => {
     setCurrentSvgIndex((prevSvgIndex) => (prevSvgIndex - 1 + svgImages.length) % svgImages.length);
+    setActiveFloor((prevFloor) => (prevFloor - 1 + svgImages.length) % svgImages.length);
   };
 
   const getSlideClass = (index: number) => {
@@ -399,6 +401,7 @@ const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
 
   const handleFloorChange = useCallback((floor: number) => {
     setActiveFloor(floor);
+    setCurrentSvgIndex(floor);
   }, []);
 
   const handleSVGDrop = useCallback((svg: SVGItem, rowIndex: number, colIndex: number) => {
@@ -408,10 +411,12 @@ const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
 
   const handleLeftClick = useCallback(() => {
     setActiveFloor((prevFloor) => (prevFloor - 1 + svgImages.length) % svgImages.length);
+    setCurrentSvgIndex((prevSvgIndex) => (prevSvgIndex - 1 + svgImages.length) % svgImages.length);
   }, [svgImages.length]);
 
   const handleRightClick = useCallback(() => {
     setActiveFloor((prevFloor) => (prevFloor + 1) % svgImages.length);
+    setCurrentSvgIndex((prevSvgIndex) => (prevSvgIndex + 1) % svgImages.length);
   }, [svgImages.length]);
 
   const handleDoubleClickCamera = useCallback((camera: Camera) => {
