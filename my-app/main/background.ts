@@ -15,13 +15,10 @@ if (isProd) {
 ;(async () => {
   await app.whenReady()
 
-  // Получаем информацию о главном экране
-  const { width, height } = screen.getPrimaryDisplay().workAreaSize
-
   const mainWindow = createWindow('main', {
     title: "IP Cameras",
-    width: width, 
-    height: height, 
+    width: 1920,
+    height: 1080,
     autoHideMenuBar: true,
     frame: false,
     titleBarStyle: "hidden",
@@ -29,6 +26,8 @@ if (isProd) {
       preload: path.join(__dirname, 'preload.js'),
     },
   })
+
+  mainWindow.center() // Центрирует окно на экране
 
   if (isProd) {
     await mainWindow.loadURL('app://./LoginPage/LoginPage')

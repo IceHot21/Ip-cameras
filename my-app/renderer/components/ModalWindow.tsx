@@ -42,7 +42,7 @@ const ModalWindow: FC<ModalWindowProps> = ({ isOpen, onClose, imageUrl, predicti
       canvas.height = img.height;
 
       // Рисуем bounding box и текст
-      const bboxArray = predictionsData[2].split(',').map(Number);
+      const bboxArray = predictionsData[2]?.split(',').map(Number);
       const [x, y, width, height] = bboxArray;
 
       // Масштабируем координаты bounding box
