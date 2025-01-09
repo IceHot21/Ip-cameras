@@ -14,6 +14,7 @@ import axios from "axios";
 import Outside from "../../components/Outside";
 import ModalStream from "../../components/ModalStream";
 import { GiClick } from "react-icons/gi";
+import { AiOutlineDown } from "react-icons/ai";
 
 interface HomeProps {
   numberHome: number;
@@ -465,7 +466,13 @@ const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
               savedCells={savedCells}
             />
           </div>
-          <span className={HStyles.cameraLabel}>
+          <div className={HStyles.floorBiba}>
+            <button className={HStyles.floorButton}>1</button>
+            <button className={HStyles.floorButton}>2</button>
+            <button className={HStyles.floorButton}>3</button>
+            <button className={HStyles.floorButton}>4</button>
+          </div>
+          {/* <span className={HStyles.cameraLabel}>
           <button className={HStyles.nextFloor} onClick={nextFloor}>
               <FaChevronLeft onClick={handleRightClick} />
             </button>
@@ -473,7 +480,7 @@ const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
             <button className={HStyles.prevFloor} onClick={prevFloor}>
               <FaChevronRight onClick={handleLeftClick} />
             </button>
-          </span>
+          </span> */}
         </div>
       )}
       {activeTab === 'outside' && (
@@ -505,7 +512,16 @@ const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
   return (
     <div className={HStyles.homeContainer}>
       <div className={HStyles.leftContainer}>
-        <div className={HStyles.carouselContainer}>
+        <div className={HStyles.SeeView}>
+          Стрим
+        </div>
+        <div className={HStyles.EditRoom}>
+          Редактирование
+        </div>
+        <div className={HStyles.Setting}>
+          Настройки
+        </div>
+        {/* <div className={HStyles.carouselContainer}>
           <div className={HStyles.carouselHeader}>
             <div className={HStyles.carouselTitle}>Выбор здания</div>
           </div>
@@ -536,8 +552,8 @@ const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
               </button>
             )}
           </div>
-        </div>
-        <div className={HStyles.statisticsContainer}>
+        </div> */}
+        {/* <div className={HStyles.statisticsContainer}>
           {!isModalOpen ? (
             <label style={{ width: '100%', fontSize: '2vh' }}>Выберите событие для того, чтобы вывести снимок <GiClick /></label>
           ) : (
@@ -548,11 +564,11 @@ const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
               predictionsData={predictionsData}
             />
           )}
-        </div>
+        </div> */}
       </div>
       <div className={HStyles.rightContainer}>
         <div className={HStyles.containerH}>
-          {<div className={HStyles.tabs}>
+          {/* {<div className={HStyles.tabs}>
             <button
               className={`${HStyles.tabButton} ${activeTab === 'inside' ? HStyles.activeTab : ''}`}
               onClick={() => setActiveTab('inside')}
@@ -566,24 +582,15 @@ const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
               Уличные камеры
             </button>
 
-          </div>}
+          </div>} */}
           {planContainer}
         </div>
 
         <div className={HStyles.containerT}>
           <div className={HStyles.panelContainer}>
-            <div className={HStyles.panelHeading} style={{ borderBottom: '1px solid #006c2a' }}>
-              <div className={HStyles.panelTitle}>
-                <div className={HStyles.selectContainer}>
-                  <label className={HStyles.labelSelect1}>Журнал событий</label>
-                  <div className={HStyles.selectObject}>
-                    <label className={HStyles.labelSelect}>Выбрать этаж:</label>
-                    <select value={selectedFloor || ''} onChange={handleFloorChange1}>
-                      <option value="">Все этажи</option>
-                      {floorOptions}
-                    </select>
-                  </div>
-                </div>
+            <div className={HStyles.panelHeading} style={{ borderBottom: '0px solid rgb(146, 178, 146)' }}>
+              <div className={HStyles.panelTitle} style={{ display: 'flex', justifyContent: 'end', background: 'rgb(146, 178, 146)' }}>
+                <AiOutlineDown />
               </div>
             </div>
             <div className={HStyles.tableContainer}>
@@ -591,7 +598,7 @@ const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
                 <thead className={HStyles.tableHeader}>
                   <tr>
                     <th>Дата и время</th>
-                    <th>Здание</th>
+                    {/* <th>Здание</th> */}
                     <th>Номер этажа</th>
                     <th>Помещение</th>
                     <th>Событие</th>

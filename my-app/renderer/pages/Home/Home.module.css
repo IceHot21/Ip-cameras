@@ -26,7 +26,6 @@
   font-size: 1.5vh;
   height: 4vh;
   margin-left: 3vh;
-  border-radius: 3vh;
 }
 
 .tabButton:hover {
@@ -37,7 +36,6 @@
 .activeTab {
   background-color: #006c2a;
   color:  white;
-  ;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
@@ -48,7 +46,7 @@
 
 .rightContainer {
   display: flex;
-  width: 1220px;
+  width: 1270px;
   align-items: center;
   flex-direction: column;
 }
@@ -66,7 +64,7 @@
 .homeContainer {
   display: flex;
   justify-content: start;
-  height: 96.11vh;
+  height: 96.9vh;
   width: 1920px;
   background-color: #ddd;
   animation: fadeIn 1s ease-in;
@@ -195,11 +193,11 @@
 
 .planInside {
   display: flex;
-  width: 80%;
+  width: 100%;
   flex-direction: column;
   align-content: center;
   flex-wrap: wrap;
-  height: 578px;
+  height: 665px;
 }
 
 .cameraLabel {
@@ -208,7 +206,6 @@
   justify-content: space-between;
   height: 40px;
   border-top: none;
-  border-radius: 3vh;
   background-color: #e0e0e0;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -246,19 +243,14 @@
 }
 
 .containerT {
-  border-radius: 3vh;
-  border: 1px solid #006c2a;
+  border: 1px solid  rgb(146, 178, 146);
   margin: 1vh;
   background-color: white;
-  box-shadow: 0 -8px 16px rgba(0, 108, 42, 0.1);
   display: flex;
   flex-direction: column;
   overflow: hidden;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.containerT:hover {
-  box-shadow: 0 -12px 24px rgba(0, 108, 42, 0.2);
+  width: 91vh;
 }
 
 .panelContainer {
@@ -505,9 +497,11 @@
 .leftContainer {
   display: flex;
   flex-direction: column;
-  width: 700px;
+  width: 650px;
   justify-content: space-between;
   gap: 1vh;
+  background-color: rgb(146, 178, 146);
+
 }
 
 .planContainer {
@@ -519,7 +513,6 @@
 .carouselContainer {
   display: flex;
   align-items: center;
-  border-radius: 3vh;
   height: 560px;
   margin: 1vh;
   justify-content: flex-start;
@@ -587,7 +580,6 @@
 
 .statisticsContainer {
   margin: 1vh !important;
-  border-radius: 3vh;
   height: 40.2vh;
   border: 1px solid #006c2a;
   box-shadow: 0 -8px 16px rgba(0, 108, 42, 0.1);
@@ -615,4 +607,58 @@
 }
 
 
-.modalContent {}
+.floorBiba
+{
+  display: flex;
+  flex-direction: column;
+  padding: 7vh;
+  position: absolute;
+  right: 0;
+}
+
+.floorButton
+{
+  border: none !important;
+  width: 4vh;
+  height: 4vh;
+}
+
+.floorButton:last-child
+{
+  border-bottom-right-radius: 1vh;
+  border-bottom-left-radius: 1vh;
+}
+
+.floorButton:first-child
+{
+  border-top-right-radius: 1vh;
+  border-top-left-radius: 1vh;
+}
+
+.floorButton:hover
+{
+  background-color: #808080;
+  cursor: pointer !important;
+}
+
+.panelTitle svg:hover
+{
+  cursor: pointer !important;
+}
+
+.SeeView, .EditRoom, .Setting
+{
+  height: 33vh !important;
+  border-bottom: 1px solid #ccc !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fefefe;
+  font-size: 35px;
+  font-weight: bold;
+}
+
+.SeeView:hover, .EditRoom:hover, .Setting:hover
+{
+  
+}

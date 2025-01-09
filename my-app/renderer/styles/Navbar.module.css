@@ -1,7 +1,7 @@
 .navbar {
   position: relative;
-  height: 20px;
-  background-color: #ccc;
+  height: 12px;
+  background-color: rgb(146, 178, 146);
   display: flex;
   padding: 10px;
   justify-content: space-between;
@@ -22,10 +22,11 @@
 .menuToggle {
   outline: none;
   border: none;
-  background: #ccc;
+  background-color: rgb(146, 178, 146);
+
   cursor: pointer;
-  width: 35px;
-  height: 35px;
+  width: 30px;
+  height: 30px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -52,7 +53,8 @@
   top: 40px;
   width: 212px;
   z-index: 1;
-  background: #ccc;
+  background-color: rgb(146, 178, 146);
+
   left: 0;
 }
 
@@ -70,10 +72,10 @@
   transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
-.activeTab{
-background-color: #999 !important;
-color: #333 !important;
-font-weight: bold;
+.activeTab
+{
+  color: #333 !important;
+  font-weight: bold;
 }
 
 .menuItem:hover {
@@ -86,23 +88,23 @@ font-weight: bold;
   margin-bottom: 0;
 }
 
-.logoutButton {
-  margin-left: auto;
-  background-color: #ccc;
+.logoutButton,.fullscreenButton, .skipButton {
+  background-color: rgb(146, 178, 146);
   color: #333;
   border: none;
   display: flex;
   cursor: pointer;
   transition: background-color 0.3s ease;
-  height: 35px;
-  width: 35px;
   justify-content: center;
   align-items: center;
   -webkit-app-region: no-drag;
   opacity: 0.4;
+  width: 41px;
 }
 
-.logoutButton:hover {
+.logoutButton:hover,
+.fullscreenButton:hover,
+.skipButton:hover {
   transform: scale(1.1);
   opacity: 1;
 }
@@ -120,18 +122,22 @@ font-weight: bold;
 
 .tab {
   display: flex;
-  padding: 10px;
-  border: 1px solid #ccc;
+  padding: 5px;
+
+  border: 1px solid  rgb(146, 178, 146);
   color: #666;
-  height: 17px;
-  background-color: #ccc;
+  height: 20px;
+  background-color: rgb(146, 178, 146);
+
   align-items: center;
-  width: 200px;
+  width: 180px;
   justify-content: space-between;
 }
 
 .tab svg{
   width: 20%;
+  height: 20px;
+  font-size: 14px !important;
 }
 
 .spanContainer{
@@ -139,6 +145,7 @@ font-weight: bold;
   gap: 10px;
   align-items: center;
   width: 100%;
+  font-size: 14px;
 }
 .tab:hover {
   cursor: pointer;
@@ -173,11 +180,13 @@ font-weight: bold;
 }
 
 .logoutButton svg {
-  font-size: 40px;
+  font-size: 25px;
 }
 
-.logoutButton svg:hover {
-  color: #d30000;
+.logoutButton svg:hover,
+.fullscreenButton svg:hover,
+.skipButton svg:hover {
+  color: #fff;
 }
 
 .closeTab svg:hover {
@@ -188,4 +197,26 @@ font-weight: bold;
 
 .menuList span{
   display: flex;
+}
+
+.buttonSpan
+{
+  border: none !important;
+  width: 100px !important;
+  color: rgba(174, 174, 174, 0.5);
+}
+
+.buttonSpan:hover
+{
+  color: rgba(174, 174, 174) ;
+}
+
+.navbarBBB
+{
+  background-color: rgb(146, 178, 146) !important;
+  color: #333 !important;
+  display: flex;
+  flex-direction: row;
+  gap: 1vh;
+  opacity: 0.5;
 }
