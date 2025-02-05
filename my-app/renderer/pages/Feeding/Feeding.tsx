@@ -66,7 +66,7 @@ const Feeding: FC<FeedingProps> = ({ navigate }) => {
   const [roomCenters, setRoomCenters] = useState<{ [key: string]: { x: number; y: number } }>({});
 
   useEffect(() => {
-    const socket = new WebSocket('ws://192.168.0.152:9999');
+    const socket = new WebSocket('ws://192.168.0.150:9999');
 
     socket.onopen = () => {
       console.log('Connected to WebSocket server');

@@ -175,7 +175,7 @@ const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetchWithRetry('https://192.168.0.152:4200/prediction/eventlist', 'GET', null, '/Home/Home');
+        const response = await fetchWithRetry('https://192.168.0.150:4200/prediction/eventlist', 'GET', null, '/Home/Home');
         const initialPredictions = response.slice(0, 100);
 
         replaceEnglishWords(initialPredictions)
@@ -202,7 +202,7 @@ const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
   }, []);
 
   useEffect(() => {
-    const socket = new WebSocket('ws://192.168.0.152:9999');
+    const socket = new WebSocket('ws://192.168.0.150:9999');
 
     socket.onopen = () => {
       console.log('Connected to WebSocket server');
@@ -339,8 +339,8 @@ const Home: FC<HomeProps> = ({ numberHome, navigate }) => {
 
         const handleDoubleClick = async () => {
           try {
-            // const response = await fetchWithRetry(`https://192.168.0.152:4200/prediction/screens/${event.date}`, 'GET', null, '/Home/Home');
-            const response = await axios.get(`https://192.168.0.152:4200/prediction/screens/${event.camera_port}-${event.date}`, {
+            // const response = await fetchWithRetry(`https://192.168.0.150:4200/prediction/screens/${event.date}`, 'GET', null, '/Home/Home');
+            const response = await axios.get(`https://192.168.0.150:4200/prediction/screens/${event.camera_port}-${event.date}`, {
               responseType: 'blob',
               withCredentials: true,
             });

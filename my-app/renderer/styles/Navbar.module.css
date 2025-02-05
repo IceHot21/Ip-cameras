@@ -22,7 +22,7 @@
 .menuToggle {
   outline: none;
   border: none;
-  background: #ccc;
+  background: hsl(0, 0%, 80%);
   cursor: pointer;
   width: 35px;
   height: 35px;
@@ -172,11 +172,11 @@ font-weight: bold;
   z-index: 10001;
 }
 
-.logoutButton svg {
+.logoutButton i {
   font-size: 40px;
 }
 
-.logoutButton svg:hover {
+.logoutButton i:hover {
   color: #d30000;
 }
 

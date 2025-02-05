@@ -18,7 +18,7 @@ type Tab = {
 const HomeTab: Tab = {
   id: 'home',
   name: 'Главная',
-  icon: <BiHome size={24} />,
+  icon: <i className="bi bi-house-door" style={{fontSize: '24px'}}></i>,
   path: '/Home/Home',
   isActive: true,
   isPinned: true,
@@ -64,13 +64,11 @@ const MenuToggle = ({ toggle }) => (
 
 const Navigation = ({ onMenuItemClick }) => {
   const menuItems = [
-    { name: "Главная", action: "/Home/Home", icon: <BiHome size={24} /> },
-    { name: "Схема здания", action: "/Feeding/Feeding", icon: <BiCarousel size={24} /> },
-/*     { name: "Уличные камеры", action: "/OutsideCamera/OutsideCamera", icon: <MdOutlineCameraOutdoor size={24} /> }, */
-/*     { name: "Видеоархив", action: "/Videoarchive/Videoarchive", icon: <BiCameraMovie size={24} /> },
-    { name: "Настройки", action: "/Setting/Setting", icon: <IoSettingsOutline size={24} /> },
-    { name: "Регистрация", action: "/Registration/Registration", icon: <MdAppRegistration size={24} /> }, */
-    { name: "Перезагрузка", action: "/LoginPage/LoginPage", icon: <BiRepeat size={24} /> },
+    { name: "Главная", action: "/Home/Home", icon: <i className="bi bi-house-door" style={{fontSize: '24px'}}></i> },
+    { name: "Схема здания", action: "/Feeding/Feeding", icon: <i className="bi bi-building" style={{fontSize: '24px'}}></i> },
+    { name: "Видеоархив", action: "/Videoarchive/Videoarchive", icon: <i className="bi bi-camera-reels" style={{fontSize: '24px'}}></i> },
+    { name: "Фотоархив", action: "/Videoarchive/Videoarchive", icon: <i className="bi bi-camera" style={{fontSize: '24px'}}></i> },
+    { name: "Перезагрузка", action: "/LoginPage/LoginPage", icon: <i className="bi bi-arrow-repeat" style={{fontSize: '24px'}}></i> },
   ];
 
   return (
@@ -248,7 +246,7 @@ const Navbar: FC = () => {
         ))}
       </div>
 
-      <button onClick={() => window.ipc.closeWindow()} className={NStyles.logoutButton}><BiX /></button>
+      <button onClick={() => window.ipc.closeWindow()} className={NStyles.logoutButton}> <i className="bi bi-x" style={{fontSize: '25px'}}></i></button>
     </motion.nav>
   );
 };

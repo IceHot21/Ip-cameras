@@ -12,7 +12,7 @@ import { useRouter } from 'next/router';
 export const refreshToken = async () => {
     try {
         // Отправляем запрос на обновление токена
-        const response = await axios.post('https://192.168.0.152:4200/api/refresh-token', null, { withCredentials: true });
+        const response = await axios.post('https://192.168.0.150:4200/api/refresh-token', null, { withCredentials: true });
 
         // Если запрос выполнен успешно, возвращаем новый токен
         return response.data.accessToken;

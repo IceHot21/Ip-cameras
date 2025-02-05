@@ -6,6 +6,8 @@ import Navbar from '../components/Navbar';
 import { useEffect, useState } from 'react';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import "bootstrap-icons/font/bootstrap-icons.css";
+
 
 const MyApp = ({ Component, pageProps }: AppProps) => {
   const router = useRouter();

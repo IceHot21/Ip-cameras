@@ -65,7 +65,7 @@ const ListCamera: FC<ListCameraProps> = memo(({
     setError(null);
 
     try {
-      const response = await fetchWithRetry('https://192.168.0.152:4200/stream/cameras', 'GET', null, '/list-cameras');
+      const response = await fetchWithRetry('https://192.168.0.150:4200/stream/cameras', 'GET', null, '/list-cameras');
       if (response.length > 0) {
         const droppedCamerasArray = Object.values(droppedCameras);
         const updatedCameras = response.map((camera) => {
