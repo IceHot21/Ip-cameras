@@ -143,11 +143,11 @@ const ListCamera: FC<ListCameraProps> = memo(({
           <table>
             <thead className={LCStyles.tableHeader}>
               <tr>
-                <th>ID</th>
-                <th>Здание/Улица</th>
+                <th>№</th>
+                <th>Положение</th>
                 <th>Этаж</th>
-                <th>Имя комнаты</th>
-                <th>Название камеры</th>
+                <th>Помещение</th>
+                <th>Камера</th>
                 <th></th>
               </tr>
             </thead>

@@ -1,4 +1,4 @@
-import React, { FC, useState, lazy, Suspense, memo } from 'react';
+import React, { FC, useState, lazy, Suspense, memo, useMemo, useEffect } from 'react';
 import LCStyles from '../styles/ListCamera.module.css';
 import { BiX, BiSolidLayerPlus } from "react-icons/bi";
 import { FaCheck } from 'react-icons/fa';
@@ -47,7 +47,7 @@ const svgItems: SVGItem[] = [
 const svgGroups = {
   doors: { name: 'Двери', items: ['doorD', 'doorL', 'doorR', 'doorV'] },
   windows: { name: 'Окна', items: ['windowD', 'windowL', 'windowR', 'windowU'] },
-  corners: { name: 'Уголы', items: ['ugolLD', 'ugolLV', 'ugolRD', 'ugolRV'] },
+  corners: { name: 'Углы', items: ['ugolLD', 'ugolLV', 'ugolRD', 'ugolRV'] },
   walls: { name: 'Стены', items: ['wallG', 'wallGD', 'wallV', 'wallVR'] },
 };
 
@@ -94,7 +94,11 @@ const ListSVG: FC<ListSVGProps> = memo(({
     return groupedItems;
   };
 
-  const groupedSVGItems = groupSVGItems(svgItems);
+  useEffect(() => {
+    setSidebarHeight(isSelecting ? '39%' : '35%');
+  }, [isSelecting]);
+
+  const groupedSVGItems = useMemo(() => groupSVGItems(svgItems), [svgItems]);
 
   const handleDragStart = (e: React.DragEvent<HTMLDivElement>, svg: SVGItem) => {
     console.log('Drag start:', svg);
@@ -159,12 +163,13 @@ const ListSVG: FC<ListSVGProps> = memo(({
 
   return (
     <motion.div
-      style={{ height: sidebarHeight }}
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.7 }}
-      className={LSCGStyle.sidebar}>
+    key={open ? "open-sidebar" : "closed-sidebar"}
+    style={{ height: sidebarHeight }}
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1, y: 0 }}
+    exit={{ opacity: 0 }}
+    transition={{ duration: 0.7 }}
+    className={LSCGStyle.sidebar}>
       <div className={LCStyles.buttonContainer}>
         <button onClick={onClose} className={LCStyles.closeButton} title="Закрыть"><BiX /></button>
         <div style={{ display: 'flex' }}>

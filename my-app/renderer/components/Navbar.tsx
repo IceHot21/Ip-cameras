@@ -67,7 +67,7 @@ const Navigation = ({ onMenuItemClick }) => {
     { name: "Главная", action: "/Home/Home", icon: <i className="bi bi-house-door" style={{fontSize: '24px'}}></i> },
     { name: "Схема здания", action: "/Feeding/Feeding", icon: <i className="bi bi-building" style={{fontSize: '24px'}}></i> },
     { name: "Видеоархив", action: "/Videoarchive/Videoarchive", icon: <i className="bi bi-camera-reels" style={{fontSize: '24px'}}></i> },
-    { name: "Фотоархив", action: "/Videoarchive/Videoarchive", icon: <i className="bi bi-camera" style={{fontSize: '24px'}}></i> },
+    { name: "Фотоархив", action: "/Setting/Setting", icon: <i className="bi bi-camera" style={{fontSize: '24px'}}></i> },
     { name: "Перезагрузка", action: "/LoginPage/LoginPage", icon: <i className="bi bi-arrow-repeat" style={{fontSize: '24px'}}></i> },
   ];
 

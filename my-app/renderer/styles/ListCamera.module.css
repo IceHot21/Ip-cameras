@@ -45,7 +45,8 @@
   display: flex;
   justify-content: center;
   flex-direction: column;
-  overflow: auto;
+  overflow: hidden;
+  font-size: 0.8rem;
 }
 
 .tableContainer th,
@@ -89,6 +90,11 @@
 .buttonContainer button:hover {
   transform: scale(1.05);
 }
+
+.collapsible {
+  overflow: hidden;
+}
+
 
 .streamModal {
   position: fixed;
@@ -144,4 +150,9 @@
 
 .buttonListCameraContainer button {
   margin-bottom: 10px;
+}
+
+.tableHeader
+{
+  border-collapse: collapse;
 }
